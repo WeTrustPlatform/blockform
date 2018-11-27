@@ -36,7 +36,7 @@ func main() {
 
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
-		db.Find(&nodes)
+		db.Find(&nodes).Order("created_at DESC")
 		tmpl.ExecuteTemplate(w, "index.html", nodes)
 	}))
 
@@ -76,6 +76,22 @@ func main() {
 
 	http.Handle("/create/private", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Not implemented yet"))
+	}))
+
+	http.Handle("/delete", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		name := r.URL.Query().Get("name")
+		if name == "" {
+			w.WriteHeader(404)
+		}
+
+		db.Model(&model.Node{}).Where("name=?", name).Update("Status", model.Deleting)
+
+		go deleteNode(context.Background(), name, func() {
+			db.Where("name=?", name).Delete(&model.Node{})
+			log.Println("done deleting node " + name)
+		})
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
