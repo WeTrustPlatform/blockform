@@ -24,7 +24,10 @@ func main() {
 	//db.DropTableIfExists(&model.Node{})
 	db.AutoMigrate(&model.Node{})
 
-	tmpl := template.Must(template.ParseFiles("index.html", "create.html"))
+	tmpl := template.Must(template.ParseFiles(
+		"templates/index.html",
+		"templates/create.html",
+	))
 
 	authorizer, err = auth.NewAuthorizerFromEnvironment()
 	if err != nil {

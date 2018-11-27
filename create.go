@@ -52,7 +52,13 @@ func createNode(ctx context.Context, node model.Node) {
 		log.Println(err)
 	}
 
-	data, _ := ioutil.ReadFile("mainnet.yml")
+	var data []byte
+	switch node.NetworkID {
+	case 1:
+		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
+	case 4:
+		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
+	}
 
 	customData := base64.StdEncoding.EncodeToString(data)
 
