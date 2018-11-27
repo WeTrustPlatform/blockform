@@ -1,0 +1,41 @@
+#cloud-config
+package_upgrade: true
+disk_setup:
+  /dev/sdc:
+    table_type: 'mbr'
+    layout: [100]
+    overwrite: true
+fs_setup:
+  - label: data
+    filesystem: 'ext4'
+    device: '/dev/sdc'
+    partition: auto
+    overwrite: true
+mounts:
+  - [ "/dev/sdc1", "/datadrive", "ext4", "defaults", "0", "2" ]
+write_files:
+  - owner: root:root
+  - path: /lib/systemd/system/geth.service
+    content: |
+        [Unit]
+        Description=Geth
+        After=network.target
+        [Service]
+        Type=simple
+        Restart=always
+        RestartSec=10
+        User=wetrust
+        WorkingDirectory=/home/wetrust
+        StandardOutput=journal
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 1 --rpc --rpcaddr 0.0.0.0 --rpccorsdomain * --rpcvhosts *
+        [Install]
+        WantedBy=multi-user.target
+runcmd:
+  - chown -R wetrust:wetrust /datadrive
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - tar xf geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - cp geth-linux-amd64-1.8.13-225171a4/geth /usr/bin/geth
+  - chown -R wetrust:wetrust /datadrive
+  - systemctl enable geth
+  - systemctl start geth
+  - chown -R wetrust:wetrust /datadrive

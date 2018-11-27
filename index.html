@@ -1,0 +1,39 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>Nodes</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Network Type</th>
+                    <th>Network ID</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Endpoint</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {{range .}}
+            <tr>
+                <td class="align-middle">⬢ {{.Name}}</td>
+                <td class="align-middle text-capitalize">{{.NetworkType}}</td>
+                <td class="align-middle">{{.NetworkID}}</td>
+                <td class="align-middle text-capitalize">{{.Status}}</td>
+                <td class="align-middle">{{.CreatedAt.Format "Mon Jan 2 15:04"}}</td>
+                <td><input class="form-control" type="text" placeholder="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly></td>
+                <td>
+                    <button type="button" class="btn btn-info">Details</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+            {{end}}
+        </table>
+        <a class="btn btn-primary" href="/create">Create a new node</a>
+    </div>
+</body>
+</html>
