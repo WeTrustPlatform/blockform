@@ -35,6 +35,18 @@ func createGroup(ctx context.Context, groupName string) (resources.Group, error)
 		})
 }
 
+func getCustomData(node model.Node) string {
+	var data []byte
+	switch node.NetworkID {
+	case 1:
+		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
+	case 4:
+		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
+	}
+
+	return base64.StdEncoding.EncodeToString(data)
+}
+
 func createNode(ctx context.Context, node model.Node) {
 	group, err := createGroup(ctx, node.Name)
 	if err != nil {
@@ -47,20 +59,12 @@ func createNode(ctx context.Context, node model.Node) {
 	deploymentsClient := resources.NewDeploymentsClient(subscriptionID)
 	deploymentsClient.Authorizer = authorizer
 
-	template, err := readJSON("vm-template.json")
+	template, err := readJSON("vm-templates/small.json")
 	if err != nil {
 		log.Println(err)
 	}
 
-	var data []byte
-	switch node.NetworkID {
-	case 1:
-		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
-	case 4:
-		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
-	}
-
-	customData := base64.StdEncoding.EncodeToString(data)
+	customData := getCustomData(node)
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "wetrust"},

@@ -1,5 +1,9 @@
 # BlockForm - Ethereum Blockchain As A Service
 
+BlockForm helps you deploy ethereum nodes to the cloud and manage them.
+
+### Usage
+
 Generate your azure service principal:
 
     az login
