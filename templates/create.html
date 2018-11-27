@@ -9,90 +9,92 @@
 <body>
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
-        <h2>New node</h2>
-        <p>
-            <ul class="nav nav-tabs" id="typeTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="public-tab" data-toggle="tab" href="#public" role="tab" aria-controls="public" aria-selected="true">Public Net</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="private-tab" data-toggle="tab" href="#private" role="tab" aria-controls="private" aria-selected="false">Private Net</a>
-                </li>
-            </ul>
-        </p>
-        <div class="tab-content">
-            <div class="tab-pane show active" id="public" role="tabpanel" aria-labelledby="public-tab">
-                <form action="/create/public" method="post">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="auto">
-                            <div class="input-group-append">
-                                <div class="input-group-text">.westus2.cloudapp.azure.com:8545</div>
+        <div class="smaller">
+            <h2>New node</h2>
+            <p>
+                <ul class="nav nav-tabs" id="typeTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="public-tab" data-toggle="tab" href="#public" role="tab" aria-controls="public" aria-selected="true">Public Net</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="private-tab" data-toggle="tab" href="#private" role="tab" aria-controls="private" aria-selected="false">Private Net</a>
+                    </li>
+                </ul>
+            </p>
+            <div class="tab-content">
+                <div class="tab-pane show active" id="public" role="tabpanel" aria-labelledby="public-tab">
+                    <form action="/create/public" method="post">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="auto">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">.westus2.cloudapp.azure.com:8545</div>
+                                </div>
+                            </div>
+                            <small id="nameHelp" class="form-text text-muted">Use lower case letters and dashes. Leave empty for automatic name.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="network_id">Network ID</label>
+                            <select class="form-control" id="network_id" name="network_id">
+                                <option value="1">1 - Mainnet</option>
+                                <option value="4">4 - Rinkeby Testnet</option>
+                            </select>
+                            <small id="nameHelp" class="form-text text-muted">Public network to connect to.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="sync_mode">Sync Mode</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_full" value="full" disabled>
+                                <label class="form-check-label" for="sync_mode_full">Full</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_fast" value="fast" disabled checked>
+                                <label class="form-check-label" for="sync_mode_fast">Fast</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_light" value="light" disabled>
+                                <label class="form-check-label" for="sync_mode_light">Light</label>
                             </div>
                         </div>
-                        <small id="nameHelp" class="form-text text-muted">Use lower case letters and dashes. Leave empty for automatic name.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="network_id">Network ID</label>
-                        <select class="form-control" id="network_id" name="network_id">
-                            <option value="1">1 - Mainnet</option>
-                            <option value="4">4 - Rinkeby Testnet</option>
-                        </select>
-                        <small id="nameHelp" class="form-text text-muted">Public network to connect to.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="sync_mode">Sync Mode</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_full" value="full" disabled>
-                            <label class="form-check-label" for="sync_mode_full">Full</label>
+                        <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                    </form>
+                </div>
+                <div class="tab-pane" id="private" role="tabpanel" aria-labelledby="private-tab">
+                    <form action="/create/private" method="post">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="auto">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">.westus2.cloudapp.azure.com:8545</div>
+                                </div>
+                            </div>
+                            <small id="nameHelp" class="form-text text-muted">Use lower case letters and dashes.</small>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_fast" value="fast" disabled checked>
-                            <label class="form-check-label" for="sync_mode_fast">Fast</label>
+                        <div class="form-group">
+                            <label for="network_id">Network ID</label>
+                            <input type="number" class="form-control" id="network_id" name="network_id" placeholder="Network ID">
+                            <small id="nameHelp" class="form-text text-muted">Choose a unique number to prevent your node to connect to other networks.</small>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_light" value="light" disabled>
-                            <label class="form-check-label" for="sync_mode_light">Light</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
-                </form>
-            </div>
-            <div class="tab-pane" id="private" role="tabpanel" aria-labelledby="private-tab">
-                <form action="/create/private" method="post">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <div class="input-group mb-2">
-                            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp" placeholder="auto">
-                            <div class="input-group-append">
-                                <div class="input-group-text">.westus2.cloudapp.azure.com:8545</div>
+                        <div class="form-group">
+                            <label for="sync_mode">Sync Mode</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_full" value="full" disabled checked>
+                                <label class="form-check-label" for="sync_mode_full">Full</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_fast" value="fast" disabled>
+                                <label class="form-check-label" for="sync_mode_fast">Fast</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_light" value="light" disabled>
+                                <label class="form-check-label" for="sync_mode_light">Light</label>
                             </div>
                         </div>
-                        <small id="nameHelp" class="form-text text-muted">Use lower case letters and dashes.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="network_id">Network ID</label>
-                        <input type="number" class="form-control" id="network_id" name="network_id" placeholder="Network ID">
-                        <small id="nameHelp" class="form-text text-muted">Choose a unique number to prevent your node to connect to other networks.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="sync_mode">Sync Mode</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_full" value="full" disabled checked>
-                            <label class="form-check-label" for="sync_mode_full">Full</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_fast" value="fast" disabled>
-                            <label class="form-check-label" for="sync_mode_fast">Fast</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sync_mode" id="sync_mode_light" value="light" disabled>
-                            <label class="form-check-label" for="sync_mode_light">Light</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
-                </form>
+                        <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

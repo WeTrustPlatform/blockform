@@ -17,3 +17,8 @@ h2 {
 th {
   background-color: #dee2e6;
 }
+
+.smaller {
+  max-width: 600px;
+  margin: 0 auto;
+}
