@@ -18,7 +18,16 @@ th {
   background-color: #dee2e6;
 }
 
+tr:hover td {
+  background-color: #f8f8f8;
+}
+
 .smaller {
   max-width: 600px;
   margin: 0 auto;
+}
+
+.netid {
+  color: grey;
+  font-family: monospace;
 }
