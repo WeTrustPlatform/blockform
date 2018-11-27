@@ -34,6 +34,9 @@ func main() {
 		log.Fatalf("Failed to get Azure OAuth config: %v\n", err)
 	}
 
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
