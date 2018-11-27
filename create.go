@@ -47,7 +47,7 @@ func getCustomData(node model.Node) string {
 	return base64.StdEncoding.EncodeToString(data)
 }
 
-func createNode(ctx context.Context, node model.Node) {
+func createNode(ctx context.Context, node model.Node, callback func()) {
 	group, err := createGroup(ctx, node.Name)
 	if err != nil {
 		log.Printf("cannot create group: %v\n", err)
@@ -92,6 +92,8 @@ func createNode(ctx context.Context, node model.Node) {
 	if err != nil {
 		log.Println(err)
 	}
+
+	callback()
 }
 
 func readJSON(path string) (*map[string]interface{}, error) {

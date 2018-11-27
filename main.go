@@ -66,7 +66,10 @@ func main() {
 
 		db.Create(&node)
 
-		go createNode(context.Background(), node)
+		go createNode(context.Background(), node, func() {
+			db.Model(&node).Update("Status", model.Deployed)
+			log.Println("done creating node " + node.Name)
+		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}))
