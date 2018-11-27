@@ -23,7 +23,7 @@
             </p>
             <div class="tab-content">
                 <div class="tab-pane show active" id="public" role="tabpanel" aria-labelledby="public-tab">
-                    <form action="/create/public" method="post">
+                    <form action="/create" method="post">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <div class="input-group mb-2">
@@ -57,11 +57,12 @@
                                 <label class="form-check-label" for="sync_mode_light">Light</label>
                             </div>
                         </div>
+                        <input name="network_type" type="hidden" value="public">
                         <button type="submit" class="btn btn-primary btn-lg">Create</button>
                     </form>
                 </div>
                 <div class="tab-pane" id="private" role="tabpanel" aria-labelledby="private-tab">
-                    <form action="/create/private" method="post">
+                    <form action="/create" method="post">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <div class="input-group mb-2">
@@ -92,6 +93,7 @@
                                 <label class="form-check-label" for="sync_mode_light">Light</label>
                             </div>
                         </div>
+                        <input name="network_type" type="hidden" value="private">
                         <button type="submit" class="btn btn-primary btn-lg">Create</button>
                     </form>
                 </div>

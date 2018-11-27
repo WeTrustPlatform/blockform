@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -45,7 +46,13 @@ func getCustomData(node model.Node) string {
 		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
 	}
 
-	str := strings.Replace(string(data), "@@API_KEY@@", node.APIKey, -1)
+	if node.NetworkType == model.Private {
+		data, _ = ioutil.ReadFile("cloud-init/private.yml")
+	}
+
+	str := string(data)
+	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)
+	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
 
 	return base64.StdEncoding.EncodeToString([]byte(str))
 }

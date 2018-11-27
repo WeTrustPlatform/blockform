@@ -344,6 +344,29 @@
       ]
     },
     {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "name": "[concat('NSG', '/', 'AllowFaucet')]",
+      "apiVersion": "2017-06-01",
+      "scale": null,
+      "location": "westus2",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "protocol": "TCP",
+        "sourcePortRange": "*",
+        "destinationPortRange": "8080",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*",
+        "access": "Allow",
+        "priority": 101,
+        "direction": "Inbound",
+        "sourceAddressPrefixes": [],
+        "destinationAddressPrefixes": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'NSG')]"
+      ]
+    },
+    {
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "name": "[concat('VNet', '/', 'SubNet')]",
       "apiVersion": "2017-06-01",

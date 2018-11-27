@@ -44,10 +44,11 @@ func main() {
 	}))
 
 	http.Handle("/create", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "create.html", nil)
-	}))
+		if r.Method != "POST" {
+			tmpl.ExecuteTemplate(w, "create.html", nil)
+			return
+		}
 
-	http.Handle("/create/public", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(500)
 		}
@@ -61,7 +62,7 @@ func main() {
 
 		node := model.Node{
 			Name:        name,
-			NetworkType: model.Public,
+			NetworkType: r.FormValue("network_type"),
 			NetworkID:   uint64(networkID),
 			APIKey:      APIKey,
 			Status:      model.Creating,
@@ -75,10 +76,6 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}))
-
-	http.Handle("/create/private", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Not implemented yet"))
 	}))
 
 	http.Handle("/delete", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
