@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/compute/mgmt/compute"
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
@@ -44,7 +45,9 @@ func getCustomData(node model.Node) string {
 		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
 	}
 
-	return base64.StdEncoding.EncodeToString(data)
+	str := strings.Replace(string(data), "@@API_KEY@@", node.APIKey, -1)
+
+	return base64.StdEncoding.EncodeToString([]byte(str))
 }
 
 func createNode(ctx context.Context, node model.Node, callback func()) {

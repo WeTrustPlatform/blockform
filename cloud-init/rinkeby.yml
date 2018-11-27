@@ -27,9 +27,20 @@ write_files:
         User=wetrust
         WorkingDirectory=/home/wetrust
         StandardOutput=journal
-        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 4 --rpc --rpcaddr 0.0.0.0 --rpccorsdomain * --rpcvhosts *
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 4 --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts *
         [Install]
         WantedBy=multi-user.target
+  - owner: root:root
+    path: /etc/nginx/sites-available/default
+    content: |
+        server {
+          listen 8545;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8445;
+          }
+        }
+packages:
+  - nginx
 runcmd:
   - chown -R wetrust:wetrust /datadrive
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
@@ -40,4 +51,5 @@ runcmd:
   - geth --datadir=/datadrive init rinkeby.json
   - systemctl enable geth
   - systemctl start geth
+  - systemctl restart nginx
   - chown -R wetrust:wetrust /datadrive
