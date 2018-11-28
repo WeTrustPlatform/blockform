@@ -17,6 +17,8 @@ Set environment variables:
     export AZURE_SUBSCRIPTION_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     export PORT=3000
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
+    export BASIC_AUTH_USER=xxxxx
+    export BASIC_AUTH_PASS=xxxxx
 
 Build and run:
 

@@ -37,13 +37,13 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
 		tmpl.ExecuteTemplate(w, "index.html", nodes)
-	}))
+	})))
 
-	http.Handle("/create", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/create", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			tmpl.ExecuteTemplate(w, "create.html", nil)
 			return
@@ -76,9 +76,9 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}))
+	})))
 
-	http.Handle("/delete", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/delete", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		name := r.URL.Query().Get("name")
 		if name == "" {
 			w.WriteHeader(404)
@@ -92,7 +92,7 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}))
+	})))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
