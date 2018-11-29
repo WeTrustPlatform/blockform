@@ -57,6 +57,7 @@
                 $(this).tooltip('show');
                 $(this).children('input').select();
                 document.execCommand("copy");
+                window.getSelection().removeAllRanges();
                 $(this).tooltip('disable');
             })
         });
