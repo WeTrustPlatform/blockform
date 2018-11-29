@@ -2,7 +2,7 @@
 
 BlockForm helps you deploy ethereum nodes to the cloud and manage them.
 It takes care of creating a virtual machine in one of the supported cloud
-providers and will install geth in the best possible way.
+providers (currently Azure) and will install geth in the best possible way.
 
 ### Usage
 
@@ -22,7 +22,9 @@ Set environment variables:
     export BASIC_AUTH_USER=xxxxx
     export BASIC_AUTH_PASS=xxxxx
 
-Build and run:
+Get, build and run:
 
+    go get github.com/WeTrustPlatform/blockform
+    cd $GOPATH/src/github.com/WeTrustPlatform/blockform
     go build
     ./blockform
