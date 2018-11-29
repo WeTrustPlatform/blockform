@@ -25,7 +25,6 @@
                 <b>VM Status:</b>
                 <span class="text-capitalize">{{.Status}}</span>
             </p>
-
             {{ if eq .Status "deployed"}}
             <p>
                 <b>Geth Syncing:</b>
@@ -37,8 +36,8 @@
             </p>
             <p>
                 <b>Web3 RPC endpoint:</b>
-                <div class="input-group mb-0">
-                    <input class="form-control" type="text" placeholder="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                    <input class="form-control" type="text" value="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -46,8 +45,8 @@
             </p>
             <p>
                 <b>Geth attach:</b>
-                <div class="input-group mb-0">
-                    <input class="form-control" type="text" placeholder="geth attach http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                    <input class="form-control" type="text" value="geth attach http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -55,8 +54,8 @@
             </p>
             <p>
                 <b>SSH access:</b>
-                <div class="input-group mb-0">
-                    <input class="form-control" type="text" placeholder="ssh blockform@{{.Name}}.westus2.cloudapp.azure.com" readonly>
+                <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                    <input class="form-control" type="text" value="ssh blockform@{{.Name}}.westus2.cloudapp.azure.com" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -86,14 +85,19 @@
             <script>
                 $( document ).ready(function() {
                     var web3 = new Web3("http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}");
-
                     web3.eth.isSyncing().then((data) => {
                         $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
                     });
-
                     web3.eth.getBlockNumber().then((data) => {
                         $('#blocknumber').html(data ? data : 'N/A');
                     });
+                    $('.toclipboard').click(function() {
+                        $(this).tooltip('enable');
+                        $(this).tooltip('show');
+                        $(this).children('input').select();
+                        document.execCommand("copy");
+                        $(this).tooltip('disable');
+                    })
                 });
             </script>
             {{end}}
