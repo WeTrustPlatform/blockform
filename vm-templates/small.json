@@ -6,7 +6,7 @@
         "defaultValue": null,
         "type":"string"
     },
-    "vm_password": {
+    "pub_key": {
       "defaultValue": null,
       "type": "string"
     },
@@ -59,11 +59,18 @@
           ]
         },
         "osProfile": {
-          "computerName": "VM",
+          "computerName": "[parameters('dns_prefix')]",
           "adminUsername": "[parameters('vm_user')]",
-          "adminPassword": "[parameters('vm_password')]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": false
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "[parameters('pub_key')]",
+                  "path": "[concat('/home/', parameters('vm_user'), '/.ssh/authorized_keys')]"
+                }
+              ]
+            }
           },
           "secrets": [],
           "customData": "[parameters('custom_data')]"

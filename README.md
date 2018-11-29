@@ -21,6 +21,7 @@ Set environment variables:
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
     export BASIC_AUTH_USER=xxxxx
     export BASIC_AUTH_PASS=xxxxx
+    export PUB_KEY="xxxxx" # your public ssh key to login the VMs
 
 Get, build and run:
 

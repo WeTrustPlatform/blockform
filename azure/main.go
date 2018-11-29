@@ -62,7 +62,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func()
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "wetrust"},
-		"vm_password": map[string]interface{}{"value": "wetrustwetrustO*"},
+		"pub_key":     map[string]interface{}{"value": os.Getenv("PUB_KEY")},
 		"dns_prefix":  map[string]interface{}{"value": *group.Name},
 		"custom_data": map[string]interface{}{"value": customData},
 	}
