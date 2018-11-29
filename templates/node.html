@@ -91,14 +91,6 @@
                     web3.eth.getBlockNumber().then((data) => {
                         $('#blocknumber').html(data ? data : 'N/A');
                     });
-                    $('.toclipboard').click(function() {
-                        $(this).tooltip('enable');
-                        $(this).tooltip('show');
-                        $(this).children('input').select();
-                        document.execCommand("copy");
-                        window.getSelection().removeAllRanges();
-                        $(this).tooltip('disable');
-                    })
                 });
             </script>
             {{end}}
