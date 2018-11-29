@@ -42,12 +42,13 @@
             </tr>
             {{end}}
         </table>
+        <a class="btn btn-primary btn-lg" href="/create"><i class="fas fa-plus"></i> Create a new node</a>
         {{else}}
         <div id="empty">
-            There are no nodes yet, please create one.
+            <div>There are no nodes yet, please create one.</div>
+            <a class="btn btn-primary btn-lg" href="/create"><i class="fas fa-plus"></i> Create a new node</a>
         </div>
         {{end}}
-        <a class="btn btn-primary btn-lg" href="/create"><i class="fas fa-plus"></i> Create a new node</a>
     </div>
     <script>
         $( document ).ready(function() {
