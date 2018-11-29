@@ -37,6 +37,7 @@ func main() {
 		"templates/head.html",
 		"templates/index.html",
 		"templates/create.html",
+		"templates/node.html",
 	))
 
 	azure := azure.NewAzure()
@@ -99,6 +100,13 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})))
+
+	http.Handle("/node", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+		node := model.Node{}
+		db.Find(&node).Where("id=?", id)
+		tmpl.ExecuteTemplate(w, "node.html", node)
 	})))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))

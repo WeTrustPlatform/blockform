@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head" .}}
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <div class="smaller">
+            <h2>{{ .Name }}</h2>
+            <p>
+                <b>Network:</b>
+                {{if eq .NetworkType "public" }}
+                {{if eq .NetworkID 1}}Mainnet <span class="netid">({{.NetworkID}})</span>{{end}}
+                {{if eq .NetworkID 4}}Rinkeby <span class="netid">({{.NetworkID}})</span>{{end}}
+                {{else}}
+                Private <span class="netid">({{.NetworkID}})</span>
+                {{end}}
+            </p>
+            <p>
+                <b>Created at:</b>
+                {{.CreatedAt.Format "Mon Jan 2 15:04"}}
+            </p>
+            <p>
+                <b>RPC endpoint:</b>
+                <div class="input-group mb-0">
+                    <input class="form-control" type="text" placeholder="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </p>
+            <p>
+                <b>Geth attach:</b>
+                <div class="input-group mb-0">
+                    <input class="form-control" type="text" placeholder="geth attach http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </p>
+            <p>
+                <b>SSH access:</b>
+                <div class="input-group mb-0">
+                    <input class="form-control" type="text" placeholder="ssh blockform@{{.Name}}.westus2.cloudapp.azure.com" readonly>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </p>
+            <p><b>Danger zone:</b></p>
+            <p>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#delete-{{.Name}}"><i class="far fa-trash-alt"></i> Delete this node</button>
+                <div class="modal" id="delete-{{.Name}}" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Deleting {{.Name}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">The Virtual Machine will be deleted and all information will be lost.</p><p>Are you sure you want to delete this node?</p></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a href="/delete?name={{.Name}}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
