@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
@@ -66,6 +67,9 @@ func main() {
 			name = "bf-" + password.MustGenerate(8, 4, 0, true, false)
 		}
 		networkID, _ := strconv.ParseInt(r.FormValue("network_id"), 10, 64)
+		if networkID == 0 {
+			networkID = int64(rand.Intn(1000))
+		}
 		APIKey := password.MustGenerate(8, 4, 0, false, false)
 
 		node := model.Node{
