@@ -34,6 +34,7 @@ func main() {
 	db.AutoMigrate(&model.Node{})
 
 	tmpl := template.Must(template.ParseFiles(
+		"templates/head.html",
 		"templates/index.html",
 		"templates/create.html",
 	))
