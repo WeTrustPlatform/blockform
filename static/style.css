@@ -39,3 +39,9 @@ tr:hover td {
   color: grey;
   font-family: monospace;
 }
+
+#empty {
+  padding: 80px 0;
+  background-color: #dee2e6;
+  text-align: center;
+}
