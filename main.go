@@ -105,7 +105,7 @@ func main() {
 	http.Handle("/node", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		node := model.Node{}
-		db.Find(&node).Where("id=?", id)
+		db.Find(&node, id)
 		tmpl.ExecuteTemplate(w, "node.html", node)
 	})))
 
