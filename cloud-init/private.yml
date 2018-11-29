@@ -24,8 +24,8 @@ write_files:
         Type=simple
         Restart=always
         RestartSec=10
-        User=wetrust
-        WorkingDirectory=/home/wetrust
+        User=blockform
+        WorkingDirectory=/home/blockform
         StandardOutput=journal
         ExecStart=/usr/bin/geth --datadir /datadrive --syncmode full --networkid @@NET_ID@@ --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --nodiscover --password /password.txt --unlock @@SEALER@@ --mine --etherbase @@SEALER@@
         [Install]
@@ -85,8 +85,8 @@ write_files:
         Type=simple
         Restart=always
         RestartSec=10
-        User=wetrust
-        WorkingDirectory=/home/wetrust
+        User=blockform
+        WorkingDirectory=/home/blockform
         StandardOutput=journal
         ExecStart=/usr/bin/faucet
         [Install]
@@ -104,11 +104,11 @@ packages:
   - nginx
   - libdancer2-perl
 runcmd:
-  - chown -R wetrust:wetrust /datadrive
+  - chown -R blockform:blockform /datadrive
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
   - tar xf geth-linux-amd64-1.8.13-225171a4.tar.gz
   - cp geth-linux-amd64-1.8.13-225171a4/geth /usr/bin/geth
-  - chown -R wetrust:wetrust /datadrive
+  - chown -R blockform:blockform /datadrive
   - echo "dummy" > /password.txt
   - '\geth --datadir /datadrive --password /password.txt account new | sed "s/Address: {\(.*\)}/\1/g" > /sealer'
   - cat /genesis.json | sed "s/@@SEALER@@/`cat /sealer`/g" > /genesis.json
@@ -119,4 +119,4 @@ runcmd:
   - systemctl enable faucet
   - systemctl start faucet
   - systemctl restart nginx
-  - chown -R wetrust:wetrust /datadrive
+  - chown -R blockform:blockform /datadrive
