@@ -1,6 +1,8 @@
 # BlockForm - Ethereum Blockchain As A Service
 
 BlockForm helps you deploy ethereum nodes to the cloud and manage them.
+It takes care of creating a virtual machine in one of the supported cloud
+providers and will install geth in the best possible way.
 
 ### Usage
 
