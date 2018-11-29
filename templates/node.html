@@ -22,7 +22,15 @@
                 {{.CreatedAt.Format "Mon Jan 2 15:04"}}
             </p>
             <p>
-                <b>RPC endpoint:</b>
+                <b>Syncing:</b>
+                <span id="syncing"></span>
+            </p>
+            <p>
+                <b>Block Number:</b>
+                <span id="blocknumber"></span>
+            </p>
+            <p>
+                <b>Web3 RPC endpoint:</b>
                 <div class="input-group mb-0">
                     <input class="form-control" type="text" placeholder="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
                     <div class="input-group-append">
@@ -71,5 +79,18 @@
             </p>
         </div>
     </div>
+    <script>
+        $( document ).ready(function() {
+            var web3 = new Web3("http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}");
+
+            web3.eth.isSyncing().then((data) => {
+                $('#syncing').html(data ? data.currentBlock+'/'+data.highestBlock : 'False');
+            });
+
+            web3.eth.getBlockNumber().then((data) => {
+                $('#blocknumber').html(data ? data : '<i class="fas fa-spin fa-spinner"></i>');
+            });
+        });
+    </script>
 </body>
 </html>
