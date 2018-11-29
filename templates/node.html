@@ -22,7 +22,13 @@
                 {{.CreatedAt.Format "Mon Jan 2 15:04"}}
             </p>
             <p>
-                <b>Syncing:</b>
+                <b>VM Status:</b>
+                <span class="text-capitalize">{{.Status}}</span>
+            </p>
+
+            {{ if eq .Status "deployed"}}
+            <p>
+                <b>Geth Syncing:</b>
                 <span id="syncing"></span>
             </p>
             <p>
@@ -77,20 +83,21 @@
                     </div>
                 </div>
             </p>
+            <script>
+                $( document ).ready(function() {
+                    var web3 = new Web3("http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}");
+
+                    web3.eth.isSyncing().then((data) => {
+                        $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
+                    });
+
+                    web3.eth.getBlockNumber().then((data) => {
+                        $('#blocknumber').html(data ? data : 'N/A');
+                    });
+                });
+            </script>
+            {{end}}
         </div>
     </div>
-    <script>
-        $( document ).ready(function() {
-            var web3 = new Web3("http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}");
-
-            web3.eth.isSyncing().then((data) => {
-                $('#syncing').html(data ? data.currentBlock+'/'+data.highestBlock : 'False');
-            });
-
-            web3.eth.getBlockNumber().then((data) => {
-                $('#blocknumber').html(data ? data : '<i class="fas fa-spin fa-spinner"></i>');
-            });
-        });
-    </script>
 </body>
 </html>
