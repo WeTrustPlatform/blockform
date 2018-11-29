@@ -7,13 +7,22 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Azure/go-autorest/autorest/azure/auth"
+	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
+
 	"github.com/alecthomas/template"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/sethvargo/go-password/password"
 )
+
+// CloudProvider abstracts the behaviour of a cloud provider like AWS, Azure or
+// Google Cloud. It exposes functions to create a virtual machine, install
+// an ethereum node on it, and delete a virtual machine.
+type CloudProvider interface {
+	CreateNode(context.Context, model.Node, func())
+	DeleteNode(context.Context, string, func())
+}
 
 func main() {
 	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -29,10 +38,7 @@ func main() {
 		"templates/create.html",
 	))
 
-	authorizer, err = auth.NewAuthorizerFromEnvironment()
-	if err != nil {
-		log.Fatalf("Failed to get Azure OAuth config: %v\n", err)
-	}
+	azure := azure.NewAzure()
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -70,7 +76,7 @@ func main() {
 
 		db.Create(&node)
 
-		go createNode(context.Background(), node, func() {
+		go azure.CreateNode(context.Background(), node, func() {
 			db.Model(&node).Update("Status", model.Deployed)
 			log.Println("done creating node " + node.Name)
 		})
@@ -86,7 +92,7 @@ func main() {
 
 		db.Model(&model.Node{}).Where("name=?", name).Update("Status", model.Deleting)
 
-		go deleteNode(context.Background(), name, func() {
+		go azure.DeleteNode(context.Background(), name, func() {
 			db.Where("name=?", name).Delete(&model.Node{})
 			log.Println("done deleting node " + name)
 		})
