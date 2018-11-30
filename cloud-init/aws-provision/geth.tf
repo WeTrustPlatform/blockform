@@ -80,14 +80,14 @@ resource "null_resource" "provision_geth" {
     inline = [
       "sudo docker stop geth || true",
       "sudo docker rm geth || true",
-      "sudo docker pull ethereum/client-go",
+      "sudo docker pull ethereum/client-go:stable",
       <<EOF
         sudo docker run \
           --restart always \
           --name geth \
           -p 8546:8545 -p 30303:30303 \
           -v /datadrive:/datadrive \
-          -d ethereum/client-go --rpc --rpcvhosts "*" --rpcaddr "0.0.0.0" --datadir /datadrive --syncmode fast
+          -d ethereum/client-go:stable --rpc --rpcvhosts "*" --rpcaddr "0.0.0.0" --datadir /datadrive --syncmode fast
       EOF
       ,
     ]
