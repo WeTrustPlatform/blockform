@@ -1,2 +1,4 @@
 blockform
 .vscode
+terraform*
+.terraform*
