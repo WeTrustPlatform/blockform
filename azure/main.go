@@ -123,6 +123,8 @@ func getCustomData(node model.Node) string {
 	switch node.NetworkID {
 	case 1:
 		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
+	case 3:
+		data, _ = ioutil.ReadFile("cloud-init/ropsten.yml")
 	case 4:
 		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
 	}

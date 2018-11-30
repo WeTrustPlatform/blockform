@@ -12,6 +12,7 @@
                 <b>Network:</b>
                 {{if eq .NetworkType "public" }}
                 {{if eq .NetworkID 1}}Mainnet <span class="netid">({{.NetworkID}})</span>{{end}}
+                {{if eq .NetworkID 3}}Rospten <span class="netid">({{.NetworkID}})</span>{{end}}
                 {{if eq .NetworkID 4}}Rinkeby <span class="netid">({{.NetworkID}})</span>{{end}}
                 {{else}}
                 Private <span class="netid">({{.NetworkID}})</span>
@@ -61,9 +62,8 @@
                     </div>
                 </div>
             </p>
-            <p><b>Danger zone:</b></p>
             <p>
-                <button class="btn btn-danger" data-toggle="modal" data-target="#delete-{{.Name}}"><i class="far fa-trash-alt"></i> Delete this node</button>
+                <button class="btn btn-lg btn-danger" data-toggle="modal" data-target="#delete-{{.Name}}"><i class="far fa-trash-alt"></i> Delete this node</button>
                 <div class="modal" id="delete-{{.Name}}" tabindex="-1" role="dialog" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
