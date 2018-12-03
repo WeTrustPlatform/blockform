@@ -2,7 +2,8 @@
 
 BlockForm helps you deploy ethereum nodes to the cloud and manage them.
 It takes care of creating a virtual machine in one of the supported cloud
-providers (currently Azure) and will install geth in the best possible way.
+providers (currently Azure and AWS) and will install geth in the best possible
+way.
 
 ### Usage
 
@@ -17,6 +18,8 @@ Set environment variables:
     export AZURE_CLIENT_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     export AZURE_CLIENT_SECRET="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     export AZURE_SUBSCRIPTION_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    export AWS_ACCESS_KEY_ID="xxxxxxxxxx"
+    export AWS_SECRET_ACCESS_KEY="xxxxxxxxxxxxxxxxxxxx"
     export PORT=3000
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
     export BASIC_AUTH_USER=xxxxx

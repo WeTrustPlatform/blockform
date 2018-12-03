@@ -14,6 +14,7 @@
                 <th>Network</th>
                 <th>Status</th>
                 <th>Created At</th>
+                <th>Provider</th>
                 <th>Endpoint</th>
             </tr>
             {{range .}}
@@ -32,6 +33,10 @@
                 </td>
                 <td class="align-middle text-capitalize">{{.Status}}</td>
                 <td class="align-middle">{{.CreatedAt.Format "Mon Jan 2 15:04"}}</td>
+                <td class="align-middle text-capitalize">
+                    {{if eq .CloudProvider "aws" }}AWS{{end}}
+                    {{if eq .CloudProvider "azure" }}Azure{{end}}
+                </td>
                 <td>
                     <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                     <input class="form-control" type="text" value="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
