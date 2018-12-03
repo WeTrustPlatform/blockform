@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -48,12 +49,15 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	})
 	fmt.Println(importResult, err)
 
+	customData := cloudinit.CustomData(node)
+
 	runResult, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:      aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
 		InstanceType: aws.String("t2.micro"),
 		MinCount:     aws.Int64(1),
 		MaxCount:     aws.Int64(1),
 		KeyName:      importResult.KeyName,
+		UserData:     aws.String(customData),
 	})
 
 	if err != nil {

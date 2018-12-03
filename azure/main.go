@@ -2,18 +2,16 @@ package azure
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/Azure/go-autorest/autorest/to"
+	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
@@ -58,7 +56,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Println(err)
 	}
 
-	customData := getCustomData(node)
+	customData := cloudinit.CustomData(node)
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "blockform"},
@@ -116,28 +114,6 @@ func (az Azure) createGroup(ctx context.Context, groupName string) (resources.Gr
 		resources.Group{
 			Location: to.StringPtr(location),
 		})
-}
-
-func getCustomData(node model.Node) string {
-	var data []byte
-	switch node.NetworkID {
-	case 1:
-		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
-	case 3:
-		data, _ = ioutil.ReadFile("cloud-init/ropsten.yml")
-	case 4:
-		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
-	}
-
-	if node.NetworkType == model.Private {
-		data, _ = ioutil.ReadFile("cloud-init/private.yml")
-	}
-
-	str := string(data)
-	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)
-	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
-
-	return base64.StdEncoding.EncodeToString([]byte(str))
 }
 
 func readJSON(path string) (*map[string]interface{}, error) {
