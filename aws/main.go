@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/aws/aws-sdk-go/aws"
@@ -41,11 +42,18 @@ func NewAWS() AWS {
 // CreateNode created an EC2 instance and setups geth
 func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string)) {
 
+	importResult, err := aw.svc.ImportKeyPair(&ec2.ImportKeyPairInput{
+		KeyName:           aws.String("blockform"),
+		PublicKeyMaterial: []byte(os.Getenv("PUB_KEY")),
+	})
+	fmt.Println(importResult, err)
+
 	runResult, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:      aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
 		InstanceType: aws.String("t2.micro"),
 		MinCount:     aws.Int64(1),
 		MaxCount:     aws.Int64(1),
+		KeyName:      importResult.KeyName,
 	})
 
 	if err != nil {
