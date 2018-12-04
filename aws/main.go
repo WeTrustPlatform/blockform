@@ -48,7 +48,9 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		KeyName:           aws.String("blockform"),
 		PublicKeyMaterial: []byte(os.Getenv("PUB_KEY")),
 	})
-	fmt.Println(importResult, err)
+	if err != nil {
+		fmt.Println("Could not import key pair", err)
+	}
 
 	customData := cloudinit.CustomData(node)
 
@@ -60,26 +62,23 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		KeyName:      importResult.KeyName,
 		UserData:     aws.String(customData),
 	})
-
 	if err != nil {
-		fmt.Println("Could not create instance", err)
+		log.Println("Could not create instance", err)
 	}
 
 	VMID := *run.Instances[0].InstanceId
 
-	fmt.Println("Created instance", VMID)
+	log.Println("Created instance", VMID)
 
-	_, errtag := aw.svc.CreateTags(&ec2.CreateTagsInput{
+	_, err = aw.svc.CreateTags(&ec2.CreateTagsInput{
 		Resources: []*string{aws.String(VMID)},
 		Tags: []*ec2.Tag{
-			{
-				Key:   aws.String("Name"),
-				Value: aws.String(node.Name),
-			},
+			{Key: aws.String("name"), Value: aws.String(node.Name)},
+			{Key: aws.String("creator"), Value: aws.String("blockform")},
 		},
 	})
-	if errtag != nil {
-		log.Println("Could not create tags for instance", VMID, errtag)
+	if err != nil {
+		log.Println("Could not create tags for instance", VMID, err)
 	}
 
 	for {
@@ -98,9 +97,12 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		}
 	}
 
-	instances, _ := aw.svc.DescribeInstances(&ec2.DescribeInstancesInput{
+	instances, err := aw.svc.DescribeInstances(&ec2.DescribeInstancesInput{
 		InstanceIds: []*string{aws.String(VMID)},
 	})
+	if err != nil {
+		log.Println("Could not describe instance", VMID, err)
+	}
 
 	publicDNSName := *instances.Reservations[0].Instances[0].PublicDnsName
 
