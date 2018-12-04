@@ -117,21 +117,21 @@ func main() {
 	})))
 
 	http.Handle("/delete", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		vmid := r.URL.Query().Get("vmid")
-		if vmid == "" {
+		ID := r.URL.Query().Get("id")
+		if ID == "" {
 			w.WriteHeader(404)
 		}
 
 		node := model.Node{}
-		db.Find(&node, "vm_id = ?", vmid)
+		db.Find(&node, ID)
 
-		db.Model(&model.Node{}).Where("vm_id=?", vmid).Update("Status", model.Deleting)
+		db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deleting)
 
 		cloud := providerForNode(node)
 		log.Println("Deleting node", node.Name)
 		go cloud.DeleteNode(context.Background(), node, func() {
-			db.Where("vm_id=?", node.VMID).Delete(&model.Node{})
-			log.Println("Done deleting node " + node.VMID)
+			db.Where("id=?", ID).Delete(&model.Node{})
+			log.Println("Done deleting node " + node.Name)
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
