@@ -1,0 +1,60 @@
+#cloud-config
+package_upgrade: true
+users:
+  - default
+  - name: blockform
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - @@PUB_KEY@@
+disk_setup:
+  @@DEVICE@@:
+    table_type: 'mbr'
+    layout: [100]
+    overwrite: true
+fs_setup:
+  - label: data
+    filesystem: 'ext4'
+    device: '@@DEVICE@@'
+    partition: auto
+    overwrite: true
+mounts:
+  - [ "@@DEVICE@@1", "/datadrive", "ext4", "defaults", "0", "2" ]
+write_files:
+  - owner: root:root
+  - path: /lib/systemd/system/geth.service
+    content: |
+        [Unit]
+        Description=Geth
+        After=network.target
+        [Service]
+        Type=simple
+        Restart=always
+        RestartSec=10
+        User=blockform
+        WorkingDirectory=/home/blockform
+        StandardOutput=journal
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 3 --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts *
+        [Install]
+        WantedBy=multi-user.target
+  - owner: root:root
+    path: /etc/nginx/sites-available/default
+    content: |
+        server {
+          listen 8545;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8445;
+          }
+        }
+packages:
+  - nginx
+runcmd:
+  - chown -R blockform:blockform /datadrive
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - tar xf geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - cp geth-linux-amd64-1.8.13-225171a4/geth /usr/bin/geth
+  - chown -R blockform:blockform /datadrive
+  - systemctl enable geth
+  - systemctl start geth
+  - systemctl restart nginx
+  - chown -R blockform:blockform /datadrive

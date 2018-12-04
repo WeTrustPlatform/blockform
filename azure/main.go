@@ -2,18 +2,16 @@ package azure
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/Azure/go-autorest/autorest/to"
+	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
@@ -47,7 +45,7 @@ func NewAzure() Azure {
 
 // CreateNode will create an azure VM and install a geth node using cloud-init
 // and execute the callback when done.
-func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func()) {
+func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 	group, err := az.createGroup(ctx, node.Name)
 	if err != nil {
 		log.Printf("cannot create group: %v\n", err)
@@ -58,7 +56,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func()
 		log.Println(err)
 	}
 
-	customData := getCustomData(node)
+	customData := cloudinit.CustomData(node, "/dev/sdc")
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "blockform"},
@@ -88,14 +86,14 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func()
 		log.Println(err)
 	}
 
-	callback()
+	domainName := node.Name + ".westus2.cloudapp.azure.com"
+	callback(*group.Name, domainName)
 }
 
 // DeleteNode deletes the resource group with all the resources in it and
 // executes the callback when it's done.
-func (az Azure) DeleteNode(ctx context.Context, name string, callback func()) {
-	log.Println("deleting resource group " + name)
-	groupsDeleteFuture, err := az.groupsClient.Delete(ctx, name)
+func (az Azure) DeleteNode(ctx context.Context, node model.Node, callback func()) {
+	groupsDeleteFuture, err := az.groupsClient.Delete(ctx, node.VMID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -116,28 +114,6 @@ func (az Azure) createGroup(ctx context.Context, groupName string) (resources.Gr
 		resources.Group{
 			Location: to.StringPtr(location),
 		})
-}
-
-func getCustomData(node model.Node) string {
-	var data []byte
-	switch node.NetworkID {
-	case 1:
-		data, _ = ioutil.ReadFile("cloud-init/mainnet.yml")
-	case 3:
-		data, _ = ioutil.ReadFile("cloud-init/ropsten.yml")
-	case 4:
-		data, _ = ioutil.ReadFile("cloud-init/rinkeby.yml")
-	}
-
-	if node.NetworkType == model.Private {
-		data, _ = ioutil.ReadFile("cloud-init/private.yml")
-	}
-
-	str := string(data)
-	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)
-	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
-
-	return base64.StdEncoding.EncodeToString([]byte(str))
 }
 
 func readJSON(path string) (*map[string]interface{}, error) {

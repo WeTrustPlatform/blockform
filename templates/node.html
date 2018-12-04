@@ -23,6 +23,11 @@
                 {{.CreatedAt.Format "Mon Jan 2 15:04"}}
             </p>
             <p>
+                <b>Cloud Provider:</b>
+                {{if eq .CloudProvider "aws" }}AWS{{end}}
+                {{if eq .CloudProvider "azure" }}Azure{{end}}
+            </p>
+            <p>
                 <b>VM Status:</b>
                 <span class="text-capitalize">{{.Status}}</span>
             </p>
@@ -38,7 +43,7 @@
             <p>
                 <b>Web3 RPC endpoint:</b>
                 <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                    <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -47,7 +52,7 @@
             <p>
                 <b>Geth attach:</b>
                 <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="geth attach http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}" readonly>
+                    <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -56,7 +61,7 @@
             <p>
                 <b>SSH access:</b>
                 <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="ssh blockform@{{.Name}}.westus2.cloudapp.azure.com" readonly>
+                    <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -76,7 +81,7 @@
                             <div class="modal-body">The Virtual Machine will be deleted and all information will be lost.</p><p>Are you sure you want to delete this node?</p></div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <a href="/delete?name={{.Name}}" class="btn btn-danger">Delete</a>
+                                <a href="/delete?id={{.ID}}" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -84,7 +89,7 @@
             </p>
             <script>
                 $( document ).ready(function() {
-                    var web3 = new Web3("http://{{.Name}}.westus2.cloudapp.azure.com:8545/{{.APIKey}}");
+                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
                     web3.eth.isSyncing().then((data) => {
                         $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
                     });

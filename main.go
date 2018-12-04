@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
 
@@ -21,8 +22,24 @@ import (
 // Google Cloud. It exposes functions to create a virtual machine, install
 // an ethereum node on it, and delete a virtual machine.
 type CloudProvider interface {
-	CreateNode(context.Context, model.Node, func())
-	DeleteNode(context.Context, string, func())
+	CreateNode(context.Context, model.Node, func(string, string))
+	DeleteNode(context.Context, model.Node, func())
+}
+
+var azureProvider CloudProvider
+var awsProvider CloudProvider
+
+func providerForNode(node model.Node) CloudProvider {
+	var cloud CloudProvider
+	switch node.CloudProvider {
+	case "aws":
+		cloud = awsProvider
+	case "azure":
+		cloud = azureProvider
+	default:
+		cloud = awsProvider
+	}
+	return cloud
 }
 
 func main() {
@@ -41,7 +58,8 @@ func main() {
 		"templates/node.html",
 	))
 
-	azure := azure.NewAzure()
+	azureProvider = azure.NewAzure()
+	awsProvider = aws.NewAWS()
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -66,6 +84,10 @@ func main() {
 		if name == "" {
 			name = "bf-" + password.MustGenerate(8, 4, 0, true, false)
 		}
+		provider := r.FormValue("provider")
+		if provider == "" {
+			provider = "aws"
+		}
 		networkID, _ := strconv.ParseInt(r.FormValue("network_id"), 10, 64)
 		if networkID == 0 {
 			networkID = int64(rand.Intn(1000))
@@ -73,34 +95,43 @@ func main() {
 		APIKey := password.MustGenerate(8, 4, 0, false, false)
 
 		node := model.Node{
-			Name:        name,
-			NetworkType: r.FormValue("network_type"),
-			NetworkID:   uint64(networkID),
-			APIKey:      APIKey,
-			Status:      model.Creating,
+			Name:          name,
+			CloudProvider: provider,
+			NetworkType:   r.FormValue("network_type"),
+			NetworkID:     uint64(networkID),
+			APIKey:        APIKey,
+			Status:        model.Creating,
 		}
 
 		db.Create(&node)
 
-		go azure.CreateNode(context.Background(), node, func() {
+		cloud := providerForNode(node)
+		go cloud.CreateNode(context.Background(), node, func(VMID, DomainName string) {
 			db.Model(&node).Update("Status", model.Deployed)
-			log.Println("done creating node " + node.Name)
+			db.Model(&node).Update("VMID", VMID)
+			db.Model(&node).Update("DomainName", DomainName)
+			log.Println("Done creating node " + node.Name)
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})))
 
 	http.Handle("/delete", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Query().Get("name")
-		if name == "" {
+		ID := r.URL.Query().Get("id")
+		if ID == "" {
 			w.WriteHeader(404)
 		}
 
-		db.Model(&model.Node{}).Where("name=?", name).Update("Status", model.Deleting)
+		node := model.Node{}
+		db.Find(&node, ID)
 
-		go azure.DeleteNode(context.Background(), name, func() {
-			db.Where("name=?", name).Delete(&model.Node{})
-			log.Println("done deleting node " + name)
+		db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deleting)
+
+		cloud := providerForNode(node)
+		log.Println("Deleting node", node.Name)
+		go cloud.DeleteNode(context.Background(), node, func() {
+			db.Where("id=?", ID).Delete(&model.Node{})
+			log.Println("Done deleting node " + node.Name)
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)

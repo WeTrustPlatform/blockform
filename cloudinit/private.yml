@@ -1,0 +1,129 @@
+#cloud-config
+package_upgrade: true
+users:
+  - default
+  - name: blockform
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - @@PUB_KEY@@
+disk_setup:
+  @@DEVICE@@:
+    table_type: 'mbr'
+    layout: [100]
+    overwrite: true
+fs_setup:
+  - label: data
+    filesystem: 'ext4'
+    device: '@@DEVICE@@'
+    partition: auto
+    overwrite: true
+mounts:
+  - [ "@@DEVICE@@1", "/datadrive", "ext4", "defaults", "0", "2" ]
+write_files:
+  - owner: root:root
+    path: /lib/systemd/system/geth.service
+    content: |
+        [Unit]
+        Description=Geth
+        After=network.target
+        [Service]
+        Type=simple
+        Restart=always
+        RestartSec=10
+        User=blockform
+        WorkingDirectory=/home/blockform
+        StandardOutput=journal
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode full --networkid @@NET_ID@@ --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --nodiscover --password /password.txt --unlock @@SEALER@@ --mine --etherbase @@SEALER@@
+        [Install]
+        WantedBy=multi-user.target
+  - owner: root:root
+    path: /genesis.json
+    content: |
+        {
+          "config": {
+            "chainId": @@NET_ID@@,
+            "homesteadBlock": 1,
+            "eip150Block": 2,
+            "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip155Block": 3,
+            "eip158Block": 3,
+            "byzantiumBlock": 4,
+            "clique": {
+              "period": 15,
+              "epoch": 30000
+            }
+          },
+          "nonce": "0x0",
+          "timestamp": "0x5bd95c94",
+          "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000@@SEALER@@0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "gasLimit": "0x8000000",
+          "difficulty": "0x1",
+          "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "coinbase": "0x0000000000000000000000000000000000000000",
+          "alloc": {
+            "@@SEALER@@": {
+              "balance": "0x200000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          "number": "0x0",
+          "gasUsed": "0x0",
+          "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        }
+  - owner: root:root
+    path: /usr/bin/faucet
+    permissions: '0755'
+    content: |
+        #!/usr/bin/env perl
+        use Dancer2;
+        set port => 8080;
+        get '/:addr' => sub {
+          my $addr = route_parameters->get('addr');
+          `/usr/bin/geth --exec "eth.sendTransaction({from:eth.coinbase, to:'${addr}', value: web3.toWei(1.0, 'ether'), gas:21000});" attach /datadrive/geth.ipc`;
+        };
+        start;
+  - owner: root:root
+    path: /lib/systemd/system/faucet.service
+    content: |
+        [Unit]
+        Description=Faucet
+        After=network.target
+        [Service]
+        Type=simple
+        Restart=always
+        RestartSec=10
+        User=blockform
+        WorkingDirectory=/home/blockform
+        StandardOutput=journal
+        ExecStart=/usr/bin/faucet
+        [Install]
+        WantedBy=multi-user.target
+  - owner: root:root
+    path: /etc/nginx/sites-available/default
+    content: |
+        server {
+          listen 8545;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8445;
+          }
+        }
+packages:
+  - nginx
+  - libdancer2-perl
+runcmd:
+  - chown -R blockform:blockform /datadrive
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - tar xf geth-linux-amd64-1.8.13-225171a4.tar.gz
+  - cp geth-linux-amd64-1.8.13-225171a4/geth /usr/bin/geth
+  - chown -R blockform:blockform /datadrive
+  - echo "dummy" > /password.txt
+  - '\geth --datadir /datadrive --password /password.txt account new | sed "s/Address: {\(.*\)}/\1/g" > /sealer'
+  - cat /genesis.json | sed "s/@@SEALER@@/`cat /sealer`/g" > /genesis.json
+  - cat /lib/systemd/system/geth.service | sed "s/@@SEALER@@/`cat /sealer`/g" > /lib/systemd/system/geth.service
+  - geth --nodiscover --datadir /datadrive init /genesis.json
+  - systemctl enable geth
+  - systemctl start geth
+  - systemctl enable faucet
+  - systemctl start faucet
+  - systemctl restart nginx
+  - chown -R blockform:blockform /datadrive
