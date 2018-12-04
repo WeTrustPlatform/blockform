@@ -44,15 +44,25 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	sgName := node.Name // name the security group after the node name
 	aw.createSecurityGroup(sgName)
 
-	customData := cloudinit.CustomData(node)
+	customData := cloudinit.CustomData(node, "/dev/xvdc")
 
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:        aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
-		InstanceType:   aws.String("t2.micro"),
+		InstanceType:   aws.String("t2.medium"),
 		MinCount:       aws.Int64(1),
 		MaxCount:       aws.Int64(1),
 		SecurityGroups: []*string{aws.String(sgName)},
-		UserData:       aws.String(customData),
+		BlockDeviceMappings: []*ec2.BlockDeviceMapping{
+			{
+				DeviceName: aws.String("/dev/sdc"),
+				Ebs: &ec2.EbsBlockDevice{
+					VolumeSize:          aws.Int64(200),
+					VolumeType:          aws.String("gp2"),
+					DeleteOnTermination: aws.Bool(true),
+				},
+			},
+		},
+		UserData: aws.String(customData),
 	})
 	if err != nil {
 		log.Println("Could not create instance", err)

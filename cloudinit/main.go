@@ -10,8 +10,9 @@ import (
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
-// CustomData returns the base64 encoded cloud-init script to initialize a VM
-func CustomData(node model.Node) string {
+// CustomData returns the base64 encoded cloud-init script to initialize a VM.
+// The dev argument is the unix device to be used for geth data.
+func CustomData(node model.Node, dev string) string {
 	var data []byte
 	switch node.NetworkID {
 	case 1:
@@ -30,6 +31,7 @@ func CustomData(node model.Node) string {
 	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)
 	str = strings.Replace(str, "@@PUB_KEY@@", os.Getenv("PUB_KEY"), -1)
 	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
+	str = strings.Replace(str, "@@DEVICE@@", dev, -1)
 
 	return base64.StdEncoding.EncodeToString([]byte(str))
 }

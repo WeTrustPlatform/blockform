@@ -8,18 +8,18 @@ users:
     ssh_authorized_keys:
       - @@PUB_KEY@@
 disk_setup:
-  /dev/sdc:
+  @@DEVICE@@:
     table_type: 'mbr'
     layout: [100]
     overwrite: true
 fs_setup:
   - label: data
     filesystem: 'ext4'
-    device: '/dev/sdc'
+    device: '@@DEVICE@@'
     partition: auto
     overwrite: true
 mounts:
-  - [ "/dev/sdc1", "/datadrive", "ext4", "defaults", "0", "2" ]
+  - [ "@@DEVICE@@1", "/datadrive", "ext4", "defaults", "0", "2" ]
 write_files:
   - owner: root:root
     path: /lib/systemd/system/geth.service
