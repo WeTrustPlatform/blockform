@@ -2,7 +2,6 @@ package aws
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -29,8 +28,8 @@ func NewAWS() AWS {
 		Region: aws.String(endpoints.UsEast1RegionID),
 	}))
 
+	// Log every request made and its payload
 	sess.Handlers.Send.PushFront(func(r *request.Request) {
-		// Log every request made and its payload
 		log.Printf("Request: %v/%v, Payload: %v\n",
 			r.ClientInfo.ServiceName, r.Operation, r.Params)
 	})
@@ -54,7 +53,6 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		InstanceType:   aws.String("t2.micro"),
 		MinCount:       aws.Int64(1),
 		MaxCount:       aws.Int64(1),
-		KeyName:        aws.String("blockform"),
 		SecurityGroups: []*string{aws.String(sgName)},
 		UserData:       aws.String(customData),
 	})
@@ -77,6 +75,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		log.Println("Could not create tags for instance", VMID, err)
 	}
 
+	// Wait until the instance is fully deployed
 	for {
 		time.Sleep(30 * time.Second)
 
@@ -84,7 +83,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 			InstanceIds: []*string{aws.String(VMID)},
 		})
 
-		fmt.Println(status)
+		log.Println(status)
 
 		if len(status.InstanceStatuses) > 0 {
 			if *status.InstanceStatuses[0].SystemStatus.Status == "ok" {
