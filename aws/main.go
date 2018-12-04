@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
@@ -43,14 +42,6 @@ func NewAWS() AWS {
 
 // CreateNode created an EC2 instance and setups geth
 func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
-
-	_, err := aw.svc.ImportKeyPair(&ec2.ImportKeyPairInput{
-		KeyName:           aws.String("blockform"),
-		PublicKeyMaterial: []byte(os.Getenv("PUB_KEY")),
-	})
-	if err != nil {
-		log.Println("Could not import key pair", err)
-	}
 
 	vpcID := "vpc-620a511a" // TODO unhardcode this
 	sgName := "blockform"

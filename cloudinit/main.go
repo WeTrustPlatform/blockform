@@ -31,7 +31,5 @@ func CustomData(node model.Node) string {
 	str = strings.Replace(str, "@@PUB_KEY@@", os.Getenv("PUB_KEY"), -1)
 	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
 
-	fmt.Println(str)
-
 	return base64.StdEncoding.EncodeToString([]byte(str))
 }
