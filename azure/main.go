@@ -92,9 +92,8 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 
 // DeleteNode deletes the resource group with all the resources in it and
 // executes the callback when it's done.
-func (az Azure) DeleteNode(ctx context.Context, VMID string, callback func()) {
-	log.Println("deleting resource group " + VMID)
-	groupsDeleteFuture, err := az.groupsClient.Delete(ctx, VMID)
+func (az Azure) DeleteNode(ctx context.Context, node model.Node, callback func()) {
+	groupsDeleteFuture, err := az.groupsClient.Delete(ctx, node.VMID)
 	if err != nil {
 		log.Println(err)
 	}

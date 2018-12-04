@@ -8,7 +8,6 @@ import (
 	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -42,9 +41,8 @@ func NewAWS() AWS {
 // CreateNode created an EC2 instance and setups geth
 func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 
-	vpcID := "vpc-620a511a" // TODO unhardcode this
-	sgName := "blockform"
-	aw.createSecurityGroup(sgName, vpcID)
+	sgName := node.Name // name the security group after the node name
+	aw.createSecurityGroup(sgName)
 
 	customData := cloudinit.CustomData(node)
 
@@ -105,39 +103,38 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 }
 
 // DeleteNode will delete the AWS node
-func (aw AWS) DeleteNode(ctx context.Context, VMID string, callback func()) {
-	result, err := aw.svc.TerminateInstances(&ec2.TerminateInstancesInput{
-		InstanceIds: []*string{aws.String(VMID)},
+func (aw AWS) DeleteNode(ctx context.Context, node model.Node, callback func()) {
+	termInst, err := aw.svc.TerminateInstances(&ec2.TerminateInstancesInput{
+		InstanceIds: []*string{aws.String(node.VMID)},
 	})
 	if err != nil {
-		log.Println("Could not delete node:", err)
+		log.Println("Could not delete instance:", err)
 		return
 	}
+	log.Println(termInst)
 
-	log.Println(result)
+	// TODO stop leaking security groups
+	delSG, err := aw.svc.DeleteSecurityGroup(&ec2.DeleteSecurityGroupInput{
+		GroupName: aws.String(node.Name),
+	})
+	if err != nil {
+		log.Println("Could not delete security group:", err)
+	}
+	log.Println(delSG)
 
 	callback()
 }
 
 // createSecurityGroup creates the security group with the VPC, name and description.
-func (aw AWS) createSecurityGroup(name string, vpcID string) {
+func (aw AWS) createSecurityGroup(name string) {
 	sg, err := aw.svc.CreateSecurityGroup(&ec2.CreateSecurityGroupInput{
 		GroupName:   aws.String(name),
 		Description: aws.String("Security group for blockform"),
-		VpcId:       aws.String(vpcID),
 	})
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case "InvalidVpcID.NotFound":
-				log.Println("Unable to find VPC with ID:", vpcID)
-			case "InvalidGroup.Duplicate":
-				log.Println("Security group already exists:", name)
-			}
-		}
 		log.Println("Unable to create security group:", name, err)
 	}
-	log.Printf("Created security group %s with VPC %s.\n", aws.StringValue(sg.GroupId), vpcID)
+	log.Println("Created security group", aws.StringValue(sg.GroupId))
 
 	_, err = aw.svc.AuthorizeSecurityGroupIngress(&ec2.AuthorizeSecurityGroupIngressInput{
 		GroupName: aws.String(name),
