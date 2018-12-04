@@ -38,12 +38,16 @@
                     {{if eq .CloudProvider "azure" }}Azure{{end}}
                 </td>
                 <td>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                    </div>
-                    </div>
+                    {{if .DomainName}}
+                        <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                        <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                        </div>
+                        </div>
+                    {{else}}
+                        Pending
+                    {{end}}
                 </td>
             </tr>
             {{end}}

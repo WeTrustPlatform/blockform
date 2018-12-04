@@ -48,7 +48,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db.DropTableIfExists(&model.Node{})
+	//db.DropTableIfExists(&model.Node{})
 	db.AutoMigrate(&model.Node{})
 
 	tmpl := template.Must(template.ParseFiles(
