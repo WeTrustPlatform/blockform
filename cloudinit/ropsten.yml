@@ -1,5 +1,12 @@
 #cloud-config
 package_upgrade: true
+users:
+  - default
+  - name: blockform
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - @@PUB_KEY@@
 disk_setup:
   /dev/sdc:
     table_type: 'mbr'
