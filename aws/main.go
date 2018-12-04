@@ -44,23 +44,28 @@ func NewAWS() AWS {
 // CreateNode created an EC2 instance and setups geth
 func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 
-	importResult, err := aw.svc.ImportKeyPair(&ec2.ImportKeyPairInput{
+	_, err := aw.svc.ImportKeyPair(&ec2.ImportKeyPairInput{
 		KeyName:           aws.String("blockform"),
 		PublicKeyMaterial: []byte(os.Getenv("PUB_KEY")),
 	})
 	if err != nil {
-		fmt.Println("Could not import key pair", err)
+		log.Println("Could not import key pair", err)
 	}
+
+	vpcID := "vpc-620a511a" // TODO unhardcode this
+	sgName := "blockform"
+	aw.createSecurityGroup(sgName, vpcID)
 
 	customData := cloudinit.CustomData(node)
 
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
-		ImageId:      aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
-		InstanceType: aws.String("t2.micro"),
-		MinCount:     aws.Int64(1),
-		MaxCount:     aws.Int64(1),
-		KeyName:      importResult.KeyName,
-		UserData:     aws.String(customData),
+		ImageId:        aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
+		InstanceType:   aws.String("t2.micro"),
+		MinCount:       aws.Int64(1),
+		MaxCount:       aws.Int64(1),
+		KeyName:        aws.String("blockform"),
+		SecurityGroups: []*string{aws.String(sgName)},
+		UserData:       aws.String(customData),
 	})
 	if err != nil {
 		log.Println("Could not create instance", err)
@@ -73,8 +78,8 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	_, err = aw.svc.CreateTags(&ec2.CreateTagsInput{
 		Resources: []*string{aws.String(VMID)},
 		Tags: []*ec2.Tag{
-			{Key: aws.String("name"), Value: aws.String(node.Name)},
-			{Key: aws.String("creator"), Value: aws.String("blockform")},
+			{Key: aws.String("Name"), Value: aws.String(node.Name)},
+			{Key: aws.String("Creator"), Value: aws.String("blockform")},
 		},
 	})
 	if err != nil {
@@ -111,26 +116,59 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 // DeleteNode will delete the AWS node
 func (aw AWS) DeleteNode(ctx context.Context, VMID string, callback func()) {
-	input := &ec2.TerminateInstancesInput{
+	result, err := aw.svc.TerminateInstances(&ec2.TerminateInstancesInput{
 		InstanceIds: []*string{aws.String(VMID)},
-	}
-
-	result, err := aw.svc.TerminateInstances(input)
+	})
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
+		log.Println("Could not delete node:", err)
 		return
 	}
 
-	fmt.Println(result)
+	log.Println(result)
 
 	callback()
+}
+
+// createSecurityGroup creates the security group with the VPC, name and description.
+func (aw AWS) createSecurityGroup(name string, vpcID string) {
+	sg, err := aw.svc.CreateSecurityGroup(&ec2.CreateSecurityGroupInput{
+		GroupName:   aws.String(name),
+		Description: aws.String("Security group for blockform"),
+		VpcId:       aws.String(vpcID),
+	})
+	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case "InvalidVpcID.NotFound":
+				log.Println("Unable to find VPC with ID:", vpcID)
+			case "InvalidGroup.Duplicate":
+				log.Println("Security group already exists:", name)
+			}
+		}
+		log.Println("Unable to create security group:", name, err)
+	}
+	log.Printf("Created security group %s with VPC %s.\n", aws.StringValue(sg.GroupId), vpcID)
+
+	_, err = aw.svc.AuthorizeSecurityGroupIngress(&ec2.AuthorizeSecurityGroupIngressInput{
+		GroupName: aws.String(name),
+		IpPermissions: []*ec2.IpPermission{
+			(&ec2.IpPermission{}).
+				SetIpProtocol("tcp").
+				SetFromPort(22).
+				SetToPort(22).
+				SetIpRanges([]*ec2.IpRange{
+					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}),
+			(&ec2.IpPermission{}).
+				SetIpProtocol("tcp").
+				SetFromPort(8545).
+				SetToPort(8545).
+				SetIpRanges([]*ec2.IpRange{
+					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}),
+		},
+	})
+	if err != nil {
+		log.Println("Unable to set security group ingress:", name, err)
+	}
 }
