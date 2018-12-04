@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
@@ -41,7 +42,7 @@ func NewAWS() AWS {
 }
 
 // CreateNode created an EC2 instance and setups geth
-func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string)) {
+func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 
 	importResult, err := aw.svc.ImportKeyPair(&ec2.ImportKeyPairInput{
 		KeyName:           aws.String("blockform"),
@@ -51,7 +52,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 	customData := cloudinit.CustomData(node)
 
-	runResult, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
+	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:      aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
 		InstanceType: aws.String("t2.micro"),
 		MinCount:     aws.Int64(1),
@@ -62,13 +63,14 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 	if err != nil {
 		fmt.Println("Could not create instance", err)
-		return
 	}
 
-	fmt.Println("Created instance", *runResult.Instances[0].InstanceId)
+	VMID := *run.Instances[0].InstanceId
+
+	fmt.Println("Created instance", VMID)
 
 	_, errtag := aw.svc.CreateTags(&ec2.CreateTagsInput{
-		Resources: []*string{runResult.Instances[0].InstanceId},
+		Resources: []*string{aws.String(VMID)},
 		Tags: []*ec2.Tag{
 			{
 				Key:   aws.String("Name"),
@@ -77,19 +79,38 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		},
 	})
 	if errtag != nil {
-		log.Println("Could not create tags for instance", runResult.Instances[0].InstanceId, errtag)
-		return
+		log.Println("Could not create tags for instance", VMID, errtag)
 	}
 
-	callback(*runResult.Instances[0].InstanceId)
+	for {
+		time.Sleep(30 * time.Second)
+
+		status, _ := aw.svc.DescribeInstanceStatus(&ec2.DescribeInstanceStatusInput{
+			InstanceIds: []*string{aws.String(VMID)},
+		})
+
+		fmt.Println(status)
+
+		if len(status.InstanceStatuses) > 0 {
+			if *status.InstanceStatuses[0].SystemStatus.Status == "ok" {
+				break
+			}
+		}
+	}
+
+	instances, _ := aw.svc.DescribeInstances(&ec2.DescribeInstancesInput{
+		InstanceIds: []*string{aws.String(VMID)},
+	})
+
+	publicDNSName := *instances.Reservations[0].Instances[0].PublicDnsName
+
+	callback(VMID, publicDNSName)
 }
 
 // DeleteNode will delete the AWS node
 func (aw AWS) DeleteNode(ctx context.Context, VMID string, callback func()) {
 	input := &ec2.TerminateInstancesInput{
-		InstanceIds: []*string{
-			aws.String(VMID),
-		},
+		InstanceIds: []*string{aws.String(VMID)},
 	}
 
 	result, err := aw.svc.TerminateInstances(input)

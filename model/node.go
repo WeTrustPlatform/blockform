@@ -23,6 +23,7 @@ type Node struct {
 	Name          string `gorm:"not null;unique"`
 	VMID          string
 	CloudProvider string
+	DomainName    string
 	NetworkType   string `gorm:"not null"`
 	NetworkID     uint64
 	APIKey        string

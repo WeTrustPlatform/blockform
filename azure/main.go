@@ -45,7 +45,7 @@ func NewAzure() Azure {
 
 // CreateNode will create an azure VM and install a geth node using cloud-init
 // and execute the callback when done.
-func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(string)) {
+func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 	group, err := az.createGroup(ctx, node.Name)
 	if err != nil {
 		log.Printf("cannot create group: %v\n", err)
@@ -86,7 +86,8 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Println(err)
 	}
 
-	callback(*group.Name)
+	domainName := node.Name + ".westus2.cloudapp.azure.com"
+	callback(*group.Name, domainName)
 }
 
 // DeleteNode deletes the resource group with all the resources in it and
