@@ -44,7 +44,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	sgName := node.Name // name the security group after the node name
 	aw.createSecurityGroup(sgName)
 
-	customData := cloudinit.CustomData(node, "/dev/xvdc", "TODO")
+	customData := cloudinit.CustomData(node, "/dev/xvdc", "")
 
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:        aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04

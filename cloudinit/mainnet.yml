@@ -62,7 +62,9 @@ runcmd:
   - chown -R blockform:blockform /datadrive
   - systemctl enable geth
   - systemctl start geth
-  - certbot certonly --nginx -d @@DOMAIN@@ --agree-tos --non-interactive --email jean@wetrust.io
-  - sed -i -e 's|listen 8545;|server_name @@DOMAIN@@;listen [::]:8545 ssl ipv6only=on;listen 8545 ssl;ssl_certificate /etc/letsencrypt/live/@@DOMAIN@@/fullchain.pem;ssl_certificate_key /etc/letsencrypt/live/@@DOMAIN@@/privkey.pem;include /etc/letsencrypt/options-ssl-nginx.conf;ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|g' /etc/nginx/sites-available/default
+  - bash -c 'if [ "@@DOMAIN@@" == "" ]; then echo $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) > /etc/domain; else echo "@@DOMAIN@@" > /etc/domain; fi;'
+  - export DOMAIN=$(cat /etc/domain)
+  - certbot certonly --nginx -d $DOMAIN --agree-tos --non-interactive --email jean@wetrust.io
+  - sed -i -e "s|listen 8545;|server_name ${DOMAIN};listen [::]:8545 ssl ipv6only=on;listen 8545 ssl;ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;include /etc/letsencrypt/options-ssl-nginx.conf;ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|g" /etc/nginx/sites-available/default
   - systemctl restart nginx
   - chown -R blockform:blockform /datadrive
