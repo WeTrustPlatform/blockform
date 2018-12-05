@@ -14,7 +14,9 @@ way.
  - Basic faucet web service for your private network
  - Node data saved to an SSD
  - Basic heathchecks
+ - Basic authentication for the UI
  - Works with MetaMask, geth attach, and web3.js
+ - Easy to deploy on Heroku
 
 ### Usage
 
