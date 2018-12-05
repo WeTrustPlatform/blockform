@@ -5,6 +5,10 @@ It takes care of creating a virtual machine in one of the supported cloud
 providers (currently Azure and AWS) and will install geth in the best possible
 way.
 
+Blockform is a free software. It is tailored for teams or individual whose
+work depends on a fleet of ethereum nodes. You have to install your own
+instance. So the installation process has been made as simple as possible.
+
 ### Features
 
  - Deploy nodes for public networks
