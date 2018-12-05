@@ -1,5 +1,10 @@
 #cloud-config
+apt_sources:
+  - source: "ppa:certbot/certbot"
 package_upgrade: true
+packages:
+  - nginx
+  - python-certbot-nginx
 users:
   - default
   - name: blockform
@@ -46,8 +51,9 @@ write_files:
             proxy_pass http://127.0.0.1:8445;
           }
         }
-packages:
-  - nginx
+  - owner: root:root
+    path: /etc/cron.d/letsencrypt_renew
+    content: "15 3 * * * /usr/bin/certbot renew --quiet"
 runcmd:
   - chown -R blockform:blockform /datadrive
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
@@ -56,5 +62,7 @@ runcmd:
   - chown -R blockform:blockform /datadrive
   - systemctl enable geth
   - systemctl start geth
+  - certbot certonly --nginx -d @@DOMAIN@@ --agree-tos --non-interactive --email jean@wetrust.io
+  - sed -i -e 's|listen 8545;|server_name @@DOMAIN@@;listen [::]:8545 ssl ipv6only=on;listen 8545 ssl;ssl_certificate /etc/letsencrypt/live/@@DOMAIN@@/fullchain.pem;ssl_certificate_key /etc/letsencrypt/live/@@DOMAIN@@/privkey.pem;include /etc/letsencrypt/options-ssl-nginx.conf;ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|g' /etc/nginx/sites-available/default
   - systemctl restart nginx
   - chown -R blockform:blockform /datadrive

@@ -56,7 +56,8 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Println(err)
 	}
 
-	customData := cloudinit.CustomData(node, "/dev/sdc")
+	domain := node.Name + ".westus2.cloudapp.azure.com"
+	customData := cloudinit.CustomData(node, "/dev/sdc", domain)
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "blockform"},
@@ -86,8 +87,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Println(err)
 	}
 
-	domainName := node.Name + ".westus2.cloudapp.azure.com"
-	callback(*group.Name, domainName)
+	callback(*group.Name, domain)
 }
 
 // DeleteNode deletes the resource group with all the resources in it and

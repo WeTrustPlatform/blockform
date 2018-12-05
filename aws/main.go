@@ -44,7 +44,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	sgName := node.Name // name the security group after the node name
 	aw.createSecurityGroup(sgName)
 
-	customData := cloudinit.CustomData(node, "/dev/xvdc")
+	customData := cloudinit.CustomData(node, "/dev/xvdc", "TODO")
 
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:        aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
@@ -160,6 +160,20 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetIpProtocol("tcp").
 				SetFromPort(8545).
 				SetToPort(8545).
+				SetIpRanges([]*ec2.IpRange{
+					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}),
+			(&ec2.IpPermission{}).
+				SetIpProtocol("tcp").
+				SetFromPort(8080).
+				SetToPort(8080).
+				SetIpRanges([]*ec2.IpRange{
+					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}),
+			(&ec2.IpPermission{}).
+				SetIpProtocol("tcp").
+				SetFromPort(80).
+				SetToPort(80).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
 				}),

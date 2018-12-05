@@ -12,7 +12,7 @@ import (
 
 // CustomData returns the base64 encoded cloud-init script to initialize a VM.
 // The dev argument is the unix device to be used for geth data.
-func CustomData(node model.Node, dev string) string {
+func CustomData(node model.Node, dev, domain string) string {
 	var data []byte
 	switch node.NetworkID {
 	case 1:
@@ -32,6 +32,7 @@ func CustomData(node model.Node, dev string) string {
 	str = strings.Replace(str, "@@PUB_KEY@@", os.Getenv("PUB_KEY"), -1)
 	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
 	str = strings.Replace(str, "@@DEVICE@@", dev, -1)
+	str = strings.Replace(str, "@@DOMAIN@@", domain, -1)
 
 	return base64.StdEncoding.EncodeToString([]byte(str))
 }
