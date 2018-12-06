@@ -7,7 +7,7 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>Nodes</h2>
-        {{ if . }}
+        {{ if .Nodes }}
         <table class="table" id="nodes">
             <tr>
                 <th>Name</th>
@@ -17,7 +17,7 @@
                 <th>Provider</th>
                 <th>Endpoint</th>
             </tr>
-            {{range .}}
+            {{range .Nodes}}
             <tr>
                 <td class="align-middle">
                     <a href="/node?id={{.ID}}"><i class="fas fa-th-large"></i> <b>{{.Name}}</b></a>
@@ -40,7 +40,7 @@
                 <td>
                     {{if .DomainName}}
                         <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                        <input class="form-control" type="text" value="{{$.SiteURL}}/rpc/{{.ID}}/{{.APIKey}}" readonly>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                         </div>

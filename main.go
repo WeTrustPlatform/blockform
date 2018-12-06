@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
@@ -69,7 +70,13 @@ func main() {
 	http.Handle("/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
-		tmpl.ExecuteTemplate(w, "index.html", nodes)
+		tmpl.ExecuteTemplate(w, "index.html", struct {
+			Nodes   []model.Node
+			SiteURL string
+		}{
+			Nodes:   nodes,
+			SiteURL: os.Getenv("SITE_URL"),
+		})
 	})))
 
 	http.Handle("/create", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -143,12 +150,19 @@ func main() {
 		id := r.URL.Query().Get("id")
 		node := model.Node{}
 		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node.html", node)
+		tmpl.ExecuteTemplate(w, "node.html", struct {
+			Node    model.Node
+			SiteURL string
+		}{
+			Node:    node,
+			SiteURL: os.Getenv("SITE_URL"),
+		})
 	})))
 
-	http.Handle("/rpc", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.URL.Query().Get("id")
-		key := r.URL.Query().Get("key")
+	http.Handle("/rpc/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		items := strings.Split(r.URL.Path, "/")
+		id := items[2]
+		key := items[3]
 		node := model.Node{}
 		db.Find(&node, id)
 		path, err := url.Parse("http://" + node.DomainName + ":8545/" + key)

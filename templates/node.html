@@ -4,6 +4,7 @@
     {{template "head" .}}
 </head>
 <body>
+    {{ with .Node }}
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <div class="smaller">
@@ -43,7 +44,7 @@
             <p>
                 <b>Web3 RPC endpoint:</b>
                 <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                    <input class="form-control" type="text" value="{{$.SiteURL}}/rpc/{{.ID}}/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -52,7 +53,7 @@
             <p>
                 <b>Geth attach:</b>
                 <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                    <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                    <input class="form-control" type="text" value="geth attach {{$.SiteURL}}/rpc/{{.ID}}/{{.APIKey}}" readonly>
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                     </div>
@@ -89,7 +90,7 @@
             </p>
             <script>
                 $( document ).ready(function() {
-                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    var web3 = new Web3("{{$.SiteURL}}/rpc/{{.ID}}/{{.APIKey}}");
                     web3.eth.isSyncing().then((data) => {
                         $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
                     });
@@ -101,5 +102,6 @@
             {{end}}
         </div>
     </div>
+    {{end}}
 </body>
 </html>
