@@ -252,6 +252,11 @@
 			"Rev": "b11a67434194733b34c11f206938263fa16ad1cf"
 		},
 		{
+			"ImportPath": "github.com/cssivision/reverseproxy",
+			"Comment": "v0.0.1-9-gb27a2af",
+			"Rev": "b27a2af48c77f8b28ea55a3be5ebc4d19704fce4"
+		},
+		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
 			"Comment": "v3.2.0-4-g3af4c74",
 			"Rev": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8"

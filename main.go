@@ -5,12 +5,14 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
+	"github.com/cssivision/reverseproxy"
 
 	"github.com/alecthomas/template"
 	"github.com/jinzhu/gorm"
@@ -143,6 +145,19 @@ func main() {
 		db.Find(&node, id)
 		tmpl.ExecuteTemplate(w, "node.html", node)
 	})))
+
+	http.Handle("/rpc", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+		key := r.URL.Query().Get("key")
+		node := model.Node{}
+		db.Find(&node, id)
+		path, err := url.Parse("http://" + node.DomainName + ":8545/" + key)
+		if err != nil {
+			log.Panicln(err)
+		}
+		proxy := reverseproxy.NewReverseProxy(path)
+		proxy.ServeHTTP(w, r)
+	}))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
 }
