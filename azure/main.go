@@ -51,7 +51,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Printf("cannot create group: %v\n", err)
 	}
 
-	template, err := readJSON("vm-templates/small.json")
+	template, err := readJSON("azure/small.json")
 	if err != nil {
 		log.Println(err)
 	}
