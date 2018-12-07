@@ -13,6 +13,7 @@
                 {{template "node_sidemenu" $ }}
             </div>
             <div class="col">
+                <p><b>Domain:</b> <code>{{.DomainName}}</code></p>
                 <p><b>API Key:</b> <code>{{.APIKey}}</code></p>
                 {{ if eq .Status "deployed"}}
                 <p>
