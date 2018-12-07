@@ -45,3 +45,9 @@ tr:hover td {
   background-color: #dee2e6;
   text-align: center;
 }
+
+footer {
+  padding: 20px 0 40px 0;
+  border-top: 1px solid #dee2e6;
+  text-align: center;
+}

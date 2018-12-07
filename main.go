@@ -56,6 +56,7 @@ func main() {
 		"templates/index.html",
 		"templates/create.html",
 		"templates/node.html",
+		"templates/footer.html",
 	))
 
 	azureProvider = azure.NewAzure()
