@@ -56,7 +56,7 @@ func main() {
 		"templates/head.html",
 		"templates/index.html",
 		"templates/create.html",
-		"templates/node.html",
+		"templates/node_general.html",
 		"templates/node_health.html",
 		"templates/node_endpoints.html",
 		"templates/node_actions.html",
@@ -147,18 +147,13 @@ func main() {
 	http.Handle("/node/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		items := strings.Split(r.URL.Path, "/")
 		id := items[2]
-		tab := ""
+		tab := "general"
 		if len(items) == 4 {
 			tab = items[3]
 		}
 		node := model.Node{}
 		db.Find(&node, id)
-		switch tab {
-		case "":
-			tmpl.ExecuteTemplate(w, "node.html", node)
-		default:
-			tmpl.ExecuteTemplate(w, "node_"+tab+".html", node)
-		}
+		tmpl.ExecuteTemplate(w, "node_"+tab+".html", node)
 	})))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
