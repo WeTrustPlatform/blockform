@@ -9,6 +9,8 @@ Blockform is a free software. It is tailored for teams or individuals whose
 work depends on a fleet of Ethereum nodes. You have to install your own
 instance. So the installation process has been made as simple as possible.
 
+![Screenshot](https://github.com/WeTrustPlatform/blockform/raw/master/static/screenshot.png)
+
 ### Features
 
  - Deploy nodes for public networks
