@@ -62,6 +62,7 @@ func main() {
 		"templates/node_actions.html",
 		"templates/node_activity.html",
 		"templates/node_explorer.html",
+		"templates/node_sidemenu.html",
 		"templates/footer.html",
 	))
 
@@ -153,7 +154,13 @@ func main() {
 		}
 		node := model.Node{}
 		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node_"+tab+".html", node)
+		tmpl.ExecuteTemplate(w, "node_"+tab+".html", struct {
+			Tab  string
+			Node model.Node
+		}{
+			tab,
+			node,
+		})
 	})))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
