@@ -14,12 +14,9 @@ h2 {
   margin: 40px 0;
 }
 
-.btn-lg {
-  margin: 40px 0;
-}
-
 .table {
   border: solid 1px #dee2e6;
+  margin-bottom: 40px;
 }
 
 th {
@@ -48,6 +45,7 @@ tr:hover td {
 
 footer {
   padding: 20px 0 40px 0;
+  margin-top: 40px;
   border-top: 1px solid #dee2e6;
   text-align: center;
 }

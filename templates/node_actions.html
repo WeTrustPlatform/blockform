@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="row">
+            <div class="col col-lg-3">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="/node/{{.ID}}">General</a>
+                    <a class="nav-link" href="/node/{{.ID}}/health">Health</a>
+                    <a class="nav-link" href="/node/{{.ID}}/endpoints">Endpoints</a>
+                    <a class="nav-link" href="/node/{{.ID}}/explorer">Explorer</a>
+                    <a class="nav-link active" href="/node/{{.ID}}/actions">Actions</a>
+                    <a class="nav-link" href="/node/{{.ID}}/activity">Activity</a>
+                </div>
+            </div>
+            <div class="col">
+                {{ if eq .Status "deployed"}}
+                <p>
+                    <b>Danger zone:</b>
+                    <div><button class="btn btn-lg btn-danger" data-toggle="modal" data-target="#delete-{{.ID}}"><i class="far fa-trash-alt"></i> Delete this node</button></div>
+                    <div class="modal" id="delete-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Deleting {{.Name}}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">The Virtual Machine will be deleted and all information will be lost.</p><p>Are you sure you want to delete this node?</p></div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <a href="/delete?id={{.ID}}" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p>
+                {{end}}
+            </div>
+        </div>
+        {{template "footer"}}
+    </div>
+</body>
+</html>

@@ -20,7 +20,7 @@
             {{range .}}
             <tr>
                 <td class="align-middle">
-                    <a href="/node?id={{.ID}}"><i class="fas fa-th-large"></i> <b>{{.Name}}</b></a>
+                    <a href="/node/{{.ID}}"><i class="fas fa-server"></i> <b>{{.Name}}</b></a>
                 </td>
                 <td class="align-middle">
                     {{if eq .NetworkType "public" }}

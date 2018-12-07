@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="row">
+            <div class="col col-lg-3">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="/node/{{.ID}}">General</a>
+                    <a class="nav-link" href="/node/{{.ID}}/health">Health</a>
+                    <a class="nav-link" href="/node/{{.ID}}/endpoints">Endpoints</a>
+                    <a class="nav-link active" href="/node/{{.ID}}/explorer">Explorer</a>
+                    <a class="nav-link" href="/node/{{.ID}}/actions">Actions</a>
+                    <a class="nav-link" href="/node/{{.ID}}/activity">Activity</a>
+                </div>
+            </div>
+            <div class="col">
+                <p><b>Latest blocks</b></p>
+                <table class="table table-sm" id="blocks">
+                </table>
+            </div>
+        </div>
+        <script>
+            $( document ).ready(function() {
+                var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                web3.eth.getBlockNumber().then(async (bn) =>{
+                    if (bn > 10) {
+                        for (var i=0; i < 10; i++) {
+                            var bl = await web3.eth.getBlock(bn - i);
+                            $('#blocks').append(
+                                `<tr>
+                                    <td>#${bl.number}</td>
+                                    <td><code>${bl.hash}</code></td>
+                                    <td>${bl.transactions.length}</td>
+                                </tr>`
+                            );
+                        }
+                    }
+                });
+            });
+        </script>
+        {{template "footer"}}
+    </div>
+</body>
+</html>

@@ -10,47 +10,17 @@
         <div class="row">
             <div class="col col-lg-3">
                 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" href="/node/{{.ID}}">General</a>
+                    <a class="nav-link" href="/node/{{.ID}}">General</a>
                     <a class="nav-link" href="/node/{{.ID}}/health">Health</a>
-                    <a class="nav-link" href="/node/{{.ID}}/endpoints">Endpoints</a>
+                    <a class="nav-link active" href="/node/{{.ID}}/endpoints">Endpoints</a>
                     <a class="nav-link" href="/node/{{.ID}}/explorer">Explorer</a>
                     <a class="nav-link" href="/node/{{.ID}}/actions">Actions</a>
                     <a class="nav-link" href="/node/{{.ID}}/activity">Activity</a>
                 </div>
             </div>
             <div class="col">
-                <p>
-                    <b>Network:</b>
-                    {{if eq .NetworkType "public" }}
-                    {{if eq .NetworkID 1}}Mainnet <span class="netid">({{.NetworkID}})</span>{{end}}
-                    {{if eq .NetworkID 3}}Rospten <span class="netid">({{.NetworkID}})</span>{{end}}
-                    {{if eq .NetworkID 4}}Rinkeby <span class="netid">({{.NetworkID}})</span>{{end}}
-                    {{else}}
-                    Private <span class="netid">({{.NetworkID}})</span>
-                    {{end}}
-                </p>
-                <p>
-                    <b>Created at:</b>
-                    {{.CreatedAt.Format "Mon Jan 2 15:04"}}
-                </p>
-                <p>
-                    <b>Cloud Provider:</b>
-                    {{if eq .CloudProvider "aws" }}AWS{{end}}
-                    {{if eq .CloudProvider "azure" }}Azure{{end}}
-                </p>
-                <p>
-                    <b>VM Status:</b>
-                    <span class="text-capitalize">{{.Status}}</span>
-                </p>
+                <p><b>API Key:</b> <code>{{.APIKey}}</code></p>
                 {{ if eq .Status "deployed"}}
-                <p>
-                    <b>Geth Syncing:</b>
-                    <span id="syncing"></span>
-                </p>
-                <p>
-                    <b>Block Number:</b>
-                    <span id="blocknumber"></span>
-                </p>
                 <p>
                     <b>Web3 RPC endpoint:</b>
                     <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
@@ -78,17 +48,6 @@
                         </div>
                     </div>
                 </p>
-                <script>
-                    $( document ).ready(function() {
-                        var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                        web3.eth.isSyncing().then((data) => {
-                            $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
-                        });
-                        web3.eth.getBlockNumber().then((data) => {
-                            $('#blocknumber').html(data ? data : 'N/A');
-                        });
-                    });
-                </script>
                 {{end}}
             </div>
         </div>

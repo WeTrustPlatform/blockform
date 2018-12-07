@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
@@ -56,6 +57,11 @@ func main() {
 		"templates/index.html",
 		"templates/create.html",
 		"templates/node.html",
+		"templates/node_health.html",
+		"templates/node_endpoints.html",
+		"templates/node_actions.html",
+		"templates/node_activity.html",
+		"templates/node_explorer.html",
 		"templates/footer.html",
 	))
 
@@ -138,11 +144,21 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})))
 
-	http.Handle("/node", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.URL.Query().Get("id")
+	http.Handle("/node/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		items := strings.Split(r.URL.Path, "/")
+		id := items[2]
+		tab := ""
+		if len(items) == 4 {
+			tab = items[3]
+		}
 		node := model.Node{}
 		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node.html", node)
+		switch tab {
+		case "":
+			tmpl.ExecuteTemplate(w, "node.html", node)
+		default:
+			tmpl.ExecuteTemplate(w, "node_"+tab+".html", node)
+		}
 	})))
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))

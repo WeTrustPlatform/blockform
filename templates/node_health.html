@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="row">
+            <div class="col col-lg-3">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="/node/{{.ID}}">General</a>
+                    <a class="nav-link active" href="/node/{{.ID}}/health">Health</a>
+                    <a class="nav-link" href="/node/{{.ID}}/endpoints">Endpoints</a>
+                    <a class="nav-link" href="/node/{{.ID}}/explorer">Explorer</a>
+                    <a class="nav-link" href="/node/{{.ID}}/actions">Actions</a>
+                    <a class="nav-link" href="/node/{{.ID}}/activity">Activity</a>
+                </div>
+            </div>
+            <div class="col">
+                <p>
+                    <b>VM Status:</b>
+                    <span class="text-capitalize">{{.Status}}</span>
+                </p>
+                {{ if eq .Status "deployed"}}
+                <p>
+                    <b>Geth Syncing:</b>
+                    <span id="syncing"></span>
+                </p>
+                <p>
+                    <b>Block Number:</b>
+                    <span id="blocknumber"></span>
+                </p>
+                <p>
+                    <b>Net Peers:</b>
+                    <span id="netpeers"></span>
+                </p>
+                
+                <script>
+                    $( document ).ready(function() {
+                        var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                        web3.eth.isSyncing().then((data) => {
+                            $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
+                        });
+                        web3.eth.getBlockNumber().then((data) => {
+                            $('#blocknumber').html(data ? data : 'N/A');
+                        });
+                        web3.eth.net.getPeerCount().then((data) => {
+                            $('#netpeers').html(data);
+                        });
+                    });
+                </script>
+                {{end}}
+            </div>
+        </div>
+        {{template "footer"}}
+    </div>
+</body>
+</html>
