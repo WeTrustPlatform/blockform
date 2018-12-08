@@ -84,11 +84,10 @@ func main() {
 	}))
 
 	mux.Handle(pat.Get("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			tmpl.ExecuteTemplate(w, "create.html", nil)
-			return
-		}
+		tmpl.ExecuteTemplate(w, "create.html", nil)
+	}))
 
+	mux.Handle(pat.Post("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(500)
 		}
