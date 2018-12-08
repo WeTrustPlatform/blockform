@@ -75,7 +75,7 @@ func main() {
 	mux.Use(basicAuth)
 
 	fs := http.FileServer(http.Dir("static"))
-	mux.Handle(pat.Get("/static/"), http.StripPrefix("/static/", fs))
+	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static/", fs))
 
 	mux.Handle(pat.Get("/"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
