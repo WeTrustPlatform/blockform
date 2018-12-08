@@ -158,9 +158,6 @@ func main() {
 	mux.Handle(pat.Get("/node/:id/:tab"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := pat.Param(r, "id")
 		tab := pat.Param(r, "tab")
-		if tab == "" {
-			tab = "general"
-		}
 		node := model.Node{}
 		db.Find(&node, id)
 		tmpl.ExecuteTemplate(w, "node_"+tab+".html", struct {
