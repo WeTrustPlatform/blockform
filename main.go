@@ -7,16 +7,17 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
+	"goji.io/pat"
 
 	"github.com/alecthomas/template"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/sethvargo/go-password/password"
+	"goji.io"
 )
 
 // CloudProvider abstracts the behaviour of a cloud provider like AWS, Azure or
@@ -69,21 +70,24 @@ func main() {
 	azureProvider = azure.NewAzure()
 	awsProvider = aws.NewAWS()
 
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	mux := goji.NewMux()
 
-	http.Handle("/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Use(basicAuth)
+
+	fs := http.FileServer(http.Dir("static"))
+	mux.Handle(pat.Get("/static/"), http.StripPrefix("/static/", fs))
+
+	mux.Handle(pat.Get("/"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
 		tmpl.ExecuteTemplate(w, "index.html", nodes)
-	})))
+	}))
 
-	http.Handle("/create", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			tmpl.ExecuteTemplate(w, "create.html", nil)
-			return
-		}
+	mux.Handle(pat.Get("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tmpl.ExecuteTemplate(w, "create.html", nil)
+	}))
 
+	mux.Handle(pat.Post("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(500)
 		}
@@ -122,10 +126,10 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	})))
+	}))
 
-	http.Handle("/delete", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ID := r.URL.Query().Get("id")
+	mux.Handle(pat.Get("/delete/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ID := pat.Param(r, "id")
 		if ID == "" {
 			w.WriteHeader(404)
 		}
@@ -143,15 +147,16 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	})))
+	}))
 
-	http.Handle("/node/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		items := strings.Split(r.URL.Path, "/")
-		id := items[2]
-		tab := "general"
-		if len(items) == 4 {
-			tab = items[3]
-		}
+	mux.Handle(pat.Get("/node/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := pat.Param(r, "id")
+		http.Redirect(w, r, "/node/"+id+"/general", http.StatusSeeOther)
+	}))
+
+	mux.Handle(pat.Get("/node/:id/:tab"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := pat.Param(r, "id")
+		tab := pat.Param(r, "tab")
 		node := model.Node{}
 		db.Find(&node, id)
 		tmpl.ExecuteTemplate(w, "node_"+tab+".html", struct {
@@ -161,7 +166,7 @@ func main() {
 			tab,
 			node,
 		})
-	})))
+	}))
 
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), mux))
 }

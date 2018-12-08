@@ -263,33 +263,33 @@
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/proto",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/ptypes",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/ptypes/any",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/ptypes/duration",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/ptypes/timestamp",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/golang/protobuf/ptypes/wrappers",
-			"Comment": "v1.2.0-37-g882cf97",
-			"Rev": "882cf97a83ad205fd22af574246a3bc647d7a7d2"
+			"Comment": "v1.2.0-39-g1d3f30b",
+			"Rev": "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 		},
 		{
 			"ImportPath": "github.com/jinzhu/gorm",
@@ -409,6 +409,26 @@
 			"ImportPath": "go.opencensus.io/trace/tracestate",
 			"Comment": "v0.18.0-7-gfa1e35e",
 			"Rev": "fa1e35e3ffe868399138d03aaf2e949d52884f1b"
+		},
+		{
+			"ImportPath": "goji.io",
+			"Comment": "v2.0.1",
+			"Rev": "9a575ab427c3664b5d8db472a689b3303a0d73c9"
+		},
+		{
+			"ImportPath": "goji.io/internal",
+			"Comment": "v2.0.1",
+			"Rev": "9a575ab427c3664b5d8db472a689b3303a0d73c9"
+		},
+		{
+			"ImportPath": "goji.io/pat",
+			"Comment": "v2.0.1",
+			"Rev": "9a575ab427c3664b5d8db472a689b3303a0d73c9"
+		},
+		{
+			"ImportPath": "goji.io/pattern",
+			"Comment": "v2.0.1",
+			"Rev": "9a575ab427c3664b5d8db472a689b3303a0d73c9"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/pkcs12",
