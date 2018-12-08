@@ -7,16 +7,15 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
+	"github.com/gin-gonic/gin"
+	"github.com/sethvargo/go-password/password"
 
-	"github.com/alecthomas/template"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/sethvargo/go-password/password"
 )
 
 // CloudProvider abstracts the behaviour of a cloud provider like AWS, Azure or
@@ -52,51 +51,65 @@ func main() {
 	//db.DropTableIfExists(&model.Node{})
 	db.AutoMigrate(&model.Node{})
 
-	tmpl := template.Must(template.ParseFiles(
-		"templates/head.html",
-		"templates/index.html",
-		"templates/create.html",
-		"templates/node_general.html",
-		"templates/node_health.html",
-		"templates/node_endpoints.html",
-		"templates/node_actions.html",
-		"templates/node_activity.html",
-		"templates/node_explorer.html",
-		"templates/node_sidemenu.html",
-		"templates/footer.html",
-	))
-
 	azureProvider = azure.NewAzure()
 	awsProvider = aws.NewAWS()
 
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	r := gin.Default()
 
-	http.Handle("/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	r.LoadHTMLGlob("templates/*")
+
+	r.Static("/static", "./static")
+
+	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
+		os.Getenv("BASIC_AUTH_USER"): os.Getenv("BASIC_AUTH_PASS"),
+	}))
+
+	authorized.GET("/", func(c *gin.Context) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
-		tmpl.ExecuteTemplate(w, "index.html", nodes)
-	})))
+		c.HTML(http.StatusOK, "index.html", nodes)
+	})
 
-	http.Handle("/create", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			tmpl.ExecuteTemplate(w, "create.html", nil)
-			return
+	authorized.GET("/node/:id", func(c *gin.Context) {
+		c.Request.URL.Path = "/node/" + c.Param("id") + "/general"
+		r.HandleContext(c)
+	})
+
+	authorized.GET("/node/:id/:tab", func(c *gin.Context) {
+		id := c.Param("id")
+		tab := c.Param("tab")
+		if tab == "" {
+			tab = "general"
+		}
+		node := model.Node{}
+		db.Find(&node, id)
+		c.HTML(http.StatusOK, "node_"+tab+".html", struct {
+			Tab  string
+			Node model.Node
+		}{
+			tab,
+			node,
+		})
+	})
+
+	authorized.GET("/create", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "create.html", nil)
+	})
+
+	authorized.POST("/create", func(c *gin.Context) {
+		if err := c.Request.ParseForm(); err != nil {
+			c.Status(500)
 		}
 
-		if err := r.ParseForm(); err != nil {
-			w.WriteHeader(500)
-		}
-
-		name := r.FormValue("name")
+		name := c.Request.FormValue("name")
 		if name == "" {
 			name = "bf-" + password.MustGenerate(8, 4, 0, true, false)
 		}
-		provider := r.FormValue("provider")
+		provider := c.Request.FormValue("provider")
 		if provider == "" {
 			provider = "aws"
 		}
-		networkID, _ := strconv.ParseInt(r.FormValue("network_id"), 10, 64)
+		networkID, _ := strconv.ParseInt(c.Request.FormValue("network_id"), 10, 64)
 		if networkID == 0 {
 			networkID = int64(rand.Intn(1000))
 		}
@@ -105,7 +118,7 @@ func main() {
 		node := model.Node{
 			Name:          name,
 			CloudProvider: provider,
-			NetworkType:   r.FormValue("network_type"),
+			NetworkType:   c.Request.FormValue("network_type"),
 			NetworkID:     uint64(networkID),
 			APIKey:        APIKey,
 			Status:        model.Creating,
@@ -121,14 +134,11 @@ func main() {
 			log.Println("Done creating node " + node.Name)
 		})
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	})))
+		c.Redirect(http.StatusSeeOther, "/")
+	})
 
-	http.Handle("/delete", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ID := r.URL.Query().Get("id")
-		if ID == "" {
-			w.WriteHeader(404)
-		}
+	authorized.GET("/delete/:id", func(c *gin.Context) {
+		ID := c.Param("id")
 
 		node := model.Node{}
 		db.Find(&node, ID)
@@ -142,26 +152,8 @@ func main() {
 			log.Println("Done deleting node " + node.Name)
 		})
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	})))
+		c.Redirect(http.StatusSeeOther, "/")
+	})
 
-	http.Handle("/node/", basicAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		items := strings.Split(r.URL.Path, "/")
-		id := items[2]
-		tab := "general"
-		if len(items) == 4 {
-			tab = items[3]
-		}
-		node := model.Node{}
-		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node_"+tab+".html", struct {
-			Tab  string
-			Node model.Node
-		}{
-			tab,
-			node,
-		})
-	})))
-
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+	r.Run(":" + os.Getenv("PORT"))
 }
