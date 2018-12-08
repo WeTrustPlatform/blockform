@@ -43,6 +43,10 @@ tr:hover td {
   text-align: center;
 }
 
+#empty .btn {
+  margin-top: 40px;
+}
+
 footer {
   padding: 20px 0 40px 0;
   margin-top: 40px;
