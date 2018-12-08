@@ -43,25 +43,18 @@ func init() {
 var _ trace.Exporter = (*Exporter)(nil)
 
 type Exporter struct {
-	connectionState int32
-
 	// mu protects the non-atomic and non-channel variables
-	mu                 sync.RWMutex
-	started            bool
-	stopped            bool
-	agentAddress       string
-	serviceName        string
-	canDialInsecure    bool
-	traceExporter      agenttracepb.TraceService_ExportClient
-	nodeInfo           *agentcommonpb.Node
-	grpcClientConn     *grpc.ClientConn
-	reconnectionPeriod time.Duration
-
-	startOnce      sync.Once
-	stopCh         chan bool
-	disconnectedCh chan bool
-
-	backgroundConnectionDoneCh chan bool
+	mu              sync.RWMutex
+	started         bool
+	stopped         bool
+	agentPort       uint16
+	agentAddress    string
+	serviceName     string
+	canDialInsecure bool
+	traceSvcClient  agenttracepb.TraceServiceClient
+	traceExporter   agenttracepb.TraceService_ExportClient
+	nodeInfo        *agentcommonpb.Node
+	grpcClientConn  *grpc.ClientConn
 
 	traceBundler *bundler.Bundler
 }
@@ -84,6 +77,9 @@ func NewUnstartedExporter(opts ...ExporterOption) (*Exporter, error) {
 	for _, opt := range opts {
 		opt.withExporter(e)
 	}
+	if e.agentPort <= 0 {
+		e.agentPort = DefaultAgentPort
+	}
 	traceBundler := bundler.NewBundler((*trace.SpanData)(nil), func(bundle interface{}) {
 		e.uploadTraces(bundle.([]*trace.SpanData))
 	})
@@ -91,7 +87,6 @@ func NewUnstartedExporter(opts ...ExporterOption) (*Exporter, error) {
 	traceBundler.BundleCountThreshold = spanDataBufferSize
 	e.traceBundler = traceBundler
 	e.nodeInfo = createNodeInfo(e.serviceName)
-
 	return e, nil
 }
 
@@ -100,32 +95,26 @@ const (
 	maxInitialTracesRetries = 10
 )
 
-var (
-	errAlreadyStarted = errors.New("already started")
-	errStopped        = errors.New("stopped")
-)
-
 // Start dials to the agent, establishing a connection to it. It also
 // initiates the Config and Trace services by sending over the initial
-// messages that consist of the node identifier. Start invokes a background
-// connector that will reattempt connections to the agent periodically
-// if the connection dies.
+// messages that consist of the node identifier. Start performs a best case
+// attempt to try to send the initial messages, by applying exponential
+// backoff at most 10 times.
 func (ae *Exporter) Start() error {
-	var err = errAlreadyStarted
-	ae.startOnce.Do(func() {
-		ae.mu.Lock()
-		defer ae.mu.Unlock()
+	ae.mu.Lock()
+	defer ae.mu.Unlock()
 
+	err := ae.doStartLocked()
+	if err == nil {
 		ae.started = true
-		ae.disconnectedCh = make(chan bool, 1)
-		ae.stopCh = make(chan bool)
-		ae.backgroundConnectionDoneCh = make(chan bool)
+		return nil
+	}
 
-		ae.setStateDisconnected()
-		go ae.indefiniteBackgroundConnection()
-
-		err = nil
-	})
+	// Otherwise we have an error and should clean up to avoid leaking resources.
+	ae.started = false
+	if ae.grpcClientConn != nil {
+		ae.grpcClientConn.Close()
+	}
 
 	return err
 }
@@ -134,26 +123,24 @@ func (ae *Exporter) prepareAgentAddress() string {
 	if ae.agentAddress != "" {
 		return ae.agentAddress
 	}
-	return fmt.Sprintf("%s:%d", DefaultAgentHost, DefaultAgentPort)
+	port := DefaultAgentPort
+	if ae.agentPort > 0 {
+		port = ae.agentPort
+	}
+	return fmt.Sprintf("%s:%d", DefaultAgentHost, port)
 }
 
-func (ae *Exporter) enableConnectionStreams(cc *grpc.ClientConn) error {
-	ae.mu.RLock()
-	started := ae.started
-	nodeInfo := ae.nodeInfo
-	ae.mu.RUnlock()
-
-	if !started {
-		return errNotStarted
+func (ae *Exporter) doStartLocked() error {
+	if ae.started {
+		return nil
 	}
 
-	ae.mu.Lock()
-	// If the previous clientConn was non-nil, close it
-	if ae.grpcClientConn != nil {
-		_ = ae.grpcClientConn.Close()
+	// Now start it
+	cc, err := ae.dialToAgent()
+	if err != nil {
+		return err
 	}
 	ae.grpcClientConn = cc
-	ae.mu.Unlock()
 
 	// Initiate the trace service by sending over node identifier info.
 	traceSvcClient := agenttracepb.NewTraceServiceClient(cc)
@@ -162,8 +149,11 @@ func (ae *Exporter) enableConnectionStreams(cc *grpc.ClientConn) error {
 		return fmt.Errorf("Exporter.Start:: TraceServiceClient: %v", err)
 	}
 
-	firstTraceMessage := &agenttracepb.ExportTraceServiceRequest{Node: nodeInfo}
-	if err := traceExporter.Send(firstTraceMessage); err != nil {
+	firstTraceMessage := &agenttracepb.ExportTraceServiceRequest{Node: ae.nodeInfo}
+	err = nTriesWithExponentialBackoff(maxInitialTracesRetries, 200*time.Microsecond, func() error {
+		return traceExporter.Send(firstTraceMessage)
+	})
+	if err != nil {
 		return fmt.Errorf("Exporter.Start:: Failed to initiate the Config service: %v", err)
 	}
 	ae.traceExporter = traceExporter
@@ -173,8 +163,11 @@ func (ae *Exporter) enableConnectionStreams(cc *grpc.ClientConn) error {
 	if err != nil {
 		return fmt.Errorf("Exporter.Start:: ConfigStream: %v", err)
 	}
-	firstCfgMessage := &agenttracepb.CurrentLibraryConfig{Node: nodeInfo}
-	if err := configStream.Send(firstCfgMessage); err != nil {
+	firstCfgMessage := &agenttracepb.CurrentLibraryConfig{Node: ae.nodeInfo}
+	err = nTriesWithExponentialBackoff(maxInitialConfigRetries, 200*time.Microsecond, func() error {
+		return configStream.Send(firstCfgMessage)
+	})
+	if err != nil {
 		return fmt.Errorf("Exporter.Start:: Failed to initiate the Config service: %v", err)
 	}
 
@@ -185,18 +178,32 @@ func (ae *Exporter) enableConnectionStreams(cc *grpc.ClientConn) error {
 	return nil
 }
 
+// dialToAgent performs a best case attempt to dial to the agent.
+// It retries failed dials with:
+//  * gRPC dialTimeout of 1s
+//  * exponential backoff, 5 times with a period of 50ms
+// hence in the worst case of (no agent actually available), it
+// will take at least:
+//      (5 * 1s) + ((1<<5)-1) * 0.01 s = 5s + 1.55s = 6.55s
 func (ae *Exporter) dialToAgent() (*grpc.ClientConn, error) {
 	addr := ae.prepareAgentAddress()
-	var dialOpts []grpc.DialOption
+	dialOpts := []grpc.DialOption{grpc.WithBlock()}
 	if ae.canDialInsecure {
 		dialOpts = append(dialOpts, grpc.WithInsecure())
 	}
-	return grpc.Dial(addr, dialOpts...)
+
+	var cc *grpc.ClientConn
+	dialOpts = append(dialOpts, grpc.WithTimeout(1*time.Second))
+	dialBackoffWaitPeriod := 50 * time.Millisecond
+	err := nTriesWithExponentialBackoff(5, dialBackoffWaitPeriod, func() error {
+		var err error
+		cc, err = grpc.Dial(addr, dialOpts...)
+		return err
+	})
+	return cc, err
 }
 
 func (ae *Exporter) handleConfigStreaming(configStream agenttracepb.TraceService_ConfigClient) error {
-	// Note: We haven't yet implemented configuration sending so we
-	// should NOT be changing connection states within this function for now.
 	for {
 		recv, err := configStream.Recv()
 		if err != nil {
@@ -236,16 +243,13 @@ var (
 // Stop shuts down all the connections and resources
 // related to the exporter.
 func (ae *Exporter) Stop() error {
-	ae.mu.RLock()
-	cc := ae.grpcClientConn
-	started := ae.started
-	stopped := ae.stopped
-	ae.mu.RUnlock()
+	ae.mu.Lock()
+	defer ae.mu.Unlock()
 
-	if !started {
+	if !ae.started {
 		return errNotStarted
 	}
-	if stopped {
+	if ae.stopped {
 		// TODO: tell the user that we've already stopped, so perhaps a sentinel error?
 		return nil
 	}
@@ -254,19 +258,13 @@ func (ae *Exporter) Stop() error {
 
 	// Now close the underlying gRPC connection.
 	var err error
-	if cc != nil {
-		err = cc.Close()
+	if ae.grpcClientConn != nil {
+		err = ae.grpcClientConn.Close()
 	}
 
 	// At this point we can change the state variables: started and stopped
-	ae.mu.Lock()
 	ae.started = false
 	ae.stopped = true
-	ae.mu.Unlock()
-	close(ae.stopCh)
-
-	// Ensure that the backgroundConnector returns
-	<-ae.backgroundConnectionDoneCh
 
 	return err
 }
@@ -275,12 +273,12 @@ func (ae *Exporter) ExportSpan(sd *trace.SpanData) {
 	if sd == nil {
 		return
 	}
-	_ = ae.traceBundler.Add(sd, 1)
+	_ = ae.traceBundler.Add(sd, -1)
 }
 
-func ocSpanDataToPbSpans(sdl []*trace.SpanData) []*tracepb.Span {
+func (ae *Exporter) uploadTraces(sdl []*trace.SpanData) {
 	if len(sdl) == 0 {
-		return nil
+		return
 	}
 	protoSpans := make([]*tracepb.Span, 0, len(sdl))
 	for _, sd := range sdl {
@@ -288,29 +286,11 @@ func ocSpanDataToPbSpans(sdl []*trace.SpanData) []*tracepb.Span {
 			protoSpans = append(protoSpans, ocSpanToProtoSpan(sd))
 		}
 	}
-	return protoSpans
-}
 
-func (ae *Exporter) uploadTraces(sdl []*trace.SpanData) {
-	select {
-	case <-ae.stopCh:
-		return
-
-	default:
-		if !ae.connected() {
-			return
-		}
-
-		protoSpans := ocSpanDataToPbSpans(sdl)
-		if len(protoSpans) == 0 {
-			return
-		}
-		err := ae.traceExporter.Send(&agenttracepb.ExportTraceServiceRequest{
+	if len(protoSpans) > 0 {
+		_ = ae.traceExporter.Send(&agenttracepb.ExportTraceServiceRequest{
 			Spans: protoSpans,
 		})
-		if err != nil {
-			ae.setStateDisconnected()
-		}
 	}
 }
 

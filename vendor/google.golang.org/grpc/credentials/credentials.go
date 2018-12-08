@@ -20,7 +20,7 @@
 // which encapsulate all the state needed by a client to authenticate with a
 // server and make various assertions, e.g., about the client's identity, role,
 // or whether it is authorized to make a particular call.
-package credentials
+package credentials // import "google.golang.org/grpc/credentials"
 
 import (
 	"context"
@@ -139,8 +139,8 @@ func (t TLSInfo) AuthType() string {
 	return "tls"
 }
 
-// GetChannelzSecurityValue returns security info requested by channelz.
-func (t TLSInfo) GetChannelzSecurityValue() ChannelzSecurityValue {
+// GetSecurityValue returns security info requested by channelz.
+func (t TLSInfo) GetSecurityValue() ChannelzSecurityValue {
 	v := &TLSChannelzSecurityValue{
 		StandardName: cipherSuiteLookup[t.State.CipherSuite],
 	}
