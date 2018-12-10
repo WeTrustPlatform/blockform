@@ -155,6 +155,9 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetToPort(22).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}).
+				SetIpv6Ranges([]*ec2.Ipv6Range{
+					(&ec2.Ipv6Range{}).SetCidrIpv6("::/0"),
 				}),
 			(&ec2.IpPermission{}).
 				SetIpProtocol("tcp").
@@ -162,6 +165,9 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetToPort(8545).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}).
+				SetIpv6Ranges([]*ec2.Ipv6Range{
+					(&ec2.Ipv6Range{}).SetCidrIpv6("::/0"),
 				}),
 			(&ec2.IpPermission{}).
 				SetIpProtocol("tcp").
@@ -169,6 +175,9 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetToPort(8080).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}).
+				SetIpv6Ranges([]*ec2.Ipv6Range{
+					(&ec2.Ipv6Range{}).SetCidrIpv6("::/0"),
 				}),
 			(&ec2.IpPermission{}).
 				SetIpProtocol("tcp").
@@ -176,6 +185,9 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetToPort(30303).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}).
+				SetIpv6Ranges([]*ec2.Ipv6Range{
+					(&ec2.Ipv6Range{}).SetCidrIpv6("::/0"),
 				}),
 			(&ec2.IpPermission{}).
 				SetIpProtocol("udp").
@@ -183,6 +195,9 @@ func (aw AWS) createSecurityGroup(name string) {
 				SetToPort(30303).
 				SetIpRanges([]*ec2.IpRange{
 					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}).
+				SetIpv6Ranges([]*ec2.Ipv6Range{
+					(&ec2.Ipv6Range{}).SetCidrIpv6("::/0"),
 				}),
 		},
 	})
