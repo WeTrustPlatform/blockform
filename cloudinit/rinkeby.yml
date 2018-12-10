@@ -38,12 +38,17 @@ write_files:
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
+    path: /etc/systemd/system/nginx.service.d/limit.conf
+    content: |
+        [Service]
+        LimitNOFILE=65536
+  - owner: root:root
     path: /etc/nginx/nginx.conf
     content: |
         user www-data;
         worker_processes auto;
         pid /run/nginx.pid;
-        worker_rlimit_nofile 100000;
+        worker_rlimit_nofile 65536;
 
         events {
           worker_connections 4096;
@@ -75,6 +80,7 @@ runcmd:
   - wget https://www.rinkeby.io/rinkeby.json
   - chown -R blockform:blockform /datadrive
   - geth --datadir=/datadrive init rinkeby.json
+  - systemctl daemon-reload
   - systemctl enable geth
   - systemctl start geth
   - systemctl restart nginx

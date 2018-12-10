@@ -99,12 +99,17 @@ write_files:
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
+    path: /etc/systemd/system/nginx.service.d/limit.conf
+    content: |
+        [Service]
+        LimitNOFILE=65536
+  - owner: root:root
     path: /etc/nginx/nginx.conf
     content: |
         user www-data;
         worker_processes auto;
         pid /run/nginx.pid;
-        worker_rlimit_nofile 100000;
+        worker_rlimit_nofile 65536;
 
         events {
           worker_connections 4096;
@@ -140,6 +145,7 @@ runcmd:
   - cat /genesis.json | sed "s/@@SEALER@@/`cat /sealer`/g" > /genesis.json
   - cat /lib/systemd/system/geth.service | sed "s/@@SEALER@@/`cat /sealer`/g" > /lib/systemd/system/geth.service
   - geth --nodiscover --datadir /datadrive init /genesis.json
+  - systemctl daemon-reload
   - systemctl enable geth
   - systemctl start geth
   - systemctl enable faucet
