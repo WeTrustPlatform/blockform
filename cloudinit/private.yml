@@ -112,9 +112,9 @@ packages:
   - libdancer2-perl
 runcmd:
   - chown -R blockform:blockform /datadrive
-  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.13-225171a4.tar.gz
-  - tar xf geth-linux-amd64-1.8.13-225171a4.tar.gz
-  - cp geth-linux-amd64-1.8.13-225171a4/geth /usr/bin/geth
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.19-dae82f09.tar.gz
+  - tar xf geth-linux-*.tar.gz
+  - cp geth-linux-*/geth /usr/bin/geth
   - chown -R blockform:blockform /datadrive
   - echo "dummy" > /password.txt
   - '\geth --datadir /datadrive --password /password.txt account new | sed "s/Address: {\(.*\)}/\1/g" > /sealer'
