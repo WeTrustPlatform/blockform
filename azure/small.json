@@ -374,6 +374,52 @@
       ]
     },
     {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "name": "[concat('NSG', '/', 'AllowDiscoveryTPC')]",
+      "apiVersion": "2017-06-01",
+      "scale": null,
+      "location": "westus2",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "protocol": "TCP",
+        "sourcePortRange": "*",
+        "destinationPortRange": "30303",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*",
+        "access": "Allow",
+        "priority": 102,
+        "direction": "Inbound",
+        "sourceAddressPrefixes": [],
+        "destinationAddressPrefixes": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'NSG')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "name": "[concat('NSG', '/', 'AllowDiscoveryUDP')]",
+      "apiVersion": "2017-06-01",
+      "scale": null,
+      "location": "westus2",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "protocol": "UDP",
+        "sourcePortRange": "*",
+        "destinationPortRange": "30303",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*",
+        "access": "Allow",
+        "priority": 103,
+        "direction": "Inbound",
+        "sourceAddressPrefixes": [],
+        "destinationAddressPrefixes": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'NSG')]"
+      ]
+    },
+    {
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "name": "[concat('VNet', '/', 'SubNet')]",
       "apiVersion": "2017-06-01",
