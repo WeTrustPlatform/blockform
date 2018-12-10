@@ -34,8 +34,28 @@
                 <script>
                     $( document ).ready(function() {
                         var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+
+                        setInterval(function() {
+
                         web3.eth.isSyncing().then((data) => {
-                            $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
+                            $('#syncing').html(data ? `
+                            <table class="table-sync">
+                                <tr>
+                                    <td>Blocks:</td>
+                                    <td class="col-11 align-middle"><div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="${data.currentBlock}" aria-valuemin="0" aria-valuemax="${data.highestBlock}" style="width: ${data.currentBlock/data.highestBlock*100}%">${(data.currentBlock/data.highestBlock*100).toFixed(2)}%</div>
+                                    </div></td>
+                                    <td class="text-right text-monospace">${data.currentBlock}/${data.highestBlock}</td>
+                                </tr>
+                                <tr>
+                                    <td>States:</td>
+                                    <td class="col-11 align-middle"><div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="${data.pulledStates}" aria-valuemin="0" aria-valuemax="${data.knownStates}" style="width: ${data.pulledStates/data.knownStates*100}%">${(data.pulledStates/data.knownStates*100).toFixed(2)}%</div>
+                                    </div></td>
+                                    <td class="text-right text-monospace">${data.pulledStates}/${data.knownStates}</td>
+                                </tr>
+                            </table>
+                            ` : 'False');
                         });
                         web3.eth.getBlockNumber().then((data) => {
                             $('#blocknumber').html(data ? data : 'N/A');
@@ -43,6 +63,8 @@
                         web3.eth.net.getPeerCount().then((data) => {
                             $('#netpeers').html(data);
                         });
+
+                        }, 1000);
                     });
                 </script>
                 {{end}}

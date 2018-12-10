@@ -14,16 +14,16 @@ h2 {
   margin: 40px 0;
 }
 
-.table {
+table#nodes {
   border: solid 1px #dee2e6;
   margin-bottom: 40px;
 }
 
-th {
+table#nodes th {
   background-color: #dee2e6;
 }
 
-tr:hover td {
+table#nodes tr:hover td {
   background-color: #f8f8f8;
 }
 
@@ -45,6 +45,10 @@ tr:hover td {
 
 #empty .btn {
   margin-top: 40px;
+}
+
+.table-sync td {
+  padding: 10px 10px 10px 0;
 }
 
 footer {

@@ -75,12 +75,15 @@
                 <script>
                     $( document ).ready(function() {
                         var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                        web3.eth.isSyncing().then((data) => {
-                            $('#syncing').html(data ? '<i class="fas fa-cloud-download-alt"></i> '+data.currentBlock+'/'+data.highestBlock : 'False');
-                        });
-                        web3.eth.getBlockNumber().then((data) => {
-                            $('#blocknumber').html(data ? data : 'N/A');
-                        });
+
+                        setInterval(function() {
+                            web3.eth.isSyncing().then((data) => {
+                                $('#syncing').html(data ? `Blocks: ${(data.currentBlock/data.highestBlock*100).toFixed(2)}% States: ${(data.pulledStates/data.knownStates*100).toFixed(2)}%` : 'False');
+                            });
+                            web3.eth.getBlockNumber().then((data) => {
+                                $('#blocknumber').html(data ? data : 'N/A');
+                            });
+                        }, 1000);
                     });
                 </script>
                 {{end}}
