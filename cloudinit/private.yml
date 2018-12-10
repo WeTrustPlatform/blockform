@@ -79,7 +79,8 @@ write_files:
         set port => 8080;
         get '/@@API_KEY@@/:addr' => sub {
           my $addr = route_parameters->get('addr');
-          `/usr/bin/geth --exec "eth.sendTransaction({from:eth.coinbase, to:'${addr}', value: web3.toWei(1.0, 'ether'), gas:21000});" attach /datadrive/geth.ipc`;
+          header 'Access-Control-Allow-Origin' => '*';
+          return `/usr/bin/geth --exec "eth.sendTransaction({from:eth.coinbase, to:'${addr}', value: web3.toWei(1.0, 'ether'), gas:21000});" attach /datadrive/geth.ipc`;
         };
         start;
   - owner: root:root
