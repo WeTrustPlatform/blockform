@@ -165,6 +165,13 @@ func (aw AWS) createSecurityGroup(name string) {
 				}),
 			(&ec2.IpPermission{}).
 				SetIpProtocol("tcp").
+				SetFromPort(8080).
+				SetToPort(8080).
+				SetIpRanges([]*ec2.IpRange{
+					(&ec2.IpRange{}).SetCidrIp("0.0.0.0/0"),
+				}),
+			(&ec2.IpPermission{}).
+				SetIpProtocol("tcp").
 				SetFromPort(30303).
 				SetToPort(30303).
 				SetIpRanges([]*ec2.IpRange{
