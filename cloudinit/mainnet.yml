@@ -22,7 +22,7 @@ mounts:
   - [ "@@DEVICE@@1", "/datadrive", "ext4", "defaults", "0", "2" ]
 write_files:
   - owner: root:root
-  - path: /lib/systemd/system/geth.service
+    path: /lib/systemd/system/geth.service
     content: |
         [Unit]
         Description=Geth
@@ -38,12 +38,31 @@ write_files:
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
-    path: /etc/nginx/sites-available/default
+    path: /etc/nginx/nginx.conf
     content: |
-        server {
-          listen 8545;
-          location /@@API_KEY@@ {
-            proxy_pass http://127.0.0.1:8445;
+        user www-data;
+        worker_processes auto;
+        pid /run/nginx.pid;
+        worker_rlimit_nofile 100000;
+
+        events {
+          worker_connections 4096;
+          multi_accept on;
+        }
+
+        http {
+          tcp_nopush on;
+          tcp_nodelay on;
+          reset_timedout_connection on;
+          keepalive_timeout 30;
+          client_body_timeout 10;
+          send_timeout 2;
+
+          server {
+            listen 8545;
+            location /@@API_KEY@@ {
+              proxy_pass http://127.0.0.1:8445;
+            }
           }
         }
 packages:
