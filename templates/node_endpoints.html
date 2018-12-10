@@ -56,15 +56,19 @@
                     <div class="input-group mb-0">
                         <input class="form-control" type="text" id="ethaddr" placeholder="Your ETH address">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" id="faucet" type="button">Receive 1 ETH</button>
+                            <button id="faucet" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Sent!" type="button">Receive 1 ETH</button>
                         </div>
                     </div>
                 </p>
                 <script>
                     $( document ).ready(function() {
                         var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                        $('#faucet').click(async function() {
-                            alert(await fetch($('#ethaddr').val()));
+                        $('#faucet').click(function() {
+                            fetch($('#ethaddr').val()).then(function() {
+                                $('#faucet').tooltip('enable');
+                                $('#faucet').tooltip('show');
+                                $('#faucet').tooltip('disable');
+                            });
                         });
                     });
                 </script>
