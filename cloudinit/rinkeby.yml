@@ -38,6 +38,31 @@ write_files:
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
+    path: /etc/security/limits.conf
+    content: |
+        *    soft nofile 1048576
+        *    hard nofile 1048576
+        root soft nofile 1048576
+        root hard nofile 1048576
+  - owner: root:root
+    path: /etc/pam.d/common-session
+    content: |
+        session [default=1] pam_permit.so
+        session requisite   pam_deny.so
+        session required    pam_permit.so
+        session optional    pam_umask.so
+        session required    pam_unix.so
+        session optional    pam_systemd.so
+        session required    pam_limits.so
+  - owner: root:root
+    path: /etc/sysctl.conf
+    content: |
+        fs.file-max = 2097152
+        fs.nr_open = 1048576
+        net.ipv4.netfilter.ip_conntrack_max = 1048576
+        net.nf_conntrack_max = 1048576
+        net.core.somaxconn = 1048576
+  - owner: root:root
     path: /etc/systemd/system/nginx.service.d/limit.conf
     content: |
         [Service]
