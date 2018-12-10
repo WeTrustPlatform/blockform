@@ -1,4 +1,4 @@
-# BlockForm - Ethereum Blockchain As A Service
+# BlockForm - Ethereum Blockchain As A Service [![Build Status](https://travis-ci.org/WeTrustPlatform/blockform.svg?branch=master)](https://travis-ci.org/WeTrustPlatform/blockform)
 
 BlockForm helps you deploy Ethereum nodes to the cloud and manage them.
 It takes care of creating a virtual machine in one of the supported cloud
