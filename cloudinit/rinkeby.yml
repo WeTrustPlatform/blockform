@@ -63,7 +63,8 @@ write_files:
         fi
   - owner: root:root
     path: /etc/cron.d/sync-checker
-    content: */10 * * * * blockform /usr/bin/sync-checker >> /home/blockform/sync-checker.log 2>&1
+    content: |
+        */10 * * * * blockform /usr/bin/sync-checker >> /home/blockform/sync-checker.log 2>&1
 packages:
   - nginx
 runcmd:
