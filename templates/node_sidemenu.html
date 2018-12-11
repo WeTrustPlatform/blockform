@@ -1,5 +1,5 @@
 {{define "node_sidemenu"}}
-<div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+<div id="sidemenu" class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
     <a class="nav-link {{if eq .Tab "general"}}active{{end}}" href="/node/{{.Node.ID}}">General</a>
     <a class="nav-link {{if eq .Tab "health"}}active{{end}}" href="/node/{{.Node.ID}}/health">Health</a>
     <a class="nav-link {{if eq .Tab "endpoints"}}active{{end}}" href="/node/{{.Node.ID}}/endpoints">Endpoints</a>

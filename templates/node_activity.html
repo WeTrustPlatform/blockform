@@ -8,15 +8,19 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
-        <div class="row">
-            <div class="col col-3">
-                {{template "node_sidemenu" $ }}
-            </div>
-            <div class="col">
-                <p>
-                    <b>Created at:</b>
-                    {{.CreatedAt.Format "Mon Jan 2 15:04"}}
-                </p>
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p>
+                            <b>Created at:</b>
+                            {{.CreatedAt.Format "Mon Jan 2 15:04"}}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
         {{template "footer"}}

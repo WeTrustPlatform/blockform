@@ -1,3 +1,7 @@
+body {
+  background-color: #fbfbfb;
+}
+
 body,h1,h2,h3,h4,h5,p {
   font-family: 'Nunito', sans-serif;
 }
@@ -17,6 +21,7 @@ h2 {
 table#nodes {
   border: solid 1px #dee2e6;
   margin-bottom: 40px;
+  background: white;
 }
 
 table#nodes th {
@@ -24,11 +29,11 @@ table#nodes th {
 }
 
 table#nodes tr:hover td {
-  background-color: #f8f8f8;
+  background-color: #fbfbfb;
 }
 
 .smaller {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -47,8 +52,72 @@ table#nodes tr:hover td {
   margin-top: 40px;
 }
 
+.lefttabs, .toptabs {
+  background: white;
+  border: solid 1px #dee2e6;
+}
+
+.toptabs .tab-content {
+  padding: 30px;
+}
+
+.toptabs ul {
+  background: #dee2e6;
+}
+
+.toptabs .nav-link {
+  padding: 0.75rem 1.25rem;
+  font-weight: bold;
+  border-radius: 0;
+  background: #fbfbfb;
+  border-top: solid 2px transparent;
+  border-right: solid 1px #dee2e6;
+  border-bottom: solid 1px #dee2e6;
+}
+
+.toptabs .nav-link.active {
+  background: white;
+  color: #212529;
+  border-top: solid 2px #007bff;
+  border-left: none;
+  border-bottom: solid 1px white;
+}
+
+.lefttabs .details {
+  padding: 20px 30px 15px 0;
+}
+
 .table-sync td {
   padding: 10px 10px 10px 0;
+}
+
+#sidemenu {
+  background: #dee2e6;
+  height: 100%;
+}
+
+#sidemenu .nav-link {
+  padding: 0.75rem;
+  font-weight: bold;
+  border-radius: 0;
+  background: #fbfbfb;
+  border-right: solid 1px #dee2e6;
+  border-bottom: solid 1px #dee2e6;
+}
+
+#sidemenu .nav-link:last-child {
+  border-bottom: none;
+}
+
+#sidemenu .nav-link:hover {
+  background: white;
+}
+
+#sidemenu .nav-link.active {
+  background: white;
+  color: #212529;
+  border-left: solid 2px #007bff;
+  border-right: none;
 }
 
 footer {

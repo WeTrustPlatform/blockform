@@ -8,75 +8,79 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
-        <div class="row">
-            <div class="col col-3">
-                {{template "node_sidemenu" $ }}
-            </div>
-            <div class="col">
-                <p><b>Domain:</b> <code>{{.DomainName}}</code></p>
-                <p><b>API Key:</b> <code>{{.APIKey}}</code></p>
-                {{ if eq .Status "deployed"}}
-                <p>
-                    <b>Web3 RPC endpoint:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                <p>
-                    <b>Geth attach:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                <p>
-                    <b>SSH access:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                {{ if eq .NetworkType "private"}}
-                <p>
-                    <b>Faucet:</b>
-                    <div class="input-group mb-3 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http://{{.DomainName}}:8080/{{.APIKey}}/yourethaddress" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                    <p>Request some ether now:</p>
-                    <div class="input-group mb-0">
-                        <input class="form-control" type="text" id="ethaddr" placeholder="Your ETH address">
-                        <div class="input-group-append">
-                            <button id="faucet" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" type="button">Receive 1 ETH</button>
-                        </div>
-                    </div>
-                </p>
-                <script>
-                    $( document ).ready(function() {
-                        $('#faucet').click(function() {
-                            fetch("http://{{.DomainName}}:8080/{{.APIKey}}/"+$('#ethaddr').val())
-                            .then(async function(resp) {
-                                var body = await resp.text();
-                                var success = /0x.{64}/.test(body);
-                                $('#faucet').tooltip('enable');
-                                $('#faucet').attr('data-original-title', success ? 'Success!' : 'Failed!');
-                                $('#faucet').tooltip('show');
-                                $('#faucet').tooltip('disable');
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p><b>Domain:</b> <code>{{.DomainName}}</code></p>
+                        <p><b>API Key:</b> <code>{{.APIKey}}</code></p>
+                        {{ if eq .Status "deployed"}}
+                        <p>
+                            <b>Web3 RPC endpoint:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        <p>
+                            <b>Geth attach:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        <p>
+                            <b>SSH access:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        {{ if eq .NetworkType "private"}}
+                        <p>
+                            <b>Faucet:</b>
+                            <div class="input-group mb-3 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="http://{{.DomainName}}:8080/{{.APIKey}}/yourethaddress" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                            <p>Request some ether now:</p>
+                            <div class="input-group mb-0">
+                                <input class="form-control" type="text" id="ethaddr" placeholder="Your ETH address">
+                                <div class="input-group-append">
+                                    <button id="faucet" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" type="button">Receive 1 ETH</button>
+                                </div>
+                            </div>
+                        </p>
+                        <script>
+                            $( document ).ready(function() {
+                                $('#faucet').click(function() {
+                                    fetch("http://{{.DomainName}}:8080/{{.APIKey}}/"+$('#ethaddr').val())
+                                    .then(async function(resp) {
+                                        var body = await resp.text();
+                                        var success = /0x.{64}/.test(body);
+                                        $('#faucet').tooltip('enable');
+                                        $('#faucet').attr('data-original-title', success ? 'Success!' : 'Failed!');
+                                        $('#faucet').tooltip('show');
+                                        $('#faucet').tooltip('disable');
+                                    });
+                                });
                             });
-                        });
-                    });
-                </script>
-                {{end}}
-                {{end}}
+                        </script>
+                        {{end}}
+                        {{end}}
+                    </div>
+                </div>
             </div>
         </div>
         {{template "footer"}}

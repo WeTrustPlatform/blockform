@@ -8,85 +8,89 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
-        <div class="row">
-            <div class="col col-3">
-                {{template "node_sidemenu" $ }}
-            </div>
-            <div class="col">
-                <p>
-                    <b>Network:</b>
-                    {{if eq .NetworkType "public" }}
-                        {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                        {{if eq .NetworkID 3}}Rospten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                        {{if eq .NetworkID 4}}Rinkeby <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                    {{else}}
-                        Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
-                    {{end}}
-                </p>
-                <p>
-                    <b>Created at:</b>
-                    {{.CreatedAt.Format "Mon Jan 2 15:04"}}
-                </p>
-                <p>
-                    <b>Cloud Provider:</b>
-                    {{if eq .CloudProvider "aws" }}AWS{{end}}
-                    {{if eq .CloudProvider "azure" }}Azure{{end}}
-                </p>
-                <p>
-                    <b>VM Status:</b>
-                    <span class="text-capitalize">{{.Status}}</span>
-                </p>
-                {{ if eq .Status "deployed"}}
-                <p>
-                    <b>Geth Syncing:</b>
-                    <span id="syncing"></span>
-                </p>
-                <p>
-                    <b>Block Number:</b>
-                    <span id="blocknumber"></span>
-                </p>
-                <p>
-                    <b>Web3 RPC endpoint:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                <p>
-                    <b>Geth attach:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                <p>
-                    <b>SSH access:</b>
-                    <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
-                        </div>
-                    </div>
-                </p>
-                <script>
-                    $( document ).ready(function() {
-                        var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-
-                        setInterval(function() {
-                            web3.eth.isSyncing().then((data) => {
-                                $('#syncing').html(data ? `Blocks: ${(data.currentBlock/data.highestBlock*100).toFixed(2)}% States: ${(data.pulledStates/data.knownStates*100).toFixed(2)}%` : 'False');
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p>
+                            <b>Network:</b>
+                            {{if eq .NetworkType "public" }}
+                            {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
+                            {{if eq .NetworkID 3}}Rospten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
+                            {{if eq .NetworkID 4}}Rinkeby <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
+                            {{else}}
+                            Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
+                            {{end}}
+                        </p>
+                        <p>
+                            <b>Created at:</b>
+                            {{.CreatedAt.Format "Mon Jan 2 15:04"}}
+                        </p>
+                        <p>
+                            <b>Cloud Provider:</b>
+                            {{if eq .CloudProvider "aws" }}AWS{{end}}
+                            {{if eq .CloudProvider "azure" }}Azure{{end}}
+                        </p>
+                        <p>
+                            <b>VM Status:</b>
+                            <span class="text-capitalize">{{.Status}}</span>
+                        </p>
+                        {{ if eq .Status "deployed"}}
+                        <p>
+                            <b>Geth Syncing:</b>
+                            <span id="syncing"></span>
+                        </p>
+                        <p>
+                            <b>Block Number:</b>
+                            <span id="blocknumber"></span>
+                        </p>
+                        <p>
+                            <b>Web3 RPC endpoint:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        <p>
+                            <b>Geth attach:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        <p>
+                            <b>SSH access:</b>
+                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
+                                <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </div>
+                        </p>
+                        <script>
+                            $( document ).ready(function() {
+                                var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                                
+                                setInterval(function() {
+                                    web3.eth.isSyncing().then((data) => {
+                                        $('#syncing').html(data ? `Blocks: ${(data.currentBlock/data.highestBlock*100).toFixed(2)}% States: ${(data.pulledStates/data.knownStates*100).toFixed(2)}%` : 'False');
+                                    });
+                                    web3.eth.getBlockNumber().then((data) => {
+                                        $('#blocknumber').html(data ? data : 'N/A');
+                                    });
+                                }, 1000);
                             });
-                            web3.eth.getBlockNumber().then((data) => {
-                                $('#blocknumber').html(data ? data : 'N/A');
-                            });
-                        }, 1000);
-                    });
-                </script>
-                {{end}}
+                        </script>
+                        {{end}}
+                    </div>
+                </div>
             </div>
         </div>
         {{template "footer"}}

@@ -8,66 +8,70 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
-        <div class="row">
-            <div class="col col-3">
-                {{template "node_sidemenu" $ }}
-            </div>
-            <div class="col">
-                <p>
-                    <b>VM Status:</b>
-                    <span class="text-capitalize">{{.Status}}</span>
-                </p>
-                {{ if eq .Status "deployed"}}
-                <p>
-                    <b>Geth Syncing:</b>
-                    <span id="syncing"></span>
-                </p>
-                <p>
-                    <b>Block Number:</b>
-                    <span id="blocknumber"></span>
-                </p>
-                <p>
-                    <b>Net Peers:</b>
-                    <span id="netpeers"></span>
-                </p>
-                
-                <script>
-                    $( document ).ready(function() {
-                        var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-
-                        setInterval(function() {
-
-                        web3.eth.isSyncing().then((data) => {
-                            $('#syncing').html(data ? `
-                            <table class="table-sync">
-                                <tr>
-                                    <td>Blocks:</td>
-                                    <td class="col-11 align-middle"><div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="${data.currentBlock}" aria-valuemin="0" aria-valuemax="${data.highestBlock}" style="width: ${data.currentBlock/data.highestBlock*100}%">${(data.currentBlock/data.highestBlock*100).toFixed(2)}%</div>
-                                    </div></td>
-                                    <td class="text-right text-monospace">${data.currentBlock}/${data.highestBlock}</td>
-                                </tr>
-                                <tr>
-                                    <td>States:</td>
-                                    <td class="col-11 align-middle"><div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="${data.pulledStates}" aria-valuemin="0" aria-valuemax="${data.knownStates}" style="width: ${data.pulledStates/data.knownStates*100}%">${(data.pulledStates/data.knownStates*100).toFixed(2)}%</div>
-                                    </div></td>
-                                    <td class="text-right text-monospace">${data.pulledStates}/${data.knownStates}</td>
-                                </tr>
-                            </table>
-                            ` : 'False');
-                        });
-                        web3.eth.getBlockNumber().then((data) => {
-                            $('#blocknumber').html(data ? data : 'N/A');
-                        });
-                        web3.eth.net.getPeerCount().then((data) => {
-                            $('#netpeers').html(data);
-                        });
-
-                        }, 1000);
-                    });
-                </script>
-                {{end}}
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p>
+                            <b>VM Status:</b>
+                            <span class="text-capitalize">{{.Status}}</span>
+                        </p>
+                        {{ if eq .Status "deployed"}}
+                        <p>
+                            <b>Geth Syncing:</b>
+                            <span id="syncing"></span>
+                        </p>
+                        <p>
+                            <b>Block Number:</b>
+                            <span id="blocknumber"></span>
+                        </p>
+                        <p>
+                            <b>Net Peers:</b>
+                            <span id="netpeers"></span>
+                        </p>
+                        
+                        <script>
+                            $( document ).ready(function() {
+                                var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                                
+                                setInterval(function() {
+                                    
+                                    web3.eth.isSyncing().then((data) => {
+                                        $('#syncing').html(data ? `
+                                        <table class="table-sync">
+                                            <tr>
+                                                <td>Blocks:</td>
+                                                <td class="col-11 align-middle"><div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="${data.currentBlock}" aria-valuemin="0" aria-valuemax="${data.highestBlock}" style="width: ${data.currentBlock/data.highestBlock*100}%">${(data.currentBlock/data.highestBlock*100).toFixed(2)}%</div>
+                                                </div></td>
+                                                <td class="text-right text-monospace">${data.currentBlock}/${data.highestBlock}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>States:</td>
+                                                <td class="col-11 align-middle"><div class="progress">
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="${data.pulledStates}" aria-valuemin="0" aria-valuemax="${data.knownStates}" style="width: ${data.pulledStates/data.knownStates*100}%">${(data.pulledStates/data.knownStates*100).toFixed(2)}%</div>
+                                                </div></td>
+                                                <td class="text-right text-monospace">${data.pulledStates}/${data.knownStates}</td>
+                                            </tr>
+                                        </table>
+                                        ` : 'False');
+                                    });
+                                    web3.eth.getBlockNumber().then((data) => {
+                                        $('#blocknumber').html(data ? data : 'N/A');
+                                    });
+                                    web3.eth.net.getPeerCount().then((data) => {
+                                        $('#netpeers').html(data);
+                                    });
+                                    
+                                }, 1000);
+                            });
+                        </script>
+                        {{end}}
+                    </div>
+                </div>
             </div>
         </div>
         {{template "footer"}}

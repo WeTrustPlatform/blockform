@@ -8,34 +8,38 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
-        <div class="row">
-            <div class="col col-3">
-                {{template "node_sidemenu" $ }}
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p><b>Latest blocks</b></p>
+                        <table class="table table-sm" id="blocks"></table>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-                <p><b>Latest blocks</b></p>
-                <table class="table table-sm" id="blocks"></table>
-            </div>
-        </div>
-        <script>
-            $( document ).ready(function() {
-                var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                web3.eth.getBlockNumber().then(async (bn) =>{
-                    if (bn > 10) {
-                        for (var i=0; i < 10; i++) {
-                            var bl = await web3.eth.getBlock(bn - i);
-                            $('#blocks').append(
+            <script>
+                $( document ).ready(function() {
+                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    web3.eth.getBlockNumber().then(async (bn) =>{
+                        if (bn > 10) {
+                            for (var i=0; i < 10; i++) {
+                                var bl = await web3.eth.getBlock(bn - i);
+                                $('#blocks').append(
                                 `<tr>
                                     <td>#${bl.number}</td>
                                     <td><code>${bl.hash}</code></td>
                                     <td>${bl.transactions.length}</td>
                                 </tr>`
-                            );
+                                );
+                            }
                         }
-                    }
+                    });
                 });
-            });
-        </script>
+            </script>
+        </div>
         {{template "footer"}}
     </div>
     {{end}}
