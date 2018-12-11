@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    {{with .Node}}
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <p><h4>Block #{{ $.BlockNumber }}</h4></p>
+                        <div id="block"></div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $( document ).ready(function() {
+                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    web3.eth.getBlock({{ $.BlockNumber }}).then(async (bl) =>{
+                        $('#block').append(`<p><b>Hash:</b> <code>${bl.hash}</code></p>`);
+                        $('#block').append(`<p><b>Timestamp:</b> ${bl.timestamp}</p>`);
+                        $('#block').append(`<p><b>Size:</b> ${bl.size}</p>`);
+                        $('#block').append(`<p><b>Difficulty:</b> ${bl.difficulty}</p>`);
+                        $('#block').append(`<p><b>Gas Used:</b> ${bl.gasUsed}/${bl.gasLimit}</p>`);
+                        $('#block').append(`<p><b>Nonce:</b> <code>${bl.nonce}</code></p>`);
+                        $('#block').append(`<p><b>Mix Hash:</b> <code>${bl.mixHash}</code></p>`);
+                        $('#block').append(`<p><b>Transactions:</b> <table>`);
+                        for (var i=0; i < bl.transactions.length; i++) {
+                            var tx = bl.transactions[i];
+                            $('#block').append(`
+                                <tr><td><a href="/node/{{.ID}}/explorer/tx/${tx}">${tx}</a></td></tr>
+                            `);
+                        }
+                        $('#block').append(`</table>`);
+                        //$('#block').append(`<p><code>${JSON.stringify(bl)}</code><p>`);
+                    });
+                });
+            </script>
+        </div>
+        {{template "footer"}}
+    </div>
+    {{end}}
+</body>
+</html>

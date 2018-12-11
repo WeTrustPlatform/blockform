@@ -17,7 +17,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/sethvargo/go-password/password"
-	"goji.io"
+	goji "goji.io"
 )
 
 // CloudProvider abstracts the behaviour of a cloud provider like AWS, Azure or
@@ -63,6 +63,7 @@ func main() {
 		"templates/node_actions.html",
 		"templates/node_activity.html",
 		"templates/node_explorer.html",
+		"templates/node_explorer_block.html",
 		"templates/node_sidemenu.html",
 		"templates/footer.html",
 	))
@@ -164,6 +165,22 @@ func main() {
 			Node model.Node
 		}{
 			tab,
+			node,
+		})
+	}))
+
+	mux.Handle(pat.Get("/node/:id/explorer/bl/:blnum"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := pat.Param(r, "id")
+		blnum := pat.Param(r, "blnum")
+		node := model.Node{}
+		db.Find(&node, id)
+		tmpl.ExecuteTemplate(w, "node_explorer_block.html", struct {
+			Tab         string
+			BlockNumber string
+			Node        model.Node
+		}{
+			"explorer",
+			blnum,
 			node,
 		})
 	}))

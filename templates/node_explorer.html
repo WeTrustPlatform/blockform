@@ -29,9 +29,9 @@
                                 var bl = await web3.eth.getBlock(bn - i);
                                 $('#blocks').append(
                                 `<tr>
-                                    <td>#${bl.number}</td>
+                                    <td><a href="/node/{{.ID}}/explorer/bl/${bl.number}">#${bl.number}</a></td>
                                     <td><code>${bl.hash}</code></td>
-                                    <td>${bl.transactions.length}</td>
+                                    <td>${bl.transactions.length} txs</td>
                                 </tr>`
                                 );
                             }
