@@ -24,13 +24,15 @@
                 $( document ).ready(function() {
                     var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
                     web3.eth.getBlock("{{ $.ID }}").then(async (bl) =>{
-                        $('#block').append(`<p><b>Hash:</b> <code>${bl.hash}</code></p>`);
-                        $('#block').append(`<p><b>Timestamp:</b> ${bl.timestamp}</p>`);
-                        $('#block').append(`<p><b>Size:</b> ${bl.size}</p>`);
-                        $('#block').append(`<p><b>Difficulty:</b> ${bl.difficulty}</p>`);
-                        $('#block').append(`<p><b>Gas Used:</b> ${bl.gasUsed}/${bl.gasLimit}</p>`);
-                        $('#block').append(`<p><b>Nonce:</b> <code>${bl.nonce}</code></p>`);
-                        $('#block').append(`<p><b>Mix Hash:</b> <code>${bl.mixHash}</code></p>`);
+                        $('#block').append(`
+                            <p><b>Hash:</b> <code>${bl.hash}</code></p>
+                            <p><b>Timestamp:</b> ${bl.timestamp}</p>
+                            <p><b>Size:</b> ${bl.size}</p>
+                            <p><b>Difficulty:</b> ${bl.difficulty}</p>
+                            <p><b>Gas Used:</b> ${bl.gasUsed}/${bl.gasLimit}</p>
+                            <p><b>Nonce:</b> <code>${bl.nonce}</code></p>
+                            <p><b>Mix Hash:</b> <code>${bl.mixHash}</code></p>
+                        `);
                         var txs = "";
                         for (var i=0; i < bl.transactions.length; i++) {
                             var tx = bl.transactions[i];
