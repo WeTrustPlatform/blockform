@@ -65,6 +65,7 @@ func main() {
 		"templates/node_explorer.html",
 		"templates/node_explorer_block.html",
 		"templates/node_explorer_transaction.html",
+		"templates/node_explorer_address.html",
 		"templates/node_sidemenu.html",
 		"templates/footer.html",
 	))
@@ -198,6 +199,22 @@ func main() {
 		}{
 			"explorer",
 			txHash,
+			node,
+		})
+	}))
+
+	mux.Handle(pat.Get("/node/:id/explorer/addr/:addr"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id := pat.Param(r, "id")
+		addr := pat.Param(r, "addr")
+		node := model.Node{}
+		db.Find(&node, id)
+		tmpl.ExecuteTemplate(w, "node_explorer_address.html", struct {
+			Tab     string
+			Address string
+			Node    model.Node
+		}{
+			"explorer",
+			addr,
 			node,
 		})
 	}))

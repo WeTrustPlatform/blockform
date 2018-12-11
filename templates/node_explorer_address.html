@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    {{with .Node}}
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <h4>Address</h4>
+                        <p><b>Balance:</b> <span id="balance"></span></p>
+                        <p><b>Transactions:</b> <span id="txcount"></span></p>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $( document ).ready(function() {
+                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    web3.eth.getBalance("{{ $.Address }}").then(async (balance) =>{
+                        $('#balance').html(balance);
+                    });
+                    web3.eth.getTransactionCount("{{ $.Address }}").then(async (txcount) =>{
+                        $('#txcount').html(txcount);
+                    });
+                });
+            </script>
+        </div>
+        {{template "footer"}}
+    </div>
+    {{end}}
+</body>
+</html>
