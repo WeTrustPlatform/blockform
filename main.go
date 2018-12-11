@@ -171,50 +171,20 @@ func main() {
 		})
 	}))
 
-	mux.Handle(pat.Get("/node/:id/explorer/bl/:blnum"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle(pat.Get("/node/:nodeid/explorer/:class/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		nodeID := pat.Param(r, "nodeid")
+		tab := "explorer"
+		class := pat.Param(r, "class")
 		id := pat.Param(r, "id")
-		blnum := pat.Param(r, "blnum")
 		node := model.Node{}
-		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node_explorer_block.html", struct {
-			Tab         string
-			BlockNumber string
-			Node        model.Node
+		db.Find(&node, nodeID)
+		tmpl.ExecuteTemplate(w, "node_"+tab+"_"+class+".html", struct {
+			Tab  string
+			ID   string
+			Node model.Node
 		}{
-			"explorer",
-			blnum,
-			node,
-		})
-	}))
-
-	mux.Handle(pat.Get("/node/:id/explorer/tx/:txhash"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := pat.Param(r, "id")
-		txHash := pat.Param(r, "txhash")
-		node := model.Node{}
-		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node_explorer_transaction.html", struct {
-			Tab    string
-			TxHash string
-			Node   model.Node
-		}{
-			"explorer",
-			txHash,
-			node,
-		})
-	}))
-
-	mux.Handle(pat.Get("/node/:id/explorer/addr/:addr"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := pat.Param(r, "id")
-		addr := pat.Param(r, "addr")
-		node := model.Node{}
-		db.Find(&node, id)
-		tmpl.ExecuteTemplate(w, "node_explorer_address.html", struct {
-			Tab     string
-			Address string
-			Node    model.Node
-		}{
-			"explorer",
-			addr,
+			tab,
+			id,
 			node,
 		})
 	}))

@@ -24,10 +24,10 @@
             <script>
                 $( document ).ready(function() {
                     var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                    web3.eth.getBalance("{{ $.Address }}").then(async (balance) =>{
+                    web3.eth.getBalance("{{ $.ID }}").then(async (balance) =>{
                         $('#balance').html(balance);
                     });
-                    web3.eth.getTransactionCount("{{ $.Address }}").then(async (txcount) =>{
+                    web3.eth.getTransactionCount("{{ $.ID }}").then(async (txcount) =>{
                         $('#txcount').html(txcount);
                     });
                 });

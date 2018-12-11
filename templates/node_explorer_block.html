@@ -15,7 +15,7 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <h4>Block #{{ $.BlockNumber }}</h4>
+                        <h4>Block #{{ $.ID }}</h4>
                         <div id="block"></div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <script>
                 $( document ).ready(function() {
                     var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
-                    web3.eth.getBlock("{{ $.BlockNumber }}").then(async (bl) =>{
+                    web3.eth.getBlock("{{ $.ID }}").then(async (bl) =>{
                         $('#block').append(`<p><b>Hash:</b> <code>${bl.hash}</code></p>`);
                         $('#block').append(`<p><b>Timestamp:</b> ${bl.timestamp}</p>`);
                         $('#block').append(`<p><b>Size:</b> ${bl.size}</p>`);
@@ -36,7 +36,7 @@
                             var tx = bl.transactions[i];
                             txs += `
                             <tr>
-                                <td><a href="/node/{{.ID}}/explorer/tx/${tx}">#${i}</a></td>
+                                <td><a href="/node/{{.ID}}/explorer/transaction/${tx}">#${i}</a></td>
                                 <td><code>${tx}</code></td>
                             </tr>`;
                         }
