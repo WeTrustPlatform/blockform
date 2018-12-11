@@ -47,7 +47,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 	customData := cloudinit.CustomData(node, "/dev/xvdc")
 
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
-		ImageId:        aws.String("ami-0f9cf087c1f27d9b1"), // Ubuntu 16.04
+		ImageId:        aws.String("ami-0d2505740b82f7948"), // Ubuntu 18.04
 		InstanceType:   aws.String("t2.medium"),
 		MinCount:       aws.Int64(1),
 		MaxCount:       aws.Int64(1),
