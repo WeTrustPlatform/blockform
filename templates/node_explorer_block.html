@@ -31,14 +31,16 @@
                         $('#block').append(`<p><b>Gas Used:</b> ${bl.gasUsed}/${bl.gasLimit}</p>`);
                         $('#block').append(`<p><b>Nonce:</b> <code>${bl.nonce}</code></p>`);
                         $('#block').append(`<p><b>Mix Hash:</b> <code>${bl.mixHash}</code></p>`);
-                        $('#block').append(`<p><b>Transactions:</b> <table>`);
+                        var txs = "";
                         for (var i=0; i < bl.transactions.length; i++) {
                             var tx = bl.transactions[i];
-                            $('#block').append(`
-                                <tr><td><a href="/node/{{.ID}}/explorer/tx/${tx}">${tx}</a></td></tr>
-                            `);
+                            txs += `
+                            <tr>
+                                <td><a href="/node/{{.ID}}/explorer/tx/${tx}">#${i}</a></td>
+                                <td><code>${tx}</code></td>
+                            </tr>`;
                         }
-                        $('#block').append(`</table>`);
+                        $('#block').append(`<p><b>Transactions:</b> <table class="table table-sm">${txs}</table>`);
                         //$('#block').append(`<p><code>${JSON.stringify(bl)}</code><p>`);
                     });
                 });
