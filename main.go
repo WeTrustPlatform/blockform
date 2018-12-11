@@ -53,22 +53,7 @@ func main() {
 	//db.DropTableIfExists(&model.Node{})
 	db.AutoMigrate(&model.Node{})
 
-	tmpl := template.Must(template.ParseFiles(
-		"templates/head.html",
-		"templates/index.html",
-		"templates/create.html",
-		"templates/node_general.html",
-		"templates/node_health.html",
-		"templates/node_endpoints.html",
-		"templates/node_actions.html",
-		"templates/node_activity.html",
-		"templates/node_explorer.html",
-		"templates/node_explorer_block.html",
-		"templates/node_explorer_transaction.html",
-		"templates/node_explorer_address.html",
-		"templates/node_sidemenu.html",
-		"templates/footer.html",
-	))
+	tmpl := template.Must(template.ParseGlob("templates/*"))
 
 	azureProvider = azure.NewAzure()
 	awsProvider = aws.NewAWS()
