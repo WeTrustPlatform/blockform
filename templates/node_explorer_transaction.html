@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head"}}
+</head>
+<body>
+    {{with .Node}}
+    <div class="container">
+        <h1><a href="/">BlockForm</a></h1>
+        <h2>{{ .Name }}</h2>
+        <div class="lefttabs">
+            <div class="row">
+                <div class="col col-3">
+                    {{template "node_sidemenu" $ }}
+                </div>
+                <div class="col">
+                    <div class="details">
+                        <h4>Transaction</h4>
+                        <div id="tx"></div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $( document ).ready(function() {
+                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    web3.eth.getTransaction("{{ $.TxHash }}").then(async (tx) =>{
+                        $('#tx').append(`<p><b>Hash:</b> <code>${tx.hash}</code></p>`);
+                        $('#tx').append(`<p><b>Block:</b> <a href="/node/{{.ID}}/explorer/bl/${tx.blockNumber}">${tx.blockNumber}</a></p>`);
+                        $('#tx').append(`<p><b>Index:</b> <code>${tx.transactionIndex}</code></p>`);
+                        $('#tx').append(`<p><b>Value:</b> <code>${tx.value}</code></p>`);
+                        $('#tx').append(`<p><b>From:</b> <code>${tx.from}</code></p>`);
+                        $('#tx').append(`<p><b>To:</b> <code>${tx.to}</code></p>`);
+                        $('#tx').append(`<p><b>Gas:</b> <code>${tx.gas}</code></p>`);
+                        $('#tx').append(`<p><b>Gas Price:</b> <code>${tx.gasPrice}</code></p>`);
+                        $('#tx').append(`<p><b>S:</b> <code>${tx.s}</code></p>`);
+                        $('#tx').append(`<p><b>R:</b> <code>${tx.r}</code></p>`);
+                        $('#tx').append(`<p><b>V:</b> <code>${tx.v}</code></p>`);
+                        
+                        //$('#tx').append(`<p><code>${JSON.stringify(tx)}</code><p>`);
+                    });
+                });
+            </script>
+        </div>
+        {{template "footer"}}
+    </div>
+    {{end}}
+</body>
+</html>
