@@ -18,6 +18,10 @@ h2 {
   margin: 40px 0;
 }
 
+h4 {
+  margin-bottom: 20px;
+}
+
 table#nodes {
   border: solid 1px #dee2e6;
   margin-bottom: 40px;

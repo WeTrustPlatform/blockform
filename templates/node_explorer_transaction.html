@@ -25,11 +25,11 @@
                     var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
                     web3.eth.getTransaction("{{ $.TxHash }}").then(async (tx) =>{
                         $('#tx').append(`<p><b>Hash:</b> <code>${tx.hash}</code></p>`);
-                        $('#tx').append(`<p><b>Block:</b> <a href="/node/{{.ID}}/explorer/bl/${tx.blockNumber}">${tx.blockNumber}</a></p>`);
+                        $('#tx').append(`<p><b>Block Number:</b> <a href="/node/{{.ID}}/explorer/bl/${tx.blockNumber}">#${tx.blockNumber}</a></p>`);
                         $('#tx').append(`<p><b>Index:</b> <code>${tx.transactionIndex}</code></p>`);
                         $('#tx').append(`<p><b>Value:</b> <code>${tx.value}</code></p>`);
-                        $('#tx').append(`<p><b>From:</b> <code>${tx.from}</code></p>`);
-                        $('#tx').append(`<p><b>To:</b> <code>${tx.to}</code></p>`);
+                        $('#tx').append(`<p><b>From:</b> <a href="/node/{{.ID}}/explorer/addr/${tx.from}">${tx.from}</a></p>`);
+                        $('#tx').append(`<p><b>To:</b> <a href="/node/{{.ID}}/explorer/addr/${tx.to}">${tx.to}</a></p>`);
                         $('#tx').append(`<p><b>Gas:</b> <code>${tx.gas}</code></p>`);
                         $('#tx').append(`<p><b>Gas Price:</b> <code>${tx.gasPrice}</code></p>`);
                         $('#tx').append(`<p><b>S:</b> <code>${tx.s}</code></p>`);
