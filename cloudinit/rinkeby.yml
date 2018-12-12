@@ -22,7 +22,7 @@ mounts:
   - [ "@@DEVICE@@1", "/datadrive", "ext4", "defaults", "0", "2" ]
 write_files:
   - owner: root:root
-  - path: /lib/systemd/system/geth.service
+    path: /lib/systemd/system/geth.service
     content: |
         [Unit]
         Description=Geth
@@ -38,12 +38,61 @@ write_files:
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
-    path: /etc/nginx/sites-available/default
+    path: /etc/security/limits.conf
     content: |
-        server {
-          listen 8545;
-          location /@@API_KEY@@ {
-            proxy_pass http://127.0.0.1:8445;
+        *    soft nofile 1048576
+        *    hard nofile 1048576
+        root soft nofile 1048576
+        root hard nofile 1048576
+  - owner: root:root
+    path: /etc/pam.d/common-session
+    content: |
+        session [default=1] pam_permit.so
+        session requisite   pam_deny.so
+        session required    pam_permit.so
+        session optional    pam_umask.so
+        session required    pam_unix.so
+        session optional    pam_systemd.so
+        session required    pam_limits.so
+  - owner: root:root
+    path: /etc/sysctl.conf
+    content: |
+        fs.file-max = 2097152
+        fs.nr_open = 1048576
+        net.ipv4.netfilter.ip_conntrack_max = 1048576
+        net.nf_conntrack_max = 1048576
+        net.core.somaxconn = 1048576
+  - owner: root:root
+    path: /etc/systemd/system/nginx.service.d/limit.conf
+    content: |
+        [Service]
+        LimitNOFILE=65536
+  - owner: root:root
+    path: /etc/nginx/nginx.conf
+    content: |
+        user www-data;
+        worker_processes auto;
+        pid /run/nginx.pid;
+        worker_rlimit_nofile 65536;
+
+        events {
+          worker_connections 4096;
+          multi_accept on;
+        }
+
+        http {
+          tcp_nopush on;
+          tcp_nodelay on;
+          reset_timedout_connection on;
+          keepalive_timeout 30;
+          client_body_timeout 10;
+          send_timeout 2;
+
+          server {
+            listen 8545;
+            location /@@API_KEY@@ {
+              proxy_pass http://127.0.0.1:8445;
+            }
           }
         }
   - owner: root:root
@@ -75,6 +124,7 @@ runcmd:
   - wget https://www.rinkeby.io/rinkeby.json
   - chown -R blockform:blockform /datadrive
   - geth --datadir=/datadrive init rinkeby.json
+  - systemctl daemon-reload
   - systemctl enable geth
   - systemctl start geth
   - systemctl restart nginx
