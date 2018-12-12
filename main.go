@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"text/template"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
 	"goji.io/pat"
 
-	"github.com/alecthomas/template"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/sethvargo/go-password/password"
@@ -65,17 +65,17 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static/", fs))
 
-	mux.Handle(pat.Get("/"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/"), func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
 		db.Find(&nodes).Order("created_at DESC")
 		tmpl.ExecuteTemplate(w, "index.html", nodes)
-	}))
+	})
 
-	mux.Handle(pat.Get("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
 		tmpl.ExecuteTemplate(w, "create.html", nil)
-	}))
+	})
 
-	mux.Handle(pat.Post("/create"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Post("/create"), func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(500)
 		}
@@ -114,9 +114,9 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}))
+	})
 
-	mux.Handle(pat.Get("/delete/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/delete/:id"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
 		if ID == "" {
 			w.WriteHeader(404)
@@ -135,14 +135,14 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}))
+	})
 
-	mux.Handle(pat.Get("/node/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id"), func(w http.ResponseWriter, r *http.Request) {
 		id := pat.Param(r, "id")
 		http.Redirect(w, r, "/node/"+id+"/general", http.StatusSeeOther)
-	}))
+	})
 
-	mux.Handle(pat.Get("/node/:id/:tab"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id/:tab"), func(w http.ResponseWriter, r *http.Request) {
 		id := pat.Param(r, "id")
 		tab := pat.Param(r, "tab")
 		node := model.Node{}
@@ -154,9 +154,9 @@ func main() {
 			tab,
 			node,
 		})
-	}))
+	})
 
-	mux.Handle(pat.Get("/node/:nodeid/explorer/:class/:id"), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:nodeid/explorer/:class/:id"), func(w http.ResponseWriter, r *http.Request) {
 		nodeID := pat.Param(r, "nodeid")
 		tab := "explorer"
 		class := pat.Param(r, "class")
@@ -172,7 +172,7 @@ func main() {
 			id,
 			node,
 		})
-	}))
+	})
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), mux))
 }

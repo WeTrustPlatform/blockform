@@ -74,14 +74,6 @@
 			"Rev": "f401b1ccc8eb505927fae7a0c7f6406d37ca1c7e"
 		},
 		{
-			"ImportPath": "github.com/alecthomas/template",
-			"Rev": "a0175ee3bccc567396460bf5acd36800cb10c49c"
-		},
-		{
-			"ImportPath": "github.com/alecthomas/template/parse",
-			"Rev": "a0175ee3bccc567396460bf5acd36800cb10c49c"
-		},
-		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws",
 			"Comment": "v1.15.88-1-g88388f1d",
 			"Rev": "88388f1dcec6c6c6548dab2149b22d36ef2f5e08"
