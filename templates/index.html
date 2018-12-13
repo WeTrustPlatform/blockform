@@ -17,7 +17,7 @@
                 <th>Endpoint</th>
             </tr>
             {{range .}}
-            <tr>
+            <tr class="status-{{.Status}}">
                 <td>
                     <a href="/node/{{.ID}}"><div class="circle"><i class="fab fa-ethereum"></i></div> <b>{{.Name}}</b></a><br>
                     {{if eq .NetworkType "public" }}
@@ -28,7 +28,7 @@
                         Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
                     {{end}}
                 </td>
-                <td class="text-capitalize">{{.Status}}</td>
+                <td class="text-capitalize status">{{.Status}}</td>
                 <td>{{.CreatedAt.Format "Jan 2 15:04"}}</td>
                 <td class="text-capitalize">
                     {{if eq .CloudProvider "aws" }}AWS{{end}}
@@ -58,5 +58,34 @@
         {{end}}
         {{template "footer"}}
     </div>
+    <script>
+        $( document ).ready(function() {
+            $('.status-deployed').each(async function() {
+                var rpc = $(this).find('input').val();
+                var web3 = new Web3(rpc);
+                var td = $(this).find('td.status');
+                setInterval(async function() {
+                    var data = await web3.eth.isSyncing();
+                    var bn = await web3.eth.getBlockNumber();
+                    if (data) {
+                        $(td).html(`Synchronizing<br>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="${data.currentBlock}" aria-valuemin="0" aria-valuemax="${data.highestBlock+data.knownStates}" style="width: ${data.currentBlock/(data.highestBlock+data.knownStates)*100}%"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="${data.pulledStates}" aria-valuemin="0" aria-valuemax="${data.highestBlock+data.knownStates}" style="width: ${data.pulledStates/(data.highestBlock+data.knownStates)*100}%"></div>
+                            </div>`);
+                    } else {
+                        $(td).html(`Synchronized<br><i class="fas fa-dice-d6"></i> ${bn}`);
+                    }
+                }, 1000);
+            });
+            $('.status-creating').each(async function() {
+                var td = $(this).find('td.status');
+                $(td).html(`Creating<br>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>`);
+            });
+        });
+    </script>
 </body>
 </html>
