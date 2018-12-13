@@ -22,10 +22,25 @@ h4 {
   margin-bottom: 20px;
 }
 
+.details section {
+  margin-bottom: 16px;
+}
+
+.details section label {
+  text-transform: uppercase;
+  color: grey;
+  font-size: 0.75rem;
+  width: 130px;
+}
+
 table#nodes {
   border: solid 1px #dee2e6;
   margin-bottom: 40px;
   background: white;
+}
+
+table#nodes td {
+  min-height: 63px;
 }
 
 table#nodes th {
@@ -34,6 +49,11 @@ table#nodes th {
 
 table#nodes tr:hover td {
   background-color: #fbfbfb;
+}
+
+.toclipboard input {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 14px;
 }
 
 .smaller {

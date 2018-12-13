@@ -15,23 +15,23 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <p>
-                            <b>VM Status:</b>
+                        <section>
+                            <label>VM Status:</label>
                             <span class="text-capitalize">{{.Status}}</span>
-                        </p>
+                        </section>
                         {{ if eq .Status "deployed"}}
-                        <p>
-                            <b>Geth Syncing:</b>
-                            <span id="syncing"></span>
-                        </p>
-                        <p>
-                            <b>Block Number:</b>
-                            <span id="blocknumber"></span>
-                        </p>
-                        <p>
-                            <b>Net Peers:</b>
-                            <span id="netpeers"></span>
-                        </p>
+                        <section>
+                            <label>Geth Syncing:</label>
+                            <span id="syncing"><i class="fas fa-spin fa-spinner"></i></span>
+                        </section>
+                        <section>
+                            <label>Block Number:</label>
+                            <span id="blocknumber"><i class="fas fa-spin fa-spinner"></i></span>
+                        </section>
+                        <section>
+                            <label>Net Peers:</label>
+                            <span id="netpeers"><i class="fas fa-spin fa-spinner"></i></span>
+                        </section>
                         
                         <script>
                             $( document ).ready(function() {

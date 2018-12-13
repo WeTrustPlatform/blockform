@@ -15,8 +15,8 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <p>
-                            <b>Network:</b>
+                        <section>
+                            <label>Network:</label>
                             {{if eq .NetworkType "public" }}
                             {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
                             {{if eq .NetworkID 3}}Rospten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
@@ -24,56 +24,56 @@
                             {{else}}
                             Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
                             {{end}}
-                        </p>
-                        <p>
-                            <b>Created at:</b>
+                        </section>
+                        <section>
+                            <label>Created at:</label>
                             {{.CreatedAt.Format "Mon Jan 2 15:04"}}
-                        </p>
-                        <p>
-                            <b>Cloud Provider:</b>
+                        </section>
+                        <section>
+                            <label>Cloud Provider:</label>
                             {{if eq .CloudProvider "aws" }}AWS{{end}}
                             {{if eq .CloudProvider "azure" }}Azure{{end}}
-                        </p>
-                        <p>
-                            <b>VM Status:</b>
+                        </section>
+                        <section>
+                            <label>VM Status:</label>
                             <span class="text-capitalize">{{.Status}}</span>
-                        </p>
+                        </section>
                         {{ if eq .Status "deployed"}}
-                        <p>
-                            <b>Geth Syncing:</b>
-                            <span id="syncing"></span>
-                        </p>
-                        <p>
-                            <b>Block Number:</b>
-                            <span id="blocknumber"></span>
-                        </p>
-                        <p>
-                            <b>Web3 RPC endpoint:</b>
+                        <section>
+                            <label>Geth Syncing:</label>
+                            <span id="syncing"><i class="fas fa-spin fa-spinner"></i></span>
+                        </section>
+                        <section>
+                            <label>Block Number:</label>
+                            <span id="blocknumber"><i class="fas fa-spin fa-spinner"></i></span>
+                        </section>
+                        <section>
+                            <label>Web3 RPC endpoint:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <input class="form-control text-monospace" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
-                        <p>
-                            <b>Geth attach:</b>
+                        </section>
+                        <section>
+                            <label>Geth attach:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                                <input class="form-control text-monospace" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
-                        <p>
-                            <b>SSH access:</b>
+                        </section>
+                        <section>
+                            <label>SSH access:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
+                                <input class="form-control text-monospace" type="text" value="ssh blockform@{{.DomainName}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
+                        </section>
                         <script>
                             $( document ).ready(function() {
                                 var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");

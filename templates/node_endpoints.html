@@ -15,39 +15,39 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <p><b>Domain:</b> <code>{{.DomainName}}</code></p>
-                        <p><b>API Key:</b> <code>{{.APIKey}}</code></p>
+                        <section><label>Domain:</label> <code>{{.DomainName}}</code></section>
+                        <section><label>API Key:</label> <code>{{.APIKey}}</code></section>
                         {{ if eq .Status "deployed"}}
-                        <p>
-                            <b>Web3 RPC endpoint:</b>
+                        <section>
+                            <label>Web3 RPC endpoint:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
-                        <p>
-                            <b>Geth attach:</b>
+                        </section>
+                        <section>
+                            <label>Geth attach:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
-                        <p>
-                            <b>SSH access:</b>
+                        </section>
+                        <section>
+                            <label>SSH access:</label>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button"><i class="fas fa-copy"></i></button>
                                 </div>
                             </div>
-                        </p>
+                        </section>
                         {{ if eq .NetworkType "private"}}
-                        <p>
-                            <b>Faucet:</b>
+                        <section>
+                            <label>Faucet:</label>
                             <div class="input-group mb-3 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="http://{{.DomainName}}:8080/{{.APIKey}}/yourethaddress" readonly>
                                 <div class="input-group-append">
@@ -61,7 +61,7 @@
                                     <button id="faucet" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" type="button">Receive 1 ETH</button>
                                 </div>
                             </div>
-                        </p>
+                        </section>
                         <script>
                             $( document ).ready(function() {
                                 $('#faucet').click(function() {
