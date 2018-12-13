@@ -11,7 +11,6 @@
         <table class="table" id="nodes">
             <tr>
                 <th>Name</th>
-                <th>Network</th>
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Provider</th>
@@ -19,10 +18,8 @@
             </tr>
             {{range .}}
             <tr>
-                <td class="align-middle">
-                    <a href="/node/{{.ID}}"><i class="fas fa-server"></i> <b>{{.Name}}</b></a>
-                </td>
-                <td class="align-middle">
+                <td>
+                    <a href="/node/{{.ID}}"><div class="circle"><i class="fas fa-server"></i></div> <b>{{.Name}}</b></a><br>
                     {{if eq .NetworkType "public" }}
                         {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
                         {{if eq .NetworkID 3}}Ropsten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
@@ -31,9 +28,9 @@
                         Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
                     {{end}}
                 </td>
-                <td class="align-middle text-capitalize">{{.Status}}</td>
-                <td class="align-middle">{{.CreatedAt.Format "Mon Jan 2 15:04"}}</td>
-                <td class="align-middle text-capitalize">
+                <td class="text-capitalize">{{.Status}}</td>
+                <td>{{.CreatedAt.Format "Jan 2 15:04"}}</td>
+                <td class="text-capitalize">
                     {{if eq .CloudProvider "aws" }}AWS{{end}}
                     {{if eq .CloudProvider "azure" }}Azure{{end}}
                 </td>

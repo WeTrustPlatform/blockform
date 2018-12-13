@@ -1,25 +1,61 @@
 body {
-  background-color: #fbfbfb;
+  background-color: #fbfcff;
+  font-size: 0.9rem;
+  color: #443a37;
+  border-top: 3px solid #4a90e2;
 }
 
 body,h1,h2,h3,h4,h5,p {
   font-family: 'Nunito', sans-serif;
 }
 
+a {
+  color: #4a90e2;
+}
+
 a:hover {
   text-decoration: none;
+  color: #61a7f8
 }
 
 h1 {
-  margin: 40px 0;
+  margin: 40px 0 30px 0;
 }
 
 h2 {
-  margin: 40px 0;
+  margin: 30px 0 30px 0;
 }
 
 h4 {
   margin-bottom: 20px;
+}
+
+.circle {
+  background: #4a90e2;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: white;
+  border-radius: 50%;
+  float: left;
+  margin-right: 10px;
+}
+
+a:hover .circle {
+  background: #61a7f8;
+}
+
+.btn-primary {
+  background: #4a90e2;
+  border: none;
+  border-bottom: solid 3px #2f6db5;
+}
+
+.btn-primary:hover {
+  background: #61a7f8;
+  border: none;
+  border-bottom: solid 3px #4a90e2;
 }
 
 .details section {
@@ -34,17 +70,25 @@ h4 {
 }
 
 table#nodes {
-  border: solid 1px #dee2e6;
   margin-bottom: 40px;
   background: white;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+table#nodes th {
+  vertical-align: middle;
+  border-top: none;
+  color: grey;
+  text-transform: uppercase;
+  height: 50px;
+  font-size: 0.75rem;
+  font-weight: normal;
 }
 
 table#nodes td {
   min-height: 63px;
-}
-
-table#nodes th {
-  background-color: #dee2e6;
+  vertical-align: middle;
+  padding: 0.85rem;
 }
 
 table#nodes tr:hover td {
@@ -53,7 +97,26 @@ table#nodes tr:hover td {
 
 .toclipboard input {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-  font-size: 14px;
+  font-size: 12px;
+  border-right: none;
+  background-color: #f7fbff!important;
+  padding-right: 0;
+}
+
+.toclipboard .btn {
+  border-color: #ced4da;
+  border-left: none;
+  background: #f7fbff;
+}
+
+.toclipboard .btn:hover {
+  border-color: #ced4da;
+  border-left: none;
+  background: #ced4da;
+}
+
+.progress-bar {
+  background-color: #4a90e2;
 }
 
 .smaller {
@@ -78,7 +141,7 @@ table#nodes tr:hover td {
 
 .lefttabs, .toptabs {
   background: white;
-  border: solid 1px #dee2e6;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 .toptabs .tab-content {
@@ -102,7 +165,7 @@ table#nodes tr:hover td {
 .toptabs .nav-link.active {
   background: white;
   color: #212529;
-  border-top: solid 2px #007bff;
+  border-top: solid 2px #4a90e2;
   border-left: none;
   border-bottom: solid 1px white;
 }
@@ -140,7 +203,7 @@ table#nodes tr:hover td {
 #sidemenu .nav-link.active {
   background: white;
   color: #212529;
-  border-left: solid 2px #007bff;
+  border-left: solid 2px #4a90e2;
   border-right: none;
 }
 
