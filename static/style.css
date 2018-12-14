@@ -1,8 +1,8 @@
 body {
-  background-color: #fbfcff;
+  background-color: hsl(212, 100%, 99%);
   font-size: 0.9rem;
-  color: #443a37;
-  border-top: 3px solid #4a90e2;
+  color: hsl(14, 11%, 24%);
+  border-top: 3px solid hsl(212, 72%, 59%);
 }
 
 body,h1,h2,h3,h4,h5,p {
@@ -10,12 +10,12 @@ body,h1,h2,h3,h4,h5,p {
 }
 
 a {
-  color: #4a90e2;
+  color: hsl(212, 72%, 59%);
 }
 
 a:hover {
   text-decoration: none;
-  color: #61a7f8
+  color: hsl(212, 92%, 68%)
 }
 
 h1 {
@@ -31,7 +31,7 @@ h4 {
 }
 
 .circle {
-  background: #4a90e2;
+  background: hsl(212, 72%, 59%);
   width: 40px;
   height: 40px;
   line-height: 40px;
@@ -49,19 +49,43 @@ td.status .progress {
 }
 
 a:hover .circle {
-  background: #61a7f8;
+  background: hsl(212, 92%, 68%);
 }
 
 .btn-primary {
-  background: #4a90e2;
+  background: hsl(212, 72%, 59%);
   border: none;
-  border-bottom: solid 3px #2f6db5;
+  border-bottom: solid 3px hsl(212, 59%, 45%);
 }
 
 .btn-primary:hover {
-  background: #61a7f8;
+  background: hsl(212, 92%, 68%);
   border: none;
-  border-bottom: solid 3px #4a90e2;
+  border-bottom: solid 3px hsl(212, 72%, 59%);
+}
+
+.btn-danger {
+  background: hsl(0, 72%, 59%);
+  border: none;
+  border-bottom: solid 3px hsl(0, 59%, 45%);
+}
+
+.btn-danger:hover {
+  background: hsl(0, 92%, 68%);
+  border: none;
+  border-bottom: solid 3px hsl(0, 72%, 59%);
+}
+
+.btn-secondary {
+  background: hsl(0, 0%, 59%);
+  border: none;
+  border-bottom: solid 3px hsl(0, 0%, 45%);
+}
+
+.btn-secondary:hover {
+  background: hsl(0, 0%, 68%);
+  border: none;
+  border-bottom: solid 3px hsl(0, 0%, 59%);
 }
 
 .details section {
@@ -78,7 +102,7 @@ a:hover .circle {
 table#nodes {
   margin-bottom: 40px;
   background: white;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 table#nodes th {
@@ -105,7 +129,7 @@ table#nodes tr:hover td {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 12px;
   border-right: none;
-  background-color: #f7fbff!important;
+  background-color: hsl(212, 100%, 98%)!important;
   padding-right: 0;
 }
 
@@ -122,7 +146,7 @@ table#nodes tr:hover td {
 }
 
 .progress-bar {
-  background-color: #4a90e2;
+  background-color: hsl(212, 72%, 59%);
 }
 
 .smaller {
@@ -170,8 +194,8 @@ table#nodes tr:hover td {
 
 .toptabs .nav-link.active {
   background: white;
-  color: #212529;
-  border-top: solid 2px #4a90e2;
+  color: hsl(212, 11%, 15%);
+  border-top: solid 2px hsl(212, 72%, 59%);
   border-left: none;
   border-bottom: solid 1px white;
 }
@@ -208,8 +232,8 @@ table#nodes tr:hover td {
 
 #sidemenu .nav-link.active {
   background: white;
-  color: #212529;
-  border-left: solid 2px #4a90e2;
+  color: hsl(212, 11%, 15%);
+  border-left: solid 2px hsl(212, 72%, 59%);
   border-right: none;
 }
 

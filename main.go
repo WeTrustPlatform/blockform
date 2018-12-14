@@ -12,6 +12,7 @@ import (
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/model"
+	"github.com/WeTrustPlatform/blockform/sshcmd"
 	"goji.io/pat"
 
 	"github.com/jinzhu/gorm"
@@ -42,6 +43,21 @@ func providerForNode(node model.Node) CloudProvider {
 		cloud = awsProvider
 	}
 	return cloud
+}
+
+// RebootNode reboots the VM where the node is hosted
+func rebootNode(ctx context.Context, node model.Node, callback func()) {
+	err := sshcmd.Exec(
+		os.Getenv("PRIV_KEY"),
+		os.Getenv("PASSPHRASE"),
+		"blockform",
+		node.DomainName,
+		"sudo reboot",
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	callback()
 }
 
 func main() {
@@ -135,6 +151,17 @@ func main() {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
+
+	mux.HandleFunc(pat.Get("/reboot/:id"), func(w http.ResponseWriter, r *http.Request) {
+		ID := pat.Param(r, "id")
+		node := model.Node{}
+		db.Find(&node, ID)
+		log.Println("Rebooting node", node.Name)
+		go rebootNode(context.Background(), node, func() {
+			log.Println("Done rebooting node " + node.Name)
+		})
+		http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
 	})
 
 	mux.HandleFunc(pat.Get("/node/:id"), func(w http.ResponseWriter, r *http.Request) {

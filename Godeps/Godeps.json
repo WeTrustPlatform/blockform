@@ -423,11 +423,39 @@
 			"Rev": "9a575ab427c3664b5d8db472a689b3303a0d73c9"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/curve25519",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/internal/chacha20",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/internal/subtle",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/pkcs12",
 			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/pkcs12/internal/rc2",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/poly1305",
+			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh",
 			"Rev": "e657309f52e71501f9934566ac06dc5c2f7f11a1"
 		},
 		{
