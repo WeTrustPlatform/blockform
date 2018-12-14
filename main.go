@@ -161,6 +161,7 @@ func main() {
 		go rebootNode(context.Background(), node, func() {
 			log.Println("Done rebooting node " + node.Name)
 		})
+		http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
 	})
 
 	mux.HandleFunc(pat.Get("/node/:id"), func(w http.ResponseWriter, r *http.Request) {
