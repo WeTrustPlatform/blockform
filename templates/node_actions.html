@@ -18,7 +18,7 @@
                         {{ if eq .Status "deployed"}}
                         <p>
                             <b>Virtual Machine:</b>
-                            <div><button class="btn btn-primary" data-toggle="modal" data-target="#reboot-{{.ID}}"><i class="far fa-trash-alt"></i> Reboot this node</button></div>
+                            <div><button class="btn btn-primary" data-toggle="modal" data-target="#reboot-{{.ID}}"><i class="fas fa-sync-alt"></i> Reboot this node</button></div>
                             <div class="modal" id="reboot-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
