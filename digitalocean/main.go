@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/digitalocean/godo"
 	"golang.org/x/oauth2"
@@ -49,7 +50,9 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 	// 	SizeGigaBytes: 10,
 	// })
 
-	droplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
+	// time.Sleep(40 * time.Second)
+
+	newDroplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
 		Name:   node.Name,
 		Region: "sfo2",
 		Size:   "s-1vcpu-1gb",
@@ -58,10 +61,12 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		},
 		IPv6: true,
 		Tags: []string{"blockform", node.Name},
-		// Volumes: []godo.DropletCreateVolume{godo.DropletCreateVolume{
-		// 	ID:   node.Name,
-		// 	Name: node.Name,
-		// }},
+		// Volumes: []godo.DropletCreateVolume{
+		// 	{
+		// 		Name: node.Name + "-volume",
+		// 		ID:   node.Name + "-volume",
+		// 	},
+		// },
 		UserData: customData,
 	})
 
@@ -69,8 +74,12 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		fmt.Printf("Something bad happened: %s\n\n", err)
 	}
 
+	time.Sleep(40 * time.Second)
+
+	droplet, _, _ := do.client.Droplets.Get(ctx, newDroplet.ID)
+
 	ipv4, _ := droplet.PublicIPv4()
-	callback(droplet.URN(), "http://"+ipv4)
+	callback(droplet.URN(), ipv4)
 }
 
 func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
