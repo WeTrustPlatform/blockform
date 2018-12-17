@@ -134,10 +134,6 @@ func main() {
 
 	mux.HandleFunc(pat.Get("/delete/:id"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
-		if ID == "" {
-			w.WriteHeader(404)
-		}
-
 		node := model.Node{}
 		db.Find(&node, ID)
 
