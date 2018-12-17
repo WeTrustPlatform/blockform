@@ -33,6 +33,7 @@
                 <td class="text-capitalize">
                     {{if eq .CloudProvider "aws" }}AWS{{end}}
                     {{if eq .CloudProvider "azure" }}Azure{{end}}
+                    {{if eq .CloudProvider "digitalocean" }}DigitalOcean{{end}}
                 </td>
                 <td>
                     {{if .DomainName}}
