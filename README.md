@@ -17,15 +17,16 @@ instance. So the installation process has been made as simple as possible.
 
 ### Features
 
- - Deploy nodes for public networks
- - Create your own private ethereum network with Proof of Authority
+ - Deploy geth nodes for public networks
+ - Create your own private Ethereum network with Proof of Authority
  - Support multiple cloud providers: Azure and AWS
  - RPC endpoints protected by an API key
+ - WebSocket RPC endpoints
  - Basic faucet web service for your private network
  - Node data saved to an SSD
  - Basic heathchecks
  - Basic authentication for the UI
- - Works with MetaMask, geth attach, and web3.js
+ - Conpatible with MetaMask, geth attach, and web3.js
  - Easy to deploy on Heroku
 
 ### Usage
