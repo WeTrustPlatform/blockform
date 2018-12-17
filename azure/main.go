@@ -56,7 +56,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		log.Println(err)
 	}
 
-	customData := cloudinit.CustomData(node, "/dev/sdc")
+	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
 
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "blockform"},
