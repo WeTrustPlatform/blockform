@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/digitalocean/godo"
@@ -50,8 +51,6 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		SizeGigaBytes: 10,
 	})
 
-	time.Sleep(30 * time.Second)
-
 	newDroplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
 		Name:   node.Name,
 		Region: "sfo2",
@@ -78,14 +77,31 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 	droplet, _, _ := do.client.Droplets.Get(ctx, newDroplet.ID)
 
 	ipv4, _ := droplet.PublicIPv4()
-	callback(droplet.URN(), ipv4)
+	callback(fmt.Sprintf("%d", droplet.ID), ipv4)
 }
 
 func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
-	_, err := do.client.Droplets.DeleteByTag(ctx, node.Name)
+	id, err := strconv.ParseInt(node.VMID, 10, 64)
 	if err != nil {
 		onError(err)
 		return
 	}
+
+	droplet, _, err := do.client.Droplets.Get(ctx, int(id))
+
+	_, err = do.client.Droplets.DeleteByTag(ctx, node.Name)
+	if err != nil {
+		onError(err)
+		return
+	}
+
+	time.Sleep(20 * time.Second)
+
+	_, err = do.client.Storage.DeleteVolume(ctx, droplet.VolumeIDs[0])
+	if err != nil {
+		onError(err)
+		return
+	}
+
 	onSuccess()
 }
