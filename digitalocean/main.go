@@ -93,6 +93,10 @@ func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSucces
 	}
 
 	droplet, _, err := do.client.Droplets.Get(ctx, int(id))
+	if err != nil {
+		onError(err)
+		return
+	}
 
 	_, err = do.client.Droplets.DeleteByTag(ctx, node.Name)
 	if err != nil {
