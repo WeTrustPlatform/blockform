@@ -19,10 +19,12 @@ type DigitalOcean struct {
 	client *godo.Client
 }
 
+// TokenSource stores the OAuth2 access token string
 type TokenSource struct {
 	AccessToken string
 }
 
+// Token returns the oauth2.Token
 func (t *TokenSource) Token() (*oauth2.Token, error) {
 	token := &oauth2.Token{
 		AccessToken: t.AccessToken,
@@ -30,6 +32,7 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 	return token, nil
 }
 
+// NewDigitalOcean instantiates a new DigitalOcean CloudProvider
 func NewDigitalOcean() DigitalOcean {
 	var do DigitalOcean
 	tokenSource := &TokenSource{
@@ -41,6 +44,7 @@ func NewDigitalOcean() DigitalOcean {
 	return do
 }
 
+// CreateNode creates a volume and a droplet and installs geth.
 func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 
 	customData := cloudinit.CustomData(node, "/dev/sda")
@@ -80,6 +84,7 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 	callback(fmt.Sprintf("%d", droplet.ID), ipv4)
 }
 
+// DeleteNode deletes the droplet and the attached volume
 func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
 	id, err := strconv.ParseInt(node.VMID, 10, 64)
 	if err != nil {
