@@ -34,7 +34,7 @@ write_files:
         User=blockform
         WorkingDirectory=/home/blockform
         StandardOutput=journal
-        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 4 --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts *
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 4 --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins *
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
@@ -46,6 +46,17 @@ write_files:
           access_log syslog:server=unix:/dev/log;
           location /@@API_KEY@@ {
             proxy_pass http://127.0.0.1:8445;
+          }
+        }
+        server {
+          listen 8546;
+          error_log syslog:server=unix:/dev/log;
+          access_log syslog:server=unix:/dev/log;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8446;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
           }
         }
   - owner: root:root
