@@ -113,26 +113,47 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 }
 
 // DeleteNode will delete the AWS node
-func (aw AWS) DeleteNode(ctx context.Context, node model.Node, callback func()) {
+func (aw AWS) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
 	termInst, err := aw.svc.TerminateInstances(&ec2.TerminateInstancesInput{
 		InstanceIds: []*string{aws.String(node.VMID)},
 	})
 	if err != nil {
 		log.Println("Could not delete instance:", err)
+		onError(err)
 		return
 	}
 	log.Println(termInst)
 
-	// TODO stop leaking security groups
+	// Wait until the instance is fully terminated
+	for {
+		time.Sleep(30 * time.Second)
+
+		status, _ := aw.svc.DescribeInstanceStatus(&ec2.DescribeInstanceStatusInput{
+			InstanceIds: []*string{aws.String(node.VMID)},
+		})
+
+		log.Println(status)
+
+		if len(status.InstanceStatuses) > 0 {
+			if *status.InstanceStatuses[0].SystemStatus.Status == "terminated" {
+				break
+			}
+		} else {
+			break
+		}
+	}
+
 	delSG, err := aw.svc.DeleteSecurityGroup(&ec2.DeleteSecurityGroupInput{
 		GroupName: aws.String(node.Name),
 	})
 	if err != nil {
 		log.Println("Could not delete security group:", err)
+		onError(err)
+		return
 	}
 	log.Println(delSG)
 
-	callback()
+	onSuccess()
 }
 
 // createSecurityGroup creates the security group with the VPC, name and description.

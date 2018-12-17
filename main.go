@@ -26,7 +26,7 @@ import (
 // an ethereum node on it, and delete a virtual machine.
 type CloudProvider interface {
 	CreateNode(context.Context, model.Node, func(string, string))
-	DeleteNode(context.Context, model.Node, func())
+	DeleteNode(context.Context, model.Node, func(), func(error))
 }
 
 var azureProvider CloudProvider
@@ -141,10 +141,18 @@ func main() {
 
 		cloud := providerForNode(node)
 		log.Println("Deleting node", node.Name)
-		go cloud.DeleteNode(context.Background(), node, func() {
-			db.Where("id=?", ID).Delete(&model.Node{})
-			log.Println("Done deleting node " + node.Name)
-		})
+		go cloud.DeleteNode(context.Background(), node,
+			// On Success
+			func() {
+				db.Where("id=?", ID).Delete(&model.Node{})
+				log.Println("Done deleting node " + node.Name)
+			},
+			// On Error
+			func(err error) {
+				db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deployed)
+				log.Println("Error while deleting node", node.Name, err)
+			},
+		)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
