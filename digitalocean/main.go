@@ -44,13 +44,13 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 
 	customData := cloudinit.CustomData(node, "/dev/sda")
 
-	// do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
-	// 	Name:          node.Name + "-volume",
-	// 	Region:        "sfo2",
-	// 	SizeGigaBytes: 10,
-	// })
+	vol, _, _ := do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
+		Name:          node.Name + "-volume",
+		Region:        "sfo2",
+		SizeGigaBytes: 10,
+	})
 
-	// time.Sleep(40 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	newDroplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
 		Name:   node.Name,
@@ -61,12 +61,11 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		},
 		IPv6: true,
 		Tags: []string{"blockform", node.Name},
-		// Volumes: []godo.DropletCreateVolume{
-		// 	{
-		// 		Name: node.Name + "-volume",
-		// 		ID:   node.Name + "-volume",
-		// 	},
-		// },
+		Volumes: []godo.DropletCreateVolume{
+			{
+				ID: vol.ID,
+			},
+		},
 		UserData: customData,
 	})
 
