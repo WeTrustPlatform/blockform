@@ -66,13 +66,9 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		Image: godo.DropletCreateImage{
 			Slug: "ubuntu-18-04-x64",
 		},
-		IPv6: true,
-		Tags: []string{"blockform", node.Name},
-		Volumes: []godo.DropletCreateVolume{
-			{
-				ID: vol.ID,
-			},
-		},
+		IPv6:     true,
+		Tags:     []string{"blockform", node.Name},
+		Volumes:  []godo.DropletCreateVolume{{ID: vol.ID}},
 		UserData: customData,
 	})
 	if err != nil {
@@ -84,7 +80,6 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		DropletIDs: []int{newDroplet.ID},
 		InboundRules: []godo.InboundRule{
 			{Protocol: "TCP", PortRange: "22", Sources: &godo.Sources{}},
-			{Protocol: "TCP", PortRange: "80", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8080", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8545", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8546", Sources: &godo.Sources{}},
