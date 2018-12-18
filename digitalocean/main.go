@@ -53,7 +53,7 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 	vol, _, err := do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
 		Name:          node.Name,
 		Region:        "sfo2",
-		SizeGigaBytes: 10,
+		SizeGigaBytes: 200,
 	})
 	if err != nil {
 		log.Println(err)
