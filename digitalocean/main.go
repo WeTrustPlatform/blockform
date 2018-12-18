@@ -3,6 +3,7 @@ package digitalocean
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -49,11 +50,14 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 
 	customData := cloudinit.CustomData(node, "/dev/sda")
 
-	vol, _, _ := do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
-		Name:          node.Name + "-volume",
+	vol, _, err := do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
+		Name:          node.Name,
 		Region:        "sfo2",
 		SizeGigaBytes: 10,
 	})
+	if err != nil {
+		log.Println(err)
+	}
 
 	newDroplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
 		Name:   node.Name,
@@ -71,9 +75,24 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		},
 		UserData: customData,
 	})
-
 	if err != nil {
-		fmt.Printf("Something bad happened: %s\n\n", err)
+		log.Println(err)
+	}
+
+	_, _, err = do.client.Firewalls.Create(ctx, &godo.FirewallRequest{
+		Name:       node.Name,
+		DropletIDs: []int{newDroplet.ID},
+		InboundRules: []godo.InboundRule{
+			{Protocol: "TCP", PortRange: "22", Sources: &godo.Sources{}},
+			{Protocol: "TCP", PortRange: "80", Sources: &godo.Sources{}},
+			{Protocol: "TCP", PortRange: "8080", Sources: &godo.Sources{}},
+			{Protocol: "TCP", PortRange: "8545", Sources: &godo.Sources{}},
+			{Protocol: "TCP", PortRange: "8546", Sources: &godo.Sources{}},
+			{Protocol: "UDP", PortRange: "30303", Sources: &godo.Sources{}},
+		},
+	})
+	if err != nil {
+		log.Println(err)
 	}
 
 	time.Sleep(40 * time.Second)
@@ -84,7 +103,10 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 	callback(fmt.Sprintf("%d", droplet.ID), ipv4)
 }
 
-// DeleteNode deletes the droplet and the attached volume
+// DeleteNode deletes the droplet and the attached volume and firewall.
+// The firewall is deleted first, because the droplet needs to exists when
+// looking for the firewall. The volume is deleted last, because we can't delete
+// a volume attached to an existing droplet.
 func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
 	id, err := strconv.ParseInt(node.VMID, 10, 64)
 	if err != nil {
@@ -93,6 +115,21 @@ func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSucces
 	}
 
 	droplet, _, err := do.client.Droplets.Get(ctx, int(id))
+	if err != nil {
+		onError(err)
+		return
+	}
+
+	fws, _, err := do.client.Firewalls.ListByDroplet(ctx, droplet.ID, &godo.ListOptions{
+		Page:    0,
+		PerPage: 10,
+	})
+	if err != nil {
+		onError(err)
+		return
+	}
+
+	_, err = do.client.Firewalls.Delete(ctx, fws[0].ID)
 	if err != nil {
 		onError(err)
 		return
