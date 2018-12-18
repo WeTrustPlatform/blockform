@@ -90,9 +90,12 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		log.Println(err)
 	}
 
-	time.Sleep(40 * time.Second)
+	time.Sleep(40 * time.Second) // TODO find a better way
 
-	droplet, _, _ := do.client.Droplets.Get(ctx, newDroplet.ID)
+	droplet, _, err := do.client.Droplets.Get(ctx, newDroplet.ID)
+	if err != nil {
+		log.Println(err)
+	}
 
 	ipv4, _ := droplet.PublicIPv4()
 	callback(fmt.Sprintf("%d", droplet.ID), ipv4)
@@ -136,7 +139,7 @@ func (do DigitalOcean) DeleteNode(ctx context.Context, node model.Node, onSucces
 		return
 	}
 
-	time.Sleep(20 * time.Second)
+	time.Sleep(20 * time.Second) // TODO find a better way
 
 	_, err = do.client.Storage.DeleteVolume(ctx, droplet.VolumeIDs[0])
 	if err != nil {
