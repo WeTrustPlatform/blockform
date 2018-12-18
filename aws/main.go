@@ -134,11 +134,7 @@ func (aw AWS) DeleteNode(ctx context.Context, node model.Node, onSuccess func(),
 
 		log.Println(status)
 
-		if len(status.InstanceStatuses) > 0 {
-			if *status.InstanceStatuses[0].SystemStatus.Status == "terminated" {
-				break
-			}
-		} else {
+		if len(status.InstanceStatuses) == 0 {
 			break
 		}
 	}
