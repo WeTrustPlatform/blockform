@@ -15,36 +15,53 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <section><label>Domain:</label> <code>{{.DomainName}}</code></section>
-                        <section><label>API Key:</label> <code>{{.APIKey}}</code></section>
+                        <section class="row">
+                            <label class="col-3">Domain:</label>
+                            <div class="col-9">
+                            <code>{{.DomainName}}</code>
+                            </div>
+                        </section>
+                        <section class="row">
+                            <label class="col-3">API Key:</label>
+                            <div class="col-9">
+                            <code>{{.APIKey}}</code>
+                            </div>
+                        </section>
                         {{ if eq .Status "deployed"}}
-                        <section>
-                            <label>Web3 RPC endpoint:</label>
+                        <section class="row">
+                            <label class="col-3">Web3 RPC endpoint:</label>
+                            <div class="col-9">
                             <div class="input-group mb-2 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="ws://{{.DomainName}}:8546/{{.APIKey}}" readonly>
                             </div>
+                            </div>
                         </section>
-                        <section>
-                            <label>Geth attach:</label>
+                        <section class="row">
+                            <label class="col-3">Geth attach:</label>
+                            <div class="col-9">
                             <div class="input-group mb-2 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="geth attach ws://{{.DomainName}}:8546/{{.APIKey}}" readonly>
                             </div>
+                            </div>
                         </section>
-                        <section>
-                            <label>SSH access:</label>
+                        <section class="row">
+                            <label class="col-3">SSH access:</label>
+                            <div class="col-9">
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
                             </div>
+                            </div>
                         </section>
                         {{ if eq .NetworkType "private"}}
-                        <section>
-                            <label>Faucet:</label>
+                        <section class="row">
+                            <label class="col-3">Faucet:</label>
+                            <div class="col-9">
                             <div class="input-group mb-3 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control" type="text" value="http://{{.DomainName}}:8080/{{.APIKey}}/yourethaddress" readonly>
                             </div>
@@ -54,6 +71,7 @@
                                 <div class="input-group-append">
                                     <button id="faucet" class="btn btn-primary" data-toggle="tooltip" data-placement="top" type="button">Receive 1 ETH</button>
                                 </div>
+                            </div>
                             </div>
                         </section>
                         <script>

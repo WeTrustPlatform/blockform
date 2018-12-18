@@ -91,14 +91,13 @@ a:hover .circle {
 }
 
 .details section {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .details section label {
   text-transform: uppercase;
   color: grey;
   font-size: 0.75rem;
-  width: 130px;
 }
 
 .form-group>label {

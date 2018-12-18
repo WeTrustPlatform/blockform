@@ -15,22 +15,30 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <section>
-                            <label>VM Status:</label>
+                        <section class="row">
+                            <label class="col-3">VM Status:</label>
+                            <div class="col-9">
                             <span class="text-capitalize">{{.Status}}</span>
+                            </div>
                         </section>
                         {{ if eq .Status "deployed"}}
-                        <section>
-                            <label>Geth Syncing:</label>
+                        <section class="row">
+                            <label class="col-3">Geth Syncing:</label>
+                            <div class="col-9">
                             <span id="syncing"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
                         </section>
-                        <section>
-                            <label>Block Number:</label>
+                        <section class="row">
+                            <label class="col-3">Block Number:</label>
+                            <div class="col-9">
                             <span id="blocknumber"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
                         </section>
-                        <section>
-                            <label>Net Peers:</label>
+                        <section class="row">
+                            <label class="col-3">Net Peers:</label>
+                            <div class="col-9">
                             <span id="netpeers"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
                         </section>
                         
                         <script>

@@ -15,8 +15,9 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        <section>
-                            <label>Network:</label>
+                        <section class="row">
+                            <label class="col-3">Network:</label>
+                            <div class="col-9">
                             {{if eq .NetworkType "public" }}
                             {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
                             {{if eq .NetworkID 3}}Rospten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
@@ -24,46 +25,63 @@
                             {{else}}
                             Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
                             {{end}}
+                            </div>
                         </section>
-                        <section>
-                            <label>Created at:</label>
+                        <section class="row">
+                            <label class="col-3">Created at:</label>
+                            <div class="col-9">
                             {{.CreatedAt.Format "Mon Jan 2 15:04"}}
+                            </div>
                         </section>
-                        <section>
-                            <label>Cloud Provider:</label>
+                        <section class="row">
+                            <label class="col-3">Cloud Provider:</label>
+                            <div class="col-9">
                             {{if eq .CloudProvider "aws" }}AWS{{end}}
                             {{if eq .CloudProvider "azure" }}Azure{{end}}
                             {{if eq .CloudProvider "digitalocean" }}DigitalOcean{{end}}
+                            </div>
                         </section>
-                        <section>
-                            <label>VM Status:</label>
+                        <section class="row">
+                            <label class="col-3">VM Status:</label>
+                            <div class="col-9">
                             <span class="text-capitalize">{{.Status}}</span>
+                            </div>
                         </section>
                         {{ if eq .Status "deployed"}}
-                        <section>
-                            <label>Geth Syncing:</label>
+                        <section class="row">
+                            <label class="col-3">Geth Syncing:</label>
+                            <div class="col-9">
                             <span id="syncing"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
                         </section>
-                        <section>
-                            <label>Block Number:</label>
+                        <section class="row">
+                            <label class="col-3">Block Number:</label>
+                            <div class="col-9">
                             <span id="blocknumber"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
                         </section>
-                        <section>
-                            <label>Web3 RPC endpoint:</label>
+                        <section class="row">
+                            <label class="col-3">Web3 RPC endpoint:</label>
+                            <div class="col-9">
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control text-monospace" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
+                            </div>
                         </section>
-                        <section>
-                            <label>Geth attach:</label>
+                        <section class="row">
+                            <label class="col-3">Geth attach:</label>
+                            <div class="col-9">
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control text-monospace" type="text" value="geth attach http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
+                            </div>
                         </section>
-                        <section>
-                            <label>SSH access:</label>
+                        <section class="row">
+                            <label class="col-3">SSH access:</label>
+                            <div class="col-9">
                             <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
                                 <input class="form-control text-monospace" type="text" value="ssh blockform@{{.DomainName}}" readonly>
+                            </div>
                             </div>
                         </section>
                         <script>
