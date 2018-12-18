@@ -82,6 +82,14 @@ a:hover .circle {
   border: none;
 }
 
+.form-control {
+  border-color: hsla(212, 92%, 68%, 0.15);
+  background-color: hsla(212, 92%, 68%, 0.15);
+  height: 38px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
 .details section {
   margin-bottom: 16px;
 }
@@ -91,6 +99,12 @@ a:hover .circle {
   color: grey;
   font-size: 0.75rem;
   width: 130px;
+}
+
+.form-group>label {
+  text-transform: uppercase;
+  color: grey;
+  font-size: 0.75rem;
 }
 
 table#nodes {
@@ -120,23 +134,7 @@ table#nodes tr:hover td {
 }
 
 .toclipboard input {
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-  font-size: 12px;
-  border-right: none;
-  background-color: hsl(212, 100%, 98%)!important;
-  padding-right: 0;
-}
-
-.toclipboard .btn {
-  border-color: #ced4da;
-  border-left: none;
-  background: #f7fbff;
-}
-
-.toclipboard .btn:hover {
-  border-color: #ced4da;
-  border-left: none;
-  background: #ced4da;
+  background-color: hsla(212, 92%, 68%, 0.15) !important;
 }
 
 .progress-bar {
