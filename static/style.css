@@ -55,37 +55,31 @@ a:hover .circle {
 .btn-primary {
   background: hsl(212, 72%, 59%);
   border: none;
-  border-bottom: solid 3px hsl(212, 59%, 45%);
 }
 
 .btn-primary:hover {
   background: hsl(212, 92%, 68%);
   border: none;
-  border-bottom: solid 3px hsl(212, 72%, 59%);
 }
 
 .btn-danger {
   background: hsl(0, 72%, 59%);
   border: none;
-  border-bottom: solid 3px hsl(0, 59%, 45%);
 }
 
 .btn-danger:hover {
   background: hsl(0, 92%, 68%);
   border: none;
-  border-bottom: solid 3px hsl(0, 72%, 59%);
 }
 
 .btn-secondary {
   background: hsl(0, 0%, 59%);
   border: none;
-  border-bottom: solid 3px hsl(0, 0%, 45%);
 }
 
 .btn-secondary:hover {
   background: hsl(0, 0%, 68%);
   border: none;
-  border-bottom: solid 3px hsl(0, 0%, 59%);
 }
 
 .details section {
@@ -171,7 +165,7 @@ table#nodes tr:hover td {
 
 .lefttabs, .toptabs {
   background: white;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .toptabs .tab-content {
@@ -179,25 +173,22 @@ table#nodes tr:hover td {
 }
 
 .toptabs ul {
-  background: #dee2e6;
+  background: hsl(212, 72%, 59%);
 }
 
 .toptabs .nav-link {
-  padding: 0.75rem 1.25rem;
-  font-weight: bold;
+  padding: 1rem 1.5rem;
   border-radius: 0;
-  background: #fbfbfb;
-  border-top: solid 2px transparent;
-  border-right: solid 1px #dee2e6;
-  border-bottom: solid 1px #dee2e6;
+  color: white;
+}
+
+.toptabs .nav-link:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .toptabs .nav-link.active {
   background: white;
   color: hsl(212, 11%, 15%);
-  border-top: solid 2px hsl(212, 72%, 59%);
-  border-left: none;
-  border-bottom: solid 1px white;
 }
 
 .lefttabs .details {
@@ -209,17 +200,14 @@ table#nodes tr:hover td {
 }
 
 #sidemenu {
-  background: #dee2e6;
   height: 100%;
+  background: hsl(212, 72%, 59%);
 }
 
 #sidemenu .nav-link {
-  padding: 0.75rem;
-  font-weight: bold;
+  padding: 1rem;
   border-radius: 0;
-  background: #fbfbfb;
-  border-right: solid 1px #dee2e6;
-  border-bottom: solid 1px #dee2e6;
+  color: white;
 }
 
 #sidemenu .nav-link:last-child {
@@ -227,14 +215,12 @@ table#nodes tr:hover td {
 }
 
 #sidemenu .nav-link:hover {
-  background: white;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 #sidemenu .nav-link.active {
   background: white;
   color: hsl(212, 11%, 15%);
-  border-left: solid 2px hsl(212, 72%, 59%);
-  border-right: none;
 }
 
 footer {
