@@ -81,7 +81,11 @@
                                 
                                 setInterval(function() {
                                     web3.eth.isSyncing().then((data) => {
-                                        $('#syncing').html(data ? `Blocks: ${(data.currentBlock/data.highestBlock*100).toFixed(2)}% States: ${(data.pulledStates/data.knownStates*100).toFixed(2)}%` : 'False');
+                                        $('#syncing').html(data ? `
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="${data.currentBlock}" aria-valuemin="0" aria-valuemax="${data.highestBlock+data.knownStates}" style="width: ${data.currentBlock/(data.highestBlock+data.knownStates)*100}%"></div>
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="${data.pulledStates}" aria-valuemin="0" aria-valuemax="${data.highestBlock+data.knownStates}" style="width: ${data.pulledStates/(data.highestBlock+data.knownStates)*100}%"></div>
+                                            </div>` : 'False');
                                     });
                                     web3.eth.getBlockNumber().then((data) => {
                                         $('#blocknumber').html(data ? data : 'N/A');
