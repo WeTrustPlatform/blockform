@@ -12,6 +12,7 @@ import (
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/digitalocean"
+	"github.com/WeTrustPlatform/blockform/gcp"
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/WeTrustPlatform/blockform/sshcmd"
 	"goji.io/pat"
@@ -33,6 +34,7 @@ type CloudProvider interface {
 var azureProvider CloudProvider
 var awsProvider CloudProvider
 var doProvider CloudProvider
+var gcpProvider CloudProvider
 
 func providerForNode(node model.Node) CloudProvider {
 	var cloud CloudProvider
@@ -43,6 +45,8 @@ func providerForNode(node model.Node) CloudProvider {
 		cloud = azureProvider
 	case "digitalocean":
 		cloud = doProvider
+	case "gcp":
+		cloud = gcpProvider
 	default:
 		cloud = awsProvider
 	}
@@ -78,6 +82,7 @@ func main() {
 	azureProvider = azure.NewAzure()
 	awsProvider = aws.NewAWS()
 	doProvider = digitalocean.NewDigitalOcean()
+	gcpProvider = gcp.NewGCP()
 
 	mux := goji.NewMux()
 
