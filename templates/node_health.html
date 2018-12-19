@@ -31,7 +31,10 @@
                         <section class="row">
                             <label class="col-3">Block Number:</label>
                             <div class="col-9">
-                            <span id="blocknumber"><i class="fas fa-spin fa-spinner"></i></span>
+                                <div id="blocknumber"><i class="fas fa-spin fa-spinner"></i></div>
+                                {{if eq .NetworkType "public" }}
+                                    <div id="bn-etherscan" class="text-secondary"><i class="fas fa-spin fa-spinner"></i></div>
+                                {{end}}
                             </div>
                         </section>
                         <section class="row">
@@ -73,7 +76,15 @@
                                     web3.eth.net.getPeerCount().then((data) => {
                                         $('#netpeers').html(data);
                                     });
-                                    
+
+                                    {{if eq .NetworkType "public" }}
+                                        {{if eq .NetworkID 1}}let url = "https://api.etherscan.io/api?module=proxy&action=eth_blockNumber"{{end}}
+                                        {{if eq .NetworkID 3}}let url = "https://api-ropsten.etherscan.io/api?module=proxy&action=eth_blockNumber"{{end}}
+                                        {{if eq .NetworkID 4}}let url = "https://api-rinkeby.etherscan.io/api?module=proxy&action=eth_blockNumber"{{end}}
+                                        fetch(url).then(res => res.json()).then((data) => {
+                                            $('#bn-etherscan').html(parseInt(data.result, 16) + " on etherscan");
+                                        });
+                                    {{end}}
                                 }, 1000);
                             });
                         </script>
