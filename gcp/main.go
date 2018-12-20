@@ -2,8 +2,8 @@ package gcp
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
@@ -23,19 +23,15 @@ type GCP struct {
 func NewGCP() GCP {
 	var gc GCP
 
-	ctx := context.Background()
-	data, err := ioutil.ReadFile("/Users/kivutar/Downloads/file (3).txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	conf, err := google.JWTConfigFromJSON(data,
+	conf, err := google.JWTConfigFromJSON(
+		[]byte(os.Getenv("GCP_JSON")),
 		"https://www.googleapis.com/auth/compute",
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	gc.service, _ = compute.New(conf.Client(ctx))
+	gc.service, _ = compute.New(conf.Client(context.Background()))
 	return gc
 }
 
@@ -44,7 +40,7 @@ var (
 	project = "blockform"
 	prefix  = "https://www.googleapis.com/compute/v1/projects/" + project
 	size    = "g1-small"
-	os      = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20181203a"
+	image   = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20181203a"
 )
 
 // CreateNode creates a google compute engine instance
@@ -64,7 +60,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:    node.Name + "-os",
 					DiskSizeGb:  10,
-					SourceImage: os,
+					SourceImage: image,
 				},
 			},
 			{
