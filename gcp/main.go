@@ -59,7 +59,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				Type:       "PERSISTENT",
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:    node.Name + "-os",
-					DiskSizeGb:  10,
+					DiskSizeGb:  30,
 					SourceImage: image,
 				},
 			},
@@ -69,7 +69,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				Type:       "PERSISTENT",
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:   node.Name + "-data",
-					DiskSizeGb: 20,
+					DiskSizeGb: 200,
 				},
 			},
 		},
