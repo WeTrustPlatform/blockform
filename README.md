@@ -31,7 +31,7 @@ instance. So the installation process has been made as simple as possible.
 
 ### Usage
 
-Generate your Azure service principal:
+For Azure, generate a service principal:
 
     az login
     az ad sp create-for-rbac --sdk-auth
@@ -39,7 +39,16 @@ Generate your Azure service principal:
 For AWS, go to IAM Management console, and generate an Access Key for your
 user in the Security Cretendials tab.
 
-On DigitalOcean, go to API and generate a Personal access token.
+For DigitalOcean, go to API and generate a Personal access token.
+
+For Google Cloud Platform:
+
+ - Create a project, for example `my-blockform`. If the name is not long enough,
+ google will append some random string that you will need to export in the next
+ steps.
+ - In *API and Services*, enable the *Compute Engine API* for this project.
+ - In *API and Services*, go to the *Credentials* tab and generate an *Account
+ Service Key* as a JSON file for the *Compute Engine default service account*.
 
 Set environment variables:
 
@@ -50,6 +59,8 @@ Set environment variables:
     export AWS_ACCESS_KEY_ID="xxxxxxxxxx"
     export AWS_SECRET_ACCESS_KEY="xxxxxxxxxxxxxxxxxxxx"
     export DO_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    export GCP_JSON="{xxxx}"
+    export GCP_PROJECT="my-blockform"
     export PORT=3000
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
     export BASIC_AUTH_USER=xxxxx
