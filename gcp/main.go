@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/WeTrustPlatform/blockform/cloudinit"
+
 	"golang.org/x/oauth2/google"
 
 	"github.com/WeTrustPlatform/blockform/model"
@@ -49,6 +51,8 @@ var (
 func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 	log.Println("Creating a node on GCP")
 
+	customData := cloudinit.CustomData(node, "/dev/sdb")
+
 	insertOP, err := gc.service.Instances.Insert(project, zone, &compute.Instance{
 		Name:        node.Name,
 		MachineType: prefix + "/zones/" + zone + "/machineTypes/" + size,
@@ -58,9 +62,18 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				Boot:       true,
 				Type:       "PERSISTENT",
 				InitializeParams: &compute.AttachedDiskInitializeParams{
-					DiskName:    node.Name,
+					DiskName:    node.Name + "-os",
 					DiskSizeGb:  10,
 					SourceImage: os,
+				},
+			},
+			{
+				AutoDelete: true,
+				Boot:       false,
+				Type:       "PERSISTENT",
+				InitializeParams: &compute.AttachedDiskInitializeParams{
+					DiskName:   node.Name + "-data",
+					DiskSizeGb: 20,
 				},
 			},
 		},
@@ -75,8 +88,15 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				Network: prefix + "/global/networks/default",
 			},
 		},
-		Metadata: &compute.Metadata{},
-		Tags:     &compute.Tags{Items: []string{project}},
+		Metadata: &compute.Metadata{
+			Items: []*compute.MetadataItems{
+				{
+					Key:   "user-data",
+					Value: &customData,
+				},
+			},
+		},
+		Tags: &compute.Tags{Items: []string{project}},
 	}).Do()
 	if err != nil {
 		log.Println(err)
