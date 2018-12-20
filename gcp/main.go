@@ -2,9 +2,9 @@ package gcp
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"log"
+	"time"
 
 	"golang.org/x/oauth2/google"
 
@@ -37,20 +37,21 @@ func NewGCP() GCP {
 	return gc
 }
 
+var (
+	zone    = "us-west2-a"
+	project = "blockform"
+	prefix  = "https://www.googleapis.com/compute/v1/projects/" + project
+	size    = "g1-small"
+	os      = "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20181203a"
+)
+
 // CreateNode creates a google compute engine instance
 func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
 	log.Println("Creating a node on GCP")
 
-	project, err := gc.service.Projects.Get("blockform").Do()
-	if err != nil {
-		log.Println(err)
-	}
-
-	prefix := "https://www.googleapis.com/compute/v1/projects/" + project.Name
-
-	op, err := gc.service.Instances.Insert(project.Name, "us-west2-a", &compute.Instance{
+	insertOP, err := gc.service.Instances.Insert(project, zone, &compute.Instance{
 		Name:        node.Name,
-		MachineType: prefix + "/zones/us-west2-a/machineTypes/g1-small",
+		MachineType: prefix + "/zones/" + zone + "/machineTypes/" + size,
 		Disks: []*compute.AttachedDisk{
 			{
 				AutoDelete: true,
@@ -59,7 +60,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:    node.Name,
 					DiskSizeGb:  10,
-					SourceImage: "projects/ubuntu-os-cloud/global/images/ubuntu-1804-bionic-v20181203a",
+					SourceImage: os,
 				},
 			},
 		},
@@ -75,24 +76,37 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 			},
 		},
 		Metadata: &compute.Metadata{},
-		Tags: &compute.Tags{
-			Items: []string{"blockform"},
-		},
+		Tags:     &compute.Tags{Items: []string{project}},
 	}).Do()
 	if err != nil {
 		log.Println(err)
 	}
 
-	fmt.Println(op)
+	for {
+		time.Sleep(10 * time.Second)
+		op, err := gc.service.ZoneOperations.Get(project, zone, insertOP.Name).Do()
+		if err != nil {
+			log.Println(err)
+			break
+		}
+		if op.Status == "DONE" {
+			break
+		}
+	}
 
-	callback(node.Name, "")
+	vm, err := gc.service.Instances.Get(project, zone, node.Name).Do()
+	if err != nil {
+		log.Println(err)
+	}
+
+	callback(node.Name, vm.NetworkInterfaces[0].AccessConfigs[0].NatIP)
 }
 
 // DeleteNode deletes the google compute engine instance
 func (gc GCP) DeleteNode(ctx context.Context, node model.Node, onSuccess func(), onError func(error)) {
 	log.Println("Deleting a node on GCP")
 
-	_, err := gc.service.Instances.Delete("blockform", "us-west2-a", node.VMID).Do()
+	_, err := gc.service.Instances.Delete(project, zone, node.VMID).Do()
 	if err != nil {
 		onError(err)
 		return
