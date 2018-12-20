@@ -69,6 +69,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				Type:       "PERSISTENT",
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:   node.Name + "-data",
+					DiskType:   prefix + "/zones/" + zone + "/diskTypes/pd-ssd",
 					DiskSizeGb: 200,
 				},
 			},

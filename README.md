@@ -6,8 +6,8 @@
 
 BlockForm helps you deploy Ethereum nodes to the cloud and manage them.
 It takes care of creating a virtual machine in one of the supported cloud
-providers (currently Azure, AWS and DigitalOcean) and will install geth in the
-best possible way.
+providers (currently Azure, AWS, GCP and DigitalOcean) and will install geth in
+the best possible way.
 
 Blockform is a free software. It is tailored for teams or individuals whose
 work depends on a fleet of Ethereum nodes. You have to install your own
@@ -19,7 +19,8 @@ instance. So the installation process has been made as simple as possible.
 
  - Deploy geth nodes for public networks
  - Create your own private Ethereum network with Proof of Authority
- - Support multiple cloud providers: Azure, AWS and DigitalOcean
+ - Support multiple cloud providers: Azure, AWS, GCP and DigitalOcean
+ - Setup a firewall for you
  - RPC endpoints protected by an API key
  - WebSocket RPC endpoints
  - Basic faucet web service for your private network
