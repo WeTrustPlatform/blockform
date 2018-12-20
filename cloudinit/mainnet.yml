@@ -1,5 +1,4 @@
 #cloud-config
-package_upgrade: true
 users:
   - default
   - name: blockform
