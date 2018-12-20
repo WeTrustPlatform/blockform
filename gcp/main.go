@@ -36,7 +36,7 @@ func NewGCP() GCP {
 }
 
 var (
-	zone    = "us-west2-a"
+	zone    = "asia-east1-a"
 	project = os.Getenv("GCP_PROJECT")
 	prefix  = "https://www.googleapis.com/compute/v1/projects/" + project
 	size    = "g1-small"
