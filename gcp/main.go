@@ -96,7 +96,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				},
 			},
 		},
-		Tags: &compute.Tags{Items: []string{project}},
+		Tags: &compute.Tags{Items: []string{project, node.Name}},
 	}).Do()
 	if err != nil {
 		log.Println(err)
@@ -115,6 +115,28 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 	}
 
 	vm, err := gc.service.Instances.Get(project, zone, node.Name).Do()
+	if err != nil {
+		log.Println(err)
+	}
+
+	net := vm.NetworkInterfaces[0].Network
+
+	_, err = gc.service.Firewalls.Insert(project, &compute.Firewall{
+		Name:         node.Name,
+		TargetTags:   []string{node.Name},
+		Network:      net,
+		SourceRanges: []string{"0.0.0.0/0"},
+		Allowed: []*compute.FirewallAllowed{
+			{
+				IPProtocol: "TCP",
+				Ports:      []string{"22", "8545", "8546", "8080"},
+			},
+			{
+				IPProtocol: "UDP",
+				Ports:      []string{"30303"},
+			},
+		},
+	}).Do()
 	if err != nil {
 		log.Println(err)
 	}
