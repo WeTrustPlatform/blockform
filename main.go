@@ -102,7 +102,7 @@ func main() {
 
 	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
 		var keys []string
-		for k, _ := range providers {
+		for k := range providers {
 			keys = append(keys, k)
 		}
 		sort.Strings(keys)

@@ -77,6 +77,19 @@ write_files:
     path: /etc/cron.d/sync-checker
     content: |
         */10 * * * * blockform /usr/bin/sync-checker >> /home/blockform/sync-checker.log 2>&1
+  - owner: root:root
+    path: /datadrive/geth/static-nodes.json
+    permissions: '0755'
+    content: |
+        [
+          "enode://05d8806cd230be50c779eec8eabe9fc1a8c533626dc8c7edca29c1432854b0829c6f298573cb81a21bf9f151774efb2f301239109df24aa9a52976a885f32a05@47.97.199.245:30303",
+          "enode://1228fa9f9239704be84a6dbcbf694b5ee42712a0fe86187061f6f5a294cfe189e8ce9c36dabfe6aa45a9d1c5bdd5195363b5f8fb154b28968e0bd716f2e8c869@71.187.242.167:30303",
+          "enode://be9889ad4e02559696fd26a387d86c2cc35fc99db9ea1c837632d5caf38113a518eb0637f6ba467a688041d7d6fb145675dd7efb64f5f5b2c168c0bfaa56f3c4@47.74.246.80:30303",
+          "enode://784d6a92b1f7824a755fb5b7d53f2a9a6d6be0902539824ec42c2fe5bd92ad5e1bd7a77f99fd4a5c3a8732a55ab5fd099ae42f996b5f6419605047271c95a655@34.200.219.112:30303",
+          "enode://423a62f0d02748dd9ff09458e33354a2dc3dc86dd2295f6799fc53b3dac2c7347e9648e774917c87557891fc64579195841e1f59fbf0a0f514420ef40ff2f63e@54.210.114.15:30303",
+          "enode://a2dfc22c7dfe7a6ffb4b8deb2a150f08166d1822e8a4996559dbaed3fca6bad7bebb244a9cfa43d3831ea954d03048afdc9e15fcbcb67d264592e40b34648df2@158.85.45.88:30303",
+          "enode://b8422ff2b9c93caf91f36ad87e869367a1d6f88c3e1c82b9e49d80aaeedd1ea81595ce0482a3c344353e918bc3ca77067ab0ed1ed54f3c47487b287639f3f3a7@173.249.54.103:30303"
+        ]
 packages:
   - nginx
 runcmd:
