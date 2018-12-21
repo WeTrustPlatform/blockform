@@ -78,7 +78,7 @@ write_files:
     content: |
         */10 * * * * blockform /usr/bin/sync-checker >> /home/blockform/sync-checker.log 2>&1
   - owner: root:root
-    path: /datadrive/static-nodes.json
+    path: /datadrive/rinkeby/static-nodes.json
     permissions: '0755'
     content: |
         [
