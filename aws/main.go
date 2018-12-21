@@ -151,6 +151,9 @@ func (aw AWS) DeleteNode(ctx context.Context, node model.Node, onSuccess func(),
 		}
 	}
 
+	// Delay a little more
+	time.Sleep(30 * time.Second)
+
 	delSG, err := aw.svc.DeleteSecurityGroup(&ec2.DeleteSecurityGroupInput{
 		GroupName: aws.String(node.Name),
 	})
