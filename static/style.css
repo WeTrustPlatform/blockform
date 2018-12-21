@@ -1,5 +1,4 @@
 body {
-  background-color: hsl(212, 100%, 99%);
   font-size: 0.9rem;
   color: hsl(14, 11%, 24%);
   border-top: 3px solid hsl(212, 72%, 59%);
@@ -83,8 +82,8 @@ a:hover .circle {
 }
 
 .form-control {
-  border-color: hsla(212, 92%, 68%, 0.15);
-  background-color: hsla(212, 92%, 68%, 0.15);
+  border-color: hsla(212, 0%, 68%, 0.15);
+  background-color: hsla(212, 0%, 68%, 0.15);
   height: 38px;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 13px;
@@ -102,10 +101,10 @@ a:hover .circle {
   height: 100%;
   border: solid 1px transparent;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: 0.3rem;
   text-align: center;
   cursor: pointer;
-  background: hsla(212, 92%, 68%, 0.15);
+  background: hsla(212, 0%, 68%, 0.15);
   color: #495057;
 }
 
@@ -139,8 +138,8 @@ a:hover .circle {
 
 .providers input[type="radio"]:checked+label {
   border: solid 1px hsl(212, 72%, 59%);
-  background: hsl(212, 72%, 59%);
-  color: white;
+  background: white;
+  color: black;
 }
 
 .providers label:hover {
@@ -194,7 +193,7 @@ table#nodes tr:hover td {
 }
 
 .toclipboard input {
-  background-color: hsla(212, 92%, 68%, 0.15) !important;
+  background-color: hsla(212, 0%, 68%, 0.15) !important;
 }
 
 .progress-bar {
@@ -213,7 +212,7 @@ table#nodes tr:hover td {
 
 #empty {
   padding: 80px 0;
-  background-color: #dee2e6;
+  background-color: hsla(212, 0%, 68%, 0.15);
   text-align: center;
 }
 
