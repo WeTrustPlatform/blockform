@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -77,8 +76,9 @@ func main() {
 	if err == nil {
 		providers["gcp"] = gcpProvider
 	}
-
-	fmt.Println(providers)
+	if len(providers) == 0 {
+		log.Println("No cloud provider, you won't be able to create nodes")
+	}
 
 	mux := goji.NewMux()
 
