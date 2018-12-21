@@ -93,7 +93,7 @@ func main() {
 
 	mux.HandleFunc(pat.Get("/"), func(w http.ResponseWriter, r *http.Request) {
 		var nodes []model.Node
-		db.Find(&nodes).Order("created_at DESC")
+		db.Order("created_at DESC").Find(&nodes)
 		tmpl.ExecuteTemplate(w, "index.html", nodes)
 	})
 
