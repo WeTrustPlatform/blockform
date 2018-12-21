@@ -29,7 +29,7 @@
                     {{end}}
                 </td>
                 <td class="text-capitalize status">{{.Status}}</td>
-                <td>{{.CreatedAt.Format "Jan 2 15:04"}}</td>
+                <td><time datetime="{{.CreatedAt}}"></time></td>
                 <td class="text-capitalize">
                     {{if eq .CloudProvider "aws" }}AWS{{end}}
                     {{if eq .CloudProvider "azure" }}Azure{{end}}
