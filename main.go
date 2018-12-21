@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 	"text/template"
 
@@ -48,6 +49,30 @@ func rebootNode(ctx context.Context, node model.Node, callback func()) {
 	callback()
 }
 
+func makeProviders() map[string]CloudProvider {
+	prov := make(map[string]CloudProvider)
+	azureProvider, err := azure.NewAzure()
+	if err == nil {
+		prov["azure"] = azureProvider
+	}
+	awsProvider, err := aws.NewAWS()
+	if err == nil {
+		prov["aws"] = awsProvider
+	}
+	doProvider, err := digitalocean.NewDigitalOcean()
+	if err == nil {
+		prov["digitalocean"] = doProvider
+	}
+	gcpProvider, err := gcp.NewGCP()
+	if err == nil {
+		prov["gcp"] = gcpProvider
+	}
+	if len(prov) == 0 {
+		log.Println("No cloud provider, you won't be able to create nodes")
+	}
+	return prov
+}
+
 func main() {
 	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -59,26 +84,7 @@ func main() {
 
 	tmpl := template.Must(template.ParseGlob("templates/*"))
 
-	providers = make(map[string]CloudProvider)
-	azureProvider, err := azure.NewAzure()
-	if err == nil {
-		providers["azure"] = azureProvider
-	}
-	awsProvider, err := aws.NewAWS()
-	if err == nil {
-		providers["aws"] = awsProvider
-	}
-	doProvider, err := digitalocean.NewDigitalOcean()
-	if err == nil {
-		providers["digitalocean"] = doProvider
-	}
-	gcpProvider, err := gcp.NewGCP()
-	if err == nil {
-		providers["gcp"] = gcpProvider
-	}
-	if len(providers) == 0 {
-		log.Println("No cloud provider, you won't be able to create nodes")
-	}
+	providers = makeProviders()
 
 	mux := goji.NewMux()
 
@@ -94,7 +100,8 @@ func main() {
 	})
 
 	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "create.html", providers)
+		keys := reflect.ValueOf(providers).MapKeys()
+		tmpl.ExecuteTemplate(w, "create.html", keys)
 	})
 
 	mux.HandleFunc(pat.Post("/create"), func(w http.ResponseWriter, r *http.Request) {
