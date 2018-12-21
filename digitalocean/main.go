@@ -42,12 +42,12 @@ func NewDigitalOcean() (*DigitalOcean, error) {
 		return nil, err
 	}
 
-	var do DigitalOcean
 	tokenSource := &TokenSource{
 		AccessToken: os.Getenv("DO_TOKEN"),
 	}
 
 	oauthClient := oauth2.NewClient(context.Background(), tokenSource)
+	var do DigitalOcean
 	do.client = godo.NewClient(oauthClient)
 	return &do, nil
 }

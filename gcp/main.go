@@ -22,13 +22,12 @@ type GCP struct {
 
 // NewGCP instantiates a new GCP CloudProvider
 func NewGCP() (*GCP, error) {
-	if os.Getenv("GCP_JSON") == "" {
-		err := errors.New("GCP_JSON is not set")
+	if os.Getenv("GCP_JSON") == "" ||
+		os.Getenv("GCP_PROJECT") == "" {
+		err := errors.New("GCP_JSON or GCP_PROJECT is not set")
 		log.Println("Cloudn't create GCP:", err)
 		return nil, err
 	}
-
-	var gc GCP
 
 	conf, err := google.JWTConfigFromJSON(
 		[]byte(os.Getenv("GCP_JSON")),
@@ -38,6 +37,7 @@ func NewGCP() (*GCP, error) {
 		log.Fatal(err)
 	}
 
+	var gc GCP
 	gc.service, _ = compute.New(conf.Client(context.Background()))
 	return &gc, nil
 }

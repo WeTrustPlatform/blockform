@@ -30,8 +30,6 @@ func NewAWS() (*AWS, error) {
 		return nil, err
 	}
 
-	var aw AWS
-
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(endpoints.UsEast1RegionID),
 	})
@@ -46,6 +44,7 @@ func NewAWS() (*AWS, error) {
 			r.ClientInfo.ServiceName, r.Operation, r.Params)
 	})
 
+	var aw AWS
 	aw.svc = ec2.New(sess)
 
 	return &aw, nil
