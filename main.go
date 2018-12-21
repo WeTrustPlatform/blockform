@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/WeTrustPlatform/blockform/aws"
 	"github.com/WeTrustPlatform/blockform/azure"
@@ -116,7 +117,8 @@ func main() {
 		}
 		networkID, _ := strconv.ParseInt(r.FormValue("network_id"), 10, 64)
 		if networkID == 0 {
-			networkID = int64(rand.Intn(1000))
+			rand.Seed(time.Now().UnixNano())
+			networkID = int64(rand.Intn(65536))
 		}
 		APIKey := password.MustGenerate(8, 4, 0, false, false)
 
