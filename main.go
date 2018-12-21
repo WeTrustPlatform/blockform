@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -31,27 +32,7 @@ type CloudProvider interface {
 	DeleteNode(context.Context, model.Node, func(), func(error))
 }
 
-var azureProvider CloudProvider
-var awsProvider CloudProvider
-var doProvider CloudProvider
-var gcpProvider CloudProvider
-
-func providerForNode(node model.Node) CloudProvider {
-	var cloud CloudProvider
-	switch node.CloudProvider {
-	case "aws":
-		cloud = awsProvider
-	case "azure":
-		cloud = azureProvider
-	case "digitalocean":
-		cloud = doProvider
-	case "gcp":
-		cloud = gcpProvider
-	default:
-		cloud = awsProvider
-	}
-	return cloud
-}
+var providers map[string]CloudProvider
 
 // RebootNode reboots the VM where the node is hosted
 func rebootNode(ctx context.Context, node model.Node, callback func()) {
@@ -79,10 +60,25 @@ func main() {
 
 	tmpl := template.Must(template.ParseGlob("templates/*"))
 
-	azureProvider = azure.NewAzure()
-	awsProvider = aws.NewAWS()
-	doProvider = digitalocean.NewDigitalOcean()
-	gcpProvider = gcp.NewGCP()
+	providers = make(map[string]CloudProvider)
+	azureProvider, err := azure.NewAzure()
+	if err == nil {
+		providers["azure"] = azureProvider
+	}
+	awsProvider, err := aws.NewAWS()
+	if err == nil {
+		providers["aws"] = awsProvider
+	}
+	doProvider, err := digitalocean.NewDigitalOcean()
+	if err == nil {
+		providers["digitalocean"] = doProvider
+	}
+	gcpProvider, err := gcp.NewGCP()
+	if err == nil {
+		providers["gcp"] = gcpProvider
+	}
+
+	fmt.Println(providers)
 
 	mux := goji.NewMux()
 
@@ -98,7 +94,7 @@ func main() {
 	})
 
 	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "create.html", nil)
+		tmpl.ExecuteTemplate(w, "create.html", providers)
 	})
 
 	mux.HandleFunc(pat.Post("/create"), func(w http.ResponseWriter, r *http.Request) {
@@ -131,7 +127,7 @@ func main() {
 
 		db.Create(&node)
 
-		cloud := providerForNode(node)
+		cloud := providers[node.CloudProvider]
 		go cloud.CreateNode(context.Background(), node, func(VMID, DomainName string) {
 			db.Model(&node).Update("Status", model.Deployed)
 			db.Model(&node).Update("VMID", VMID)
@@ -149,7 +145,7 @@ func main() {
 
 		db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deleting)
 
-		cloud := providerForNode(node)
+		cloud := providers[node.CloudProvider]
 		log.Println("Deleting node", node.Name)
 		go cloud.DeleteNode(context.Background(), node,
 			// On Success

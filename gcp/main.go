@@ -2,6 +2,7 @@ package gcp
 
 import (
 	"context"
+	"errors"
 	"log"
 	"os"
 	"time"
@@ -20,7 +21,13 @@ type GCP struct {
 }
 
 // NewGCP instantiates a new GCP CloudProvider
-func NewGCP() GCP {
+func NewGCP() (*GCP, error) {
+	if os.Getenv("GCP_JSON") == "" {
+		err := errors.New("GCP_JSON is not set")
+		log.Println("Cloudn't create GCP:", err)
+		return nil, err
+	}
+
 	var gc GCP
 
 	conf, err := google.JWTConfigFromJSON(
@@ -32,7 +39,7 @@ func NewGCP() GCP {
 	}
 
 	gc.service, _ = compute.New(conf.Client(context.Background()))
-	return gc
+	return &gc, nil
 }
 
 var (

@@ -3,6 +3,7 @@ package azure
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -28,19 +29,29 @@ var (
 
 // NewAzure instanciates an Azure CloudProvider and sets important members
 // like the authorizer.
-func NewAzure() Azure {
+func NewAzure() (*Azure, error) {
+	if os.Getenv("AZURE_TENANT_ID") == "" ||
+		os.Getenv("AZURE_CLIENT_ID") == "" ||
+		os.Getenv("AZURE_CLIENT_SECRET") == "" ||
+		os.Getenv("AZURE_SUBSCRIPTION_ID") == "" {
+		err := errors.New("AZURE_TENANT_ID or AZURE_CLIENT_ID or AZURE_CLIENT_SECRET or AZURE_SUBSCRIPTION_ID is not set")
+		log.Println("Cloudn't create Azure:", err)
+		return nil, err
+	}
+
 	var az Azure
 	var err error
 	az.authorizer, err = auth.NewAuthorizerFromEnvironment()
 	if err != nil {
-		log.Fatalf("Failed to get Azure OAuth config: %v\n", err)
+		log.Println("Failed to get Azure OAuth config:", err)
+		return nil, err
 	}
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	az.groupsClient = resources.NewGroupsClient(subscriptionID)
 	az.groupsClient.Authorizer = az.authorizer
 	az.deploymentsClient = resources.NewDeploymentsClient(subscriptionID)
 	az.deploymentsClient.Authorizer = az.authorizer
-	return az
+	return &az, nil
 }
 
 // CreateNode will create an azure VM and install a geth node using cloud-init

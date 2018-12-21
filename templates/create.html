@@ -54,22 +54,17 @@
                         </div>
                         <div class="form-group">
                             <label for="provider">Cloud Provider</label>
+                            {{ range $key, $value := . }}
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_aws" value="aws" checked>
-                                <label class="form-check-label" for="provider_aws">Amazon Web Services</label>
+                                <input class="form-check-input" type="radio" name="provider" id="provider_{{$key}}" value="{{$key}}">
+                                <label class="form-check-label" for="provider_{{$key}}">
+                                    {{if eq $key "aws" }}Amazon Web Services{{end}}
+                                    {{if eq $key "azure" }}Microsoft Azure{{end}}
+                                    {{if eq $key "digitalocean" }}DigitalOcean{{end}}
+                                    {{if eq $key "gcp" }}Google Cloud Platform{{end}}
+                                </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_azure" value="azure">
-                                <label class="form-check-label" for="provider_azure">Microsoft Azure</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_gcp" value="gcp">
-                                <label class="form-check-label" for="provider_gcp">Google Cloud Platform</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_do" value="digitalocean">
-                                <label class="form-check-label" for="provider_do">DigitalOcean</label>
-                            </div>
+                            {{end}}
                         </div>
                         <input name="network_type" type="hidden" value="public">
                         <button type="submit" class="btn btn-primary float-right">Create</button>
@@ -104,22 +99,17 @@
                         </div>
                         <div class="form-group">
                             <label for="provider">Cloud Provider</label>
+                            {{ range $key, $value := . }}
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_aws" value="aws" checked>
-                                <label class="form-check-label" for="provider_aws">Amazon Web Services</label>
+                                <input class="form-check-input" type="radio" name="provider" id="provider_{{$key}}" value="{{$key}}">
+                                <label class="form-check-label" for="provider_{{$key}}">
+                                    {{if eq $key "aws" }}Amazon Web Services{{end}}
+                                    {{if eq $key "azure" }}Microsoft Azure{{end}}
+                                    {{if eq $key "digitalocean" }}DigitalOcean{{end}}
+                                    {{if eq $key "gcp" }}Google Cloud Platform{{end}}
+                                </label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_azure" value="azure">
-                                <label class="form-check-label" for="provider_azure">Microsoft Azure</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_gcp" value="gcp">
-                                <label class="form-check-label" for="provider_gcp">Google Cloud Platform</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="provider" id="provider_do" value="digitalocean">
-                                <label class="form-check-label" for="provider_do">DigitalOcean</label>
-                            </div>
+                            {{end}}
                         </div>
                         <input name="network_type" type="hidden" value="private">
                         <button type="submit" class="btn btn-primary float-right">Create</button>

@@ -20,12 +20,16 @@ type AWS struct {
 }
 
 // NewAWS instanciates an AWS CloudProvider and creates an EC2 session.
-func NewAWS() AWS {
+func NewAWS() (*AWS, error) {
 	var aw AWS
 
-	sess := session.Must(session.NewSession(&aws.Config{
+	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(endpoints.UsEast1RegionID),
-	}))
+	})
+	if err != nil {
+		log.Println("Failed to create AWS session:", err)
+		return nil, err
+	}
 
 	// Log every request made and its payload
 	sess.Handlers.Send.PushFront(func(r *request.Request) {
@@ -35,7 +39,7 @@ func NewAWS() AWS {
 
 	aw.svc = ec2.New(sess)
 
-	return aw
+	return &aw, nil
 }
 
 // CreateNode created an EC2 instance and setups geth
