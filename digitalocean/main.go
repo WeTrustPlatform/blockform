@@ -2,6 +2,7 @@ package digitalocean
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -34,15 +35,21 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 }
 
 // NewDigitalOcean instantiates a new DigitalOcean CloudProvider
-func NewDigitalOcean() DigitalOcean {
-	var do DigitalOcean
+func NewDigitalOcean() (*DigitalOcean, error) {
+	if os.Getenv("DO_TOKEN") == "" {
+		err := errors.New("DO_TOKEN is not set")
+		log.Println("Cloudn't create DigitalOcean:", err)
+		return nil, err
+	}
+
 	tokenSource := &TokenSource{
 		AccessToken: os.Getenv("DO_TOKEN"),
 	}
 
 	oauthClient := oauth2.NewClient(context.Background(), tokenSource)
+	var do DigitalOcean
 	do.client = godo.NewClient(oauthClient)
-	return do
+	return &do, nil
 }
 
 // CreateNode creates a volume and a droplet and installs geth.

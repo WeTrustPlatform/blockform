@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"reflect"
 	"strconv"
 	"text/template"
 	"time"
@@ -32,27 +33,7 @@ type CloudProvider interface {
 	DeleteNode(context.Context, model.Node, func(), func(error))
 }
 
-var azureProvider CloudProvider
-var awsProvider CloudProvider
-var doProvider CloudProvider
-var gcpProvider CloudProvider
-
-func providerForNode(node model.Node) CloudProvider {
-	var cloud CloudProvider
-	switch node.CloudProvider {
-	case "aws":
-		cloud = awsProvider
-	case "azure":
-		cloud = azureProvider
-	case "digitalocean":
-		cloud = doProvider
-	case "gcp":
-		cloud = gcpProvider
-	default:
-		cloud = awsProvider
-	}
-	return cloud
-}
+var providers map[string]CloudProvider
 
 // RebootNode reboots the VM where the node is hosted
 func rebootNode(ctx context.Context, node model.Node, callback func()) {
@@ -69,6 +50,30 @@ func rebootNode(ctx context.Context, node model.Node, callback func()) {
 	callback()
 }
 
+func makeProviders() map[string]CloudProvider {
+	prov := make(map[string]CloudProvider)
+	azureProvider, err := azure.NewAzure()
+	if err == nil {
+		prov["azure"] = azureProvider
+	}
+	awsProvider, err := aws.NewAWS()
+	if err == nil {
+		prov["aws"] = awsProvider
+	}
+	doProvider, err := digitalocean.NewDigitalOcean()
+	if err == nil {
+		prov["digitalocean"] = doProvider
+	}
+	gcpProvider, err := gcp.NewGCP()
+	if err == nil {
+		prov["gcp"] = gcpProvider
+	}
+	if len(prov) == 0 {
+		log.Println("No cloud provider, you won't be able to create nodes")
+	}
+	return prov
+}
+
 func main() {
 	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -80,10 +85,7 @@ func main() {
 
 	tmpl := template.Must(template.ParseGlob("templates/*"))
 
-	azureProvider = azure.NewAzure()
-	awsProvider = aws.NewAWS()
-	doProvider = digitalocean.NewDigitalOcean()
-	gcpProvider = gcp.NewGCP()
+	providers = makeProviders()
 
 	mux := goji.NewMux()
 
@@ -99,7 +101,8 @@ func main() {
 	})
 
 	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "create.html", nil)
+		keys := reflect.ValueOf(providers).MapKeys()
+		tmpl.ExecuteTemplate(w, "create.html", keys)
 	})
 
 	mux.HandleFunc(pat.Post("/create"), func(w http.ResponseWriter, r *http.Request) {
@@ -133,7 +136,7 @@ func main() {
 
 		db.Create(&node)
 
-		cloud := providerForNode(node)
+		cloud := providers[node.CloudProvider]
 		go cloud.CreateNode(context.Background(), node, func(VMID, DomainName string) {
 			db.Model(&node).Update("Status", model.Deployed)
 			db.Model(&node).Update("VMID", VMID)
@@ -151,7 +154,7 @@ func main() {
 
 		db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deleting)
 
-		cloud := providerForNode(node)
+		cloud := providers[node.CloudProvider]
 		log.Println("Deleting node", node.Name)
 		go cloud.DeleteNode(context.Background(), node,
 			// On Success

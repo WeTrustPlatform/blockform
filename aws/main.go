@@ -2,7 +2,9 @@ package aws
 
 import (
 	"context"
+	"errors"
 	"log"
+	"os"
 	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
@@ -20,12 +22,21 @@ type AWS struct {
 }
 
 // NewAWS instanciates an AWS CloudProvider and creates an EC2 session.
-func NewAWS() AWS {
-	var aw AWS
+func NewAWS() (*AWS, error) {
+	if os.Getenv("AWS_ACCESS_KEY_ID") == "" ||
+		os.Getenv("AWS_SECRET_ACCESS_KEY") == "" {
+		err := errors.New("AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY is not set")
+		log.Println("Cloudn't create AWS:", err)
+		return nil, err
+	}
 
-	sess := session.Must(session.NewSession(&aws.Config{
+	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(endpoints.UsEast1RegionID),
-	}))
+	})
+	if err != nil {
+		log.Println("Failed to create AWS session:", err)
+		return nil, err
+	}
 
 	// Log every request made and its payload
 	sess.Handlers.Send.PushFront(func(r *request.Request) {
@@ -33,9 +44,10 @@ func NewAWS() AWS {
 			r.ClientInfo.ServiceName, r.Operation, r.Params)
 	})
 
+	var aw AWS
 	aw.svc = ec2.New(sess)
 
-	return aw
+	return &aw, nil
 }
 
 // CreateNode created an EC2 instance and setups geth
