@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"reflect"
+	"sort"
 	"strconv"
 	"text/template"
 	"time"
@@ -101,7 +101,11 @@ func main() {
 	})
 
 	mux.HandleFunc(pat.Get("/create"), func(w http.ResponseWriter, r *http.Request) {
-		keys := reflect.ValueOf(providers).MapKeys()
+		var keys []string
+		for k, _ := range providers {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
 		tmpl.ExecuteTemplate(w, "create.html", keys)
 	})
 

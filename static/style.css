@@ -90,6 +90,67 @@ a:hover .circle {
   font-size: 13px;
 }
 
+.providers input {
+  opacity: 0.01;
+  z-index: 100;
+}
+
+.providers label {
+  display: block;
+  z-index: 90;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  border: solid 1px transparent;
+  overflow: hidden;
+  border-radius: 3px;
+  text-align: center;
+  cursor: pointer;
+  background: hsla(212, 92%, 68%, 0.15);
+  color: #495057;
+}
+
+.providers label.azure::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f3ca";
+  display: block;
+  font-size: 3rem;
+}
+
+.providers label.aws::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f375";
+  display: block;
+  font-size: 3rem;
+}
+
+.providers label.digitalocean::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f391";
+  display: block;
+  font-size: 3rem;
+}
+
+.providers label.gcp::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f1a0";
+  display: block;
+  font-size: 3rem;
+}
+
+.providers input[type="radio"]:checked+label {
+  border: solid 1px hsl(212, 72%, 59%);
+  background: hsl(212, 72%, 59%);
+  color: white;
+}
+
+.providers label:hover {
+  border: solid 1px hsl(212, 72%, 59%);
+}
+
+.providers input[type="radio"]:focus+label {
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
 .details section {
   margin-bottom: 24px;
 }
