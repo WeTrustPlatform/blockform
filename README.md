@@ -74,3 +74,10 @@ Get, build and run:
     go get github.com/WeTrustPlatform/blockform
     cd $GOPATH/src/github.com/WeTrustPlatform/blockform
     go build && ./blockform
+
+
+### Development
+- (Optional) Auto rebuild and restart server when you make changes in `*.go` files using [bra](https://github.com/Unknwon/bra)
+ * `go get github.com/Unknwon/bra`
+ * `bra run`
+ * Happy coding

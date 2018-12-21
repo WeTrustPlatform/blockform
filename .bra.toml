@@ -1,0 +1,13 @@
+[run]
+init_cmds = [["go", "build"], ["./blockform"]]
+watch_all = true
+watch_dirs = [
+	"$WORKDIR/"
+]
+watch_exts = [".go"]
+ignore = [".git"]
+
+# Minimal interval to Trigger build event
+build_delay = 2000
+
+cmds = [["go", "build"], ["./blockform"]]
