@@ -33,7 +33,7 @@ write_files:
         User=blockform
         WorkingDirectory=/home/blockform
         StandardOutput=journal
-        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --networkid 4 --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins *
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode fast --rinkeby --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins *
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
@@ -84,9 +84,7 @@ runcmd:
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.20-24d727b6.tar.gz
   - tar xf geth-linux-*.tar.gz
   - cp geth-linux-*/geth /usr/bin/geth
-  - wget https://www.rinkeby.io/rinkeby.json
   - chown -R blockform:blockform /datadrive
-  - geth --datadir=/datadrive init rinkeby.json
   - systemctl enable geth
   - systemctl start geth
   - systemctl restart nginx
