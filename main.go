@@ -37,7 +37,7 @@ var providers map[string]CloudProvider
 
 // RebootNode reboots the VM where the node is hosted
 func rebootNode(ctx context.Context, node model.Node, callback func()) {
-	err := sshcmd.Exec(
+	_, _, err := sshcmd.Exec(
 		os.Getenv("PRIV_KEY"),
 		os.Getenv("PASSPHRASE"),
 		"blockform",
@@ -48,6 +48,20 @@ func rebootNode(ctx context.Context, node model.Node, callback func()) {
 		log.Println(err)
 	}
 	callback()
+}
+
+func gethStatus(ctx context.Context, node model.Node, callback func(string, string)) {
+	stdin, stderr, err := sshcmd.Exec(
+		os.Getenv("PRIV_KEY"),
+		os.Getenv("PASSPHRASE"),
+		"blockform",
+		node.DomainName,
+		"systemctl status geth",
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	callback(stdin, stderr)
 }
 
 func makeProviders() map[string]CloudProvider {
@@ -185,6 +199,15 @@ func main() {
 			log.Println("Done rebooting node " + node.Name)
 		})
 		http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
+	})
+
+	mux.HandleFunc(pat.Get("/gethstatus/:id"), func(w http.ResponseWriter, r *http.Request) {
+		ID := pat.Param(r, "id")
+		node := model.Node{}
+		db.Find(&node, ID)
+		gethStatus(context.Background(), node, func(stdin, stderr string) {
+			w.Write([]byte(stdin))
+		})
 	})
 
 	mux.HandleFunc(pat.Get("/node/:id"), func(w http.ResponseWriter, r *http.Request) {

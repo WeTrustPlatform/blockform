@@ -1,16 +1,17 @@
 package sshcmd
 
 import (
+	"bytes"
 	"time"
 
 	"golang.org/x/crypto/ssh"
 )
 
 // Exec executes a simple command over SSH and returns an error if any
-func Exec(privKey, passphrase, user, address, cmd string) error {
+func Exec(privKey, passphrase, user, address, cmd string) (string, string, error) {
 	signer, err := ssh.ParsePrivateKeyWithPassphrase([]byte(privKey), []byte(passphrase))
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
 	config := &ssh.ClientConfig{
@@ -22,23 +23,26 @@ func Exec(privKey, passphrase, user, address, cmd string) error {
 
 	client, err := ssh.Dial("tcp", address+":22", config)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 	defer client.Close()
 
 	sess, err := client.NewSession()
 	if err != nil {
-		return err
+		return "", "", err
 	}
 	defer sess.Close()
 
-	// sess.Stdout = os.Stdout
-	// sess.Stderr = os.Stderr
+	stdout := bytes.NewBufferString("")
+	stderr := bytes.NewBufferString("")
+
+	sess.Stdout = stdout
+	sess.Stderr = stderr
 
 	err = sess.Run(cmd)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 
-	return nil
+	return stdout.String(), stderr.String(), nil
 }
