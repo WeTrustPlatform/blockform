@@ -101,22 +101,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                                <label for="provider">Cloud Provider</label>
-                                <div class="providers row">
-                                    {{ $first := index . 0 }}
-                                    {{range .}}
-                                    <div class="col-3">
-                                        <input class="form-check-input" type="radio" name="provider" id="provider2_{{.}}" value="{{.}}" {{if eq . $first}}checked{{end}}>
-                                        <label class="form-check-label {{.}}" for="provider2_{{.}}">
-                                            {{if eq . "aws" }}Amazon Web Services{{end}}
-                                            {{if eq . "azure" }}Microsoft Azure{{end}}
-                                            {{if eq . "digitalocean" }}DigitalOcean{{end}}
-                                            {{if eq . "gcp" }}Google Cloud Platform{{end}}
-                                        </label>
-                                    </div>
-                                    {{end}}
+                            <label for="provider">Cloud Provider</label>
+                            <div class="providers row">
+                                {{ $first := index . 0 }}
+                                {{range .}}
+                                <div class="col-3">
+                                    <input class="form-check-input" type="radio" name="provider" id="provider2_{{.}}" value="{{.}}" {{if eq . $first}}checked{{end}}>
+                                    <label class="form-check-label {{.}}" for="provider2_{{.}}">
+                                        {{if eq . "aws" }}Amazon Web Services{{end}}
+                                        {{if eq . "azure" }}Microsoft Azure{{end}}
+                                        {{if eq . "digitalocean" }}DigitalOcean{{end}}
+                                        {{if eq . "gcp" }}Google Cloud Platform{{end}}
+                                    </label>
                                 </div>
+                                {{end}}
                             </div>
+                        </div>
                         <input name="network_type" type="hidden" value="private">
                         <button type="submit" class="btn btn-primary float-right">Create</button>
                     </form>
