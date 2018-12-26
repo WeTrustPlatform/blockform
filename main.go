@@ -190,7 +190,7 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	mux.HandleFunc(pat.Get("/reboot/:id"), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id/reboot"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
 		node := model.Node{}
 		db.Find(&node, ID)
@@ -201,7 +201,7 @@ func main() {
 		http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
 	})
 
-	mux.HandleFunc(pat.Get("/gethstatus/:id"), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id/gethstatus"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
 		node := model.Node{}
 		db.Find(&node, ID)
