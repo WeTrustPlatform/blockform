@@ -21,7 +21,7 @@
                             <span class="text-capitalize">{{.Status}}</span>
                             </div>
                         </section>
-                        {{ if eq .Status "deployed"}}
+                        {{if eq .Status "deployed"}}
                         <section class="row">
                             <label class="col-3">Geth Service:</label>
                             <div class="col-9">
@@ -34,6 +34,14 @@
                             <span id="proxystatus"><i class="fas fa-spin fa-spinner"></i></span>
                             </div>
                         </section>
+                        {{if eq .NetworkType "private"}}
+                        <section class="row">
+                            <label class="col-3">Faucet Service:</label>
+                            <div class="col-9">
+                            <span id="faucetstatus"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
+                        </section>
+                        {{end}}
                         <section class="row">
                             <label class="col-3">Geth Syncing:</label>
                             <div class="col-9">
@@ -106,6 +114,11 @@
                                     fetch("/node/{{.ID}}/status/nginx").then(res => res.text()).then((data) => {
                                         $('#proxystatus').html(`<span class="status-${data}">${data}</span>`);
                                     });
+                                    {{if eq .NetworkType "private"}}
+                                    fetch("/node/{{.ID}}/status/faucet").then(res => res.text()).then((data) => {
+                                        $('#faucetstatus').html(`<span class="status-${data}">${data}</span>`);
+                                    });
+                                    {{end}}
                                 }, 5000);
                             });
                         </script>
