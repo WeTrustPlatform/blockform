@@ -50,13 +50,13 @@ func rebootNode(ctx context.Context, node model.Node, callback func()) {
 	callback()
 }
 
-func gethStatus(ctx context.Context, node model.Node, callback func(string, string)) {
+func sysctlStatus(ctx context.Context, node model.Node, unit string, callback func(string, string)) {
 	stdin, stderr, err := sshcmd.Exec(
 		os.Getenv("PRIV_KEY"),
 		os.Getenv("PASSPHRASE"),
 		"blockform",
 		node.DomainName,
-		"systemctl status geth",
+		"systemctl is-active "+unit,
 	)
 	if err != nil {
 		log.Println(err)
@@ -126,6 +126,7 @@ func main() {
 	mux.HandleFunc(pat.Post("/create"), func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
 			w.WriteHeader(500)
+			return
 		}
 
 		name := r.FormValue("name")
@@ -201,11 +202,16 @@ func main() {
 		http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
 	})
 
-	mux.HandleFunc(pat.Get("/node/:id/gethstatus"), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id/status/:unit"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
+		unit := pat.Param(r, "unit")
+		if unit != "geth" && unit != "nginx" && unit != "faucet" {
+			w.WriteHeader(401)
+			return
+		}
 		node := model.Node{}
 		db.Find(&node, ID)
-		gethStatus(context.Background(), node, func(stdin, stderr string) {
+		sysctlStatus(context.Background(), node, unit, func(stdin, stderr string) {
 			w.Write([]byte(stdin))
 		})
 	})

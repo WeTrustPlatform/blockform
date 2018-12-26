@@ -23,6 +23,18 @@
                         </section>
                         {{ if eq .Status "deployed"}}
                         <section class="row">
+                            <label class="col-3">Geth Service:</label>
+                            <div class="col-9">
+                            <span id="gethstatus"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
+                        </section>
+                        <section class="row">
+                            <label class="col-3">Proxy Service:</label>
+                            <div class="col-9">
+                            <span id="proxystatus"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
+                        </section>
+                        <section class="row">
                             <label class="col-3">Geth Syncing:</label>
                             <div class="col-9">
                             <span id="syncing"><i class="fas fa-spin fa-spinner"></i></span>
@@ -86,6 +98,15 @@
                                         });
                                     {{end}}
                                 }, 1000);
+
+                                setInterval(function() {
+                                    fetch("/node/{{.ID}}/status/geth").then(res => res.text()).then((data) => {
+                                        $('#gethstatus').html(`<span class="status-${data}">${data}</span>`);
+                                    });
+                                    fetch("/node/{{.ID}}/status/nginx").then(res => res.text()).then((data) => {
+                                        $('#proxystatus').html(`<span class="status-${data}">${data}</span>`);
+                                    });
+                                }, 5000);
                             });
                         </script>
                         {{end}}

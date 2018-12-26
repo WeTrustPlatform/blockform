@@ -81,6 +81,16 @@ a:hover .circle {
   border: none;
 }
 
+.status-active {
+  color: hsl(134, 61%, 41%);
+  text-transform: capitalize;
+}
+.status-active::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f058";
+  margin-right: 0.2rem;
+}
+
 .form-control {
   border-color: hsla(212, 0%, 68%, 0.15);
   background-color: hsla(212, 0%, 68%, 0.15);
