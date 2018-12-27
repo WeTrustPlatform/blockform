@@ -133,7 +133,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 		Allowed: []*compute.FirewallAllowed{
 			{
 				IPProtocol: "TCP",
-				Ports:      []string{"22", "8545", "8546", "8080"},
+				Ports:      []string{"22", "8545", "8546", "8080", "80"},
 			},
 			{
 				IPProtocol: "UDP",

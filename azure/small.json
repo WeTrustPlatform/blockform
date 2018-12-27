@@ -398,6 +398,29 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "name": "[concat('NSG', '/', 'AllowFaucet')]",
+      "apiVersion": "2017-06-01",
+      "scale": null,
+      "location": "westus2",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "protocol": "TCP",
+        "sourcePortRange": "*",
+        "destinationPortRange": "80",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*",
+        "access": "Allow",
+        "priority": 103,
+        "direction": "Inbound",
+        "sourceAddressPrefixes": [],
+        "destinationAddressPrefixes": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', 'NSG')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
       "name": "[concat('NSG', '/', 'AllowDiscoveryTPC')]",
       "apiVersion": "2017-06-01",
       "scale": null,
@@ -410,7 +433,7 @@
         "sourceAddressPrefix": "*",
         "destinationAddressPrefix": "*",
         "access": "Allow",
-        "priority": 103,
+        "priority": 104,
         "direction": "Inbound",
         "sourceAddressPrefixes": [],
         "destinationAddressPrefixes": []
@@ -433,7 +456,7 @@
         "sourceAddressPrefix": "*",
         "destinationAddressPrefix": "*",
         "access": "Allow",
-        "priority": 104,
+        "priority": 105,
         "direction": "Inbound",
         "sourceAddressPrefixes": [],
         "destinationAddressPrefixes": []
