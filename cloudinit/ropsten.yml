@@ -108,6 +108,7 @@ write_files:
         ]
 packages:
   - nginx
+  - python-certbot-nginx
 runcmd:
   - chown -R blockform:blockform /datadrive
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.20-24d727b6.tar.gz
