@@ -63,7 +63,12 @@
                             <span id="netpeers"><i class="fas fa-spin fa-spinner"></i></span>
                             </div>
                         </section>
-                        
+                        <section class="row">
+                            <label class="col-3">Geth Logs:</label>
+                            <div class="col-9">
+                            <div id="gethlogs"><i class="fas fa-spin fa-spinner"></i></div>
+                            </div>
+                        </section>
                         <script>
                             $( document ).ready(function() {
                                 var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
@@ -119,6 +124,9 @@
                                         $('#faucetstatus').html(`<span class="status-${data}">${data}</span>`);
                                     });
                                     {{end}}
+                                    fetch("/node/{{.ID}}/logs/geth").then(res => res.text()).then((data) => {
+                                        $('#gethlogs').html(`<pre>${data}</pre>`);
+                                    });
                                 }, 5000);
                             });
                         </script>

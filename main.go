@@ -50,13 +50,27 @@ func rebootNode(ctx context.Context, node model.Node, callback func()) {
 	callback()
 }
 
-func sysctlStatus(ctx context.Context, node model.Node, unit string, callback func(string, string)) {
+func serviceStatus(ctx context.Context, node model.Node, unit string, callback func(string, string)) {
 	stdin, stderr, err := sshcmd.Exec(
 		os.Getenv("PRIV_KEY"),
 		os.Getenv("PASSPHRASE"),
 		"blockform",
 		node.DomainName,
 		"systemctl is-active "+unit,
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	callback(stdin, stderr)
+}
+
+func serviceLogs(ctx context.Context, node model.Node, unit string, callback func(string, string)) {
+	stdin, stderr, err := sshcmd.Exec(
+		os.Getenv("PRIV_KEY"),
+		os.Getenv("PASSPHRASE"),
+		"blockform",
+		node.DomainName,
+		"journalctl -n 20 -q -o cat -u "+unit,
 	)
 	if err != nil {
 		log.Println(err)
@@ -211,7 +225,21 @@ func main() {
 		}
 		node := model.Node{}
 		db.Find(&node, ID)
-		sysctlStatus(context.Background(), node, unit, func(stdin, stderr string) {
+		serviceStatus(context.Background(), node, unit, func(stdin, stderr string) {
+			w.Write([]byte(stdin))
+		})
+	})
+
+	mux.HandleFunc(pat.Get("/node/:id/logs/:unit"), func(w http.ResponseWriter, r *http.Request) {
+		ID := pat.Param(r, "id")
+		unit := pat.Param(r, "unit")
+		if unit != "geth" && unit != "nginx" && unit != "faucet" {
+			w.WriteHeader(401)
+			return
+		}
+		node := model.Node{}
+		db.Find(&node, ID)
+		serviceLogs(context.Background(), node, unit, func(stdin, stderr string) {
 			w.Write([]byte(stdin))
 		})
 	})

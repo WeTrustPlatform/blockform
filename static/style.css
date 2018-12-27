@@ -91,6 +91,15 @@ a:hover .circle {
   margin-right: 0.2rem;
 }
 
+#gethlogs pre {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+  background-color: hsl(14, 0%, 15%);
+  color: #dee2e6;
+  padding: 5px;
+  max-width: 618px;
+}
+
 .form-control {
   border-color: hsla(212, 0%, 68%, 0.15);
   background-color: hsla(212, 0%, 68%, 0.15);
