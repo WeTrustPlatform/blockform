@@ -21,11 +21,11 @@ instance. So the installation process has been made as simple as possible.
  - Create your own private Ethereum network with Proof of Authority
  - Support multiple cloud providers: Azure, AWS, GCP and DigitalOcean
  - Setup a firewall for you
- - RPC endpoints protected by an API key
- - WebSocket RPC endpoints
+ - HTTPS RPC endpoints protected by an API key
+ - WSS RPC endpoints protected by an API key
  - Basic faucet web service for your private network
  - Node data saved to an SSD
- - Basic heathchecks
+ - Basic heathchecks and logs display
  - Basic authentication for the UI
  - Conpatible with MetaMask, geth attach, and web3.js
  - Easy to deploy on Heroku

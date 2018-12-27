@@ -39,7 +39,7 @@
                 <td>
                     {{if .DomainName}}
                         <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                        <input class="form-control" type="text" value="http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                         </div>
                     {{else}}
                         Pending

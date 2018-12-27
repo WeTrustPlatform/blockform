@@ -71,7 +71,7 @@
                         </section>
                         <script>
                             $( document ).ready(function() {
-                                var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                                var web3 = new Web3("http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}");
                                 
                                 setInterval(function() {
                                     

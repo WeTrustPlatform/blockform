@@ -16,27 +16,58 @@
                 <div class="col">
                     <div class="details">
                         {{ if eq .Status "deployed"}}
-                        <p>
-                            <b>Virtual Machine:</b>
-                            <div><button class="btn btn-primary" data-toggle="modal" data-target="#reboot-{{.ID}}"><i class="fas fa-sync-alt"></i> Reboot this node</button></div>
-                            <div class="modal" id="reboot-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Rebooting {{.Name}}</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">The Virtual Machine will be rebooted and your node will stop to function during a few seconds.</p><p>Are you sure you want to reboot this node?</p></div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <a href="/node/{{.ID}}/reboot" class="btn btn-primary">Reboot</a>
-                                        </div>
+                        <p><b>Virtual Machine:</b></p>
+                        <p><button class="btn btn-primary" data-toggle="modal" data-target="#reboot-{{.ID}}"><i class="fas fa-sync-alt"></i> Reboot this node</button></p>
+                        <div class="modal" id="reboot-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Rebooting {{.Name}}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body"><p>The Virtual Machine will be rebooted and your node will stop to function during a few seconds.</p><p>Are you sure you want to reboot this node?</p></div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <a href="/node/{{.ID}}/reboot" class="btn btn-primary">Reboot</a>
                                     </div>
                                 </div>
                             </div>
-                        </p>
+                        </div>
+
+                        <p><button class="btn btn-primary" data-toggle="modal" data-target="#https-{{.ID}}"><i class="fas fa-lock"></i> Setup HTTPS</button></p>
+                        <div class="modal" id="https-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Setting up HTTPS on {{.Name}}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Setting up HTTPS for your node requires that you own a domain name and point it to the node <b>before</b> performing this step.</p>
+                                        <p>An email address is required by certbot to receive notification about expiring certificates.</p>
+                                        <form id="https-form" method="POST" action="/node/{{.ID}}/certbot">
+                                        <div class="form-group">
+                                            <label for="domain" class="col-form-label">Domain Name:</label>
+                                            <input type="text" class="form-control" id="domain" name="domain">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="col-form-label">Email Address:</label>
+                                            <input type="text" class="form-control" id="email" name="email">
+                                        </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button onclick="document.getElementById('https-form').submit();" class="btn btn-primary">Setup</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <p>
                             <b>Danger zone:</b>
                             <div><button class="btn btn-danger" data-toggle="modal" data-target="#delete-{{.ID}}"><i class="far fa-trash-alt"></i> Delete this node</button></div>
@@ -49,7 +80,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">The Virtual Machine will be deleted and all information will be lost.</p><p>Are you sure you want to delete this node?</p></div>
+                                        <div class="modal-body"><p>The Virtual Machine will be deleted and all information will be lost.</p><p>Are you sure you want to delete this node?</p></div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                             <a href="/delete/{{.ID}}" class="btn btn-danger">Delete</a>

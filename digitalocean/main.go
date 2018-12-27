@@ -88,6 +88,7 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		InboundRules: []godo.InboundRule{
 			{Protocol: "TCP", PortRange: "22", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8080", Sources: &godo.Sources{}},
+			{Protocol: "TCP", PortRange: "80", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8545", Sources: &godo.Sources{}},
 			{Protocol: "TCP", PortRange: "8546", Sources: &godo.Sources{}},
 			{Protocol: "UDP", PortRange: "30303", Sources: &godo.Sources{}},

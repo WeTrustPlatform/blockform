@@ -23,7 +23,7 @@
             </div>
             <script>
                 $( document ).ready(function() {
-                    var web3 = new Web3("http://{{.DomainName}}:8545/{{.APIKey}}");
+                    var web3 = new Web3("http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}");
                     web3.eth.getBalance("{{ $.ID }}").then(async (balance) =>{
                         $('#balance').html(balance);
                     });

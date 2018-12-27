@@ -24,6 +24,7 @@ type Node struct {
 	VMID          string
 	CloudProvider string
 	DomainName    string
+	HasSSL        bool
 	NetworkType   string `gorm:"not null"`
 	NetworkID     uint64
 	APIKey        string
