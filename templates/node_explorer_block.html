@@ -22,7 +22,7 @@
             </div>
             <script>
                 $( document ).ready(function() {
-                    var web3 = new Web3("https://{{.DomainName}}:8545/{{.APIKey}}");
+                    var web3 = new Web3("http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}");
                     web3.eth.getBlock("{{ $.ID }}").then(async (bl) =>{
                         $('#block').append(`
                             <p><b>Hash:</b> <code>${bl.hash}</code></p>
