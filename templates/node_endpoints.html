@@ -77,7 +77,7 @@
                         <script>
                             $( document ).ready(function() {
                                 $('#faucet').click(function() {
-                                    fetch("https://{{.DomainName}}:8080/{{.APIKey}}/"+$('#ethaddr').val())
+                                    fetch("http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8080/{{.APIKey}}/"+$('#ethaddr').val())
                                     .then(async function(resp) {
                                         var body = await resp.text();
                                         var success = /0x.{64}/.test(body);
