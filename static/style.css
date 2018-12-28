@@ -270,8 +270,8 @@ table#nodes tr:hover td {
 }
 
 .toclipboard input {
-  background-color: hsl(0, 0%, 98%) !important;
-  border-color: hsl(0, 0%, 98%);
+  background-color: hsla(212, 0%, 68%, 0.15) !important;
+  border-color: hsla(212, 0%, 68%, 0.15);
 }
 
 .progress-bar {
