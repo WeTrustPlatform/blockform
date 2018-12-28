@@ -199,7 +199,7 @@ func main() {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
-	mux.HandleFunc(pat.Get("/delete/:id"), func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc(pat.Get("/node/:id/delete"), func(w http.ResponseWriter, r *http.Request) {
 		ID := pat.Param(r, "id")
 		node := model.Node{}
 		db.Find(&node, ID)
