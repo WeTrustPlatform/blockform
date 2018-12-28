@@ -1,7 +1,7 @@
 body {
   font-size: 0.9rem;
-  color: hsl(14, 11%, 24%);
-  border-top: 3px solid hsl(212, 72%, 59%);
+  color: hsl(210, 7%, 28%);
+  border-top: 3px solid hsl(172, 45%, 59%);
 }
 
 body,h1,h2,h3,h4,h5,p {
@@ -9,12 +9,12 @@ body,h1,h2,h3,h4,h5,p {
 }
 
 a {
-  color: hsl(212, 72%, 59%);
+  color: hsl(172, 45%, 59%);
 }
 
 a:hover {
   text-decoration: none;
-  color: hsl(212, 92%, 68%)
+  color: hsl(172, 45%, 39%);
 }
 
 h1 {
@@ -30,7 +30,7 @@ h4 {
 }
 
 .circle {
-  background: hsl(212, 72%, 59%);
+  background: linear-gradient(hsl(172, 45%, 59%), hsl(202, 92%, 54%));
   width: 40px;
   height: 40px;
   line-height: 40px;
@@ -48,27 +48,85 @@ td.status .progress {
 }
 
 a:hover .circle {
-  background: hsl(212, 92%, 68%);
+  background: linear-gradient(hsl(172, 45%, 59%), hsl(202, 92%, 54%));
+}
+
+.btn-outline-primary {
+  color: hsl(172, 45%, 59%);
+  border: 1px solid hsl(172, 45%, 59%);
+}
+
+.btn-outline-primary:hover {
+  background: hsl(172, 45%, 59%);
+  color: white;
+  border: 1px solid hsl(172, 45%, 59%);
+}
+
+.btn-outline-primary:focus,
+.btn-outline-primary.focus,
+.btn-outline-primary:active,
+.btn-outline-primary.active
+{
+  background: hsl(172, 45%, 59%)!important;
+  color: white;
+  border: 1px solid hsl(172, 45%, 59%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
 }
 
 .btn-primary {
-  background: hsl(212, 72%, 59%);
-  border: none;
+  background: hsl(172, 45%, 59%);
+  border: 1px solid hsl(172, 45%, 59%);
 }
 
 .btn-primary:hover {
-  background: hsl(212, 92%, 68%);
-  border: none;
+  background: hsl(172, 45%, 39%);
+  border: 1px solid hsl(172, 45%, 39%);
+}
+
+.btn-primary:focus,
+.btn-primary.focus
+{
+  background: hsl(172, 45%, 59%)!important;
+  border: 1px solid hsl(172, 45%, 59%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
+}
+.btn-primary:active,
+.btn-primary.active
+{
+  background: hsl(172, 45%, 39%)!important;
+  border: 1px solid hsl(172, 45%, 39%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
+}
+
+input:focus, select:focus {
+  border: 1px solid hsl(172, 45%, 59%)!important;
+  border: 1px solid hsl(172, 45%, 59%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
 }
 
 .btn-danger {
-  background: hsl(0, 72%, 59%);
-  border: none;
+  background: hsl(7, 78%, 65%);
+  border: 1px solid hsl(7, 78%, 65%);
 }
 
 .btn-danger:hover {
-  background: hsl(0, 92%, 68%);
-  border: none;
+  background: hsl(7, 78%, 45%);
+  border: 1px solid hsl(7, 78%, 45%);
+}
+
+.btn-danger:focus,
+.btn-danger.focus
+{
+  background: hsl(7, 78%, 65%)!important;
+  border: 1px solid hsl(7, 78%, 65%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(7, 95%, 77%, 0.5)!important;
+}
+.btn-danger:active,
+.btn-danger.active
+{
+  background: hsl(7, 78%, 45%)!important;
+  border: 1px solid hsl(7, 78%, 45%)!important;
+  box-shadow: 0 0 0 0.2rem hsla(7, 95%, 77%, 0.5)!important;
 }
 
 .btn-secondary {
@@ -77,7 +135,7 @@ a:hover .circle {
 }
 
 .btn-secondary:hover {
-  background: hsl(0, 0%, 68%);
+  background: hsl(0, 0%, 39%);
   border: none;
 }
 
@@ -124,7 +182,7 @@ a:hover .circle {
   text-align: center;
   cursor: pointer;
   background: hsla(212, 0%, 68%, 0.15);
-  color: #495057;
+  color: #43484d;
 }
 
 .providers label.azure::before {
@@ -156,17 +214,17 @@ a:hover .circle {
 }
 
 .providers input[type="radio"]:checked+label {
-  border: solid 1px hsl(212, 72%, 59%);
+  border: solid 1px hsl(172, 45%, 59%);
   background: white;
   color: black;
 }
 
 .providers label:hover {
-  border: solid 1px hsl(212, 72%, 59%);
+  border: solid 1px hsl(172, 45%, 59%);
 }
 
 .providers input[type="radio"]:focus+label {
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5);
 }
 
 .details section {
@@ -208,15 +266,16 @@ table#nodes td {
 }
 
 table#nodes tr:hover td {
-  background-color: #fbfbfb;
+  background-color: hsla(172, 45%, 59%, 0.1);
 }
 
 .toclipboard input {
-  background-color: hsla(212, 0%, 68%, 0.15) !important;
+  background-color: hsl(0, 0%, 98%) !important;
+  border-color: hsl(0, 0%, 98%);
 }
 
 .progress-bar {
-  background-color: hsl(212, 72%, 59%);
+  background-color: hsl(202, 92%, 54%);
 }
 
 .smaller {
@@ -231,7 +290,7 @@ table#nodes tr:hover td {
 
 #empty {
   padding: 80px 0;
-  background-color: hsla(212, 0%, 68%, 0.15);
+  background-color: #f9f9f9;
   text-align: center;
 }
 
@@ -241,7 +300,7 @@ table#nodes tr:hover td {
 
 .lefttabs, .toptabs {
   background: white;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px hsla(0, 0%, 0%, 0.2);
 }
 
 .toptabs .tab-content {
@@ -249,7 +308,7 @@ table#nodes tr:hover td {
 }
 
 .toptabs ul {
-  background: hsl(212, 72%, 59%);
+  background: hsl(172, 45%, 59%);
 }
 
 .toptabs .nav-link {
@@ -259,7 +318,7 @@ table#nodes tr:hover td {
 }
 
 .toptabs .nav-link:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .toptabs .nav-link.active {
@@ -277,7 +336,7 @@ table#nodes tr:hover td {
 
 #sidemenu {
   height: 100%;
-  background: hsl(212, 72%, 59%);
+  background: hsl(172, 45%, 59%);
 }
 
 #sidemenu .nav-link {
@@ -291,17 +350,17 @@ table#nodes tr:hover td {
 }
 
 #sidemenu .nav-link:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #sidemenu .nav-link.active {
   background: white;
-  color: hsl(212, 11%, 15%);
+  color: hsl(210, 7%, 28%);
 }
 
 footer {
   padding: 20px 0 40px 0;
   margin-top: 40px;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid hsla(212, 0%, 68%, 0.15);
   text-align: center;
 }
