@@ -398,7 +398,7 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-      "name": "[concat('NSG', '/', 'AllowFaucet')]",
+      "name": "[concat('NSG', '/', 'AllowCertBot')]",
       "apiVersion": "2017-06-01",
       "scale": null,
       "location": "westus2",
