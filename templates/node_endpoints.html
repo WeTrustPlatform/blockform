@@ -31,30 +31,30 @@
                         <section class="row">
                             <label class="col-3">Web3 RPC endpoint:</label>
                             <div class="col-9">
-                            <div class="input-group mb-2 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                            <div class="input-group mb-2">
+                                <input class="form-control toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!" type="text" value="http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
-                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="ws{{if .HasSSL}}s{{end}}://{{.DomainName}}:8546/{{.APIKey}}" readonly>
+                            <div class="input-group">
+                                <input class="form-control toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!" type="text" value="ws{{if .HasSSL}}s{{end}}://{{.DomainName}}:8546/{{.APIKey}}" readonly>
                             </div>
                             </div>
                         </section>
                         <section class="row">
                             <label class="col-3">Geth attach:</label>
                             <div class="col-9">
-                            <div class="input-group mb-2 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="geth attach http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                            <div class="input-group mb-2">
+                                <input class="form-control toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!" type="text" value="geth attach http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
                             </div>
-                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="geth attach ws{{if .HasSSL}}s{{end}}://{{.DomainName}}:8546/{{.APIKey}}" readonly>
+                            <div class="input-group">
+                                <input class="form-control toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!" type="text" value="geth attach ws{{if .HasSSL}}s{{end}}://{{.DomainName}}:8546/{{.APIKey}}" readonly>
                             </div>
                             </div>
                         </section>
                         <section class="row">
                             <label class="col-3">SSH access:</label>
                             <div class="col-9">
-                            <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                                <input class="form-control" type="text" value="ssh blockform@{{.DomainName}}" readonly>
+                            <div class="input-group">
+                                <input class="form-control toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!" type="text" value="ssh blockform@{{.DomainName}}" readonly>
                             </div>
                             </div>
                         </section>

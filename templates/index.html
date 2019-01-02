@@ -38,8 +38,14 @@
                 </td>
                 <td>
                     {{if .DomainName}}
-                        <div class="input-group mb-0 toclipboard" data-toggle="tooltip" data-placement="top" title="Copied!">
-                        <input class="form-control" type="text" value="http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                        <div class="input-group">
+                            <input class="form-control toclipboard" data-placement="top" title="Copied!" type="text" value="http{{if .HasSSL}}s{{end}}://{{.DomainName}}:8545/{{.APIKey}}" readonly>
+                            {{if not .HasSSL}}
+                                <div class="input-group-append">
+                                    {{template "modal_https" .}}
+                                    <button class="btn float-left" data-toggle="modal" data-target="#https-{{.ID}}"><i class="fas fa-exclamation-triangle text-warning" data-toggle="tooltip" data-placement="top" title="Not protected by SSL, please setup HTTPS"></i></button>
+                                </div>
+                            {{end}}
                         </div>
                     {{else}}
                         Pending
@@ -59,6 +65,7 @@
     </div>
     <script>
         $( document ).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip()
             $('.status-deployed').each(async function() {
                 var rpc = $(this).find('input').val();
                 var web3 = new Web3(rpc);
