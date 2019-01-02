@@ -8,6 +8,7 @@
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
         <h2>{{ .Name }}</h2>
+        {{template "alert_https" . }}
         <div class="lefttabs">
             <div class="row">
                 <div class="col col-3">
@@ -35,11 +36,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{if not .HasSSL}}
-                        <p><button class="btn btn-primary" data-toggle="modal" data-target="#https-{{.ID}}"><i class="fas fa-lock"></i> Setup HTTPS</button></p>
-                        {{template "modal_https" .}}
-                        {{end}}
 
                         <p>
                             <b>Danger zone:</b>
