@@ -53,7 +53,7 @@ func NewDigitalOcean() (*DigitalOcean, error) {
 }
 
 // CreateNode creates a volume and a droplet and installs geth.
-func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
+func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 
 	customData := cloudinit.CustomData(node, "/dev/sda")
 
@@ -63,7 +63,9 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		SizeGigaBytes: 200,
 	})
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	newDroplet, _, err := do.client.Droplets.Create(ctx, &godo.DropletCreateRequest{
@@ -79,7 +81,9 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		UserData: customData,
 	})
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	_, _, err = do.client.Firewalls.Create(ctx, &godo.FirewallRequest{
@@ -95,14 +99,18 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		},
 	})
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	time.Sleep(40 * time.Second) // TODO find a better way
 
 	droplet, _, err := do.client.Droplets.Get(ctx, newDroplet.ID)
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	ipv4, _ := droplet.PublicIPv4()

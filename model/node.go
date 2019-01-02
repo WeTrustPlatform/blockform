@@ -9,6 +9,7 @@ const (
 	Creating string = "creating"
 	Deployed string = "deployed"
 	Deleting string = "deleting"
+	Error    string = "error"
 )
 
 // Node network types

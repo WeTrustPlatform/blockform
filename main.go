@@ -29,7 +29,7 @@ import (
 // Google Cloud. It exposes functions to create a virtual machine, install
 // an ethereum node on it, and delete a virtual machine.
 type CloudProvider interface {
-	CreateNode(context.Context, model.Node, func(string, string))
+	CreateNode(context.Context, model.Node, func(string, string), func(error))
 	DeleteNode(context.Context, model.Node, func(), func(error))
 }
 
@@ -194,7 +194,16 @@ func main() {
 			db.Model(&node).Update("VMID", VMID)
 			db.Model(&node).Update("DomainName", DomainName)
 			log.Println("Done creating node " + node.Name)
-		})
+		},
+		// On Error
+		func(err error) {
+			node.Status = model.Error
+			db.Save(&node)
+			log.Println("Error while create notde ",node.Name, err)
+
+		},
+		
+	)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
