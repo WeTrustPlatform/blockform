@@ -15,7 +15,6 @@
                 </div>
                 <div class="col">
                     <div class="details">
-                        {{ if eq .Status "deployed"}}
                         <p><b>Virtual Machine:</b></p>
                         <p><button class="btn btn-primary" data-toggle="modal" data-target="#reboot-{{.ID}}"><i class="fas fa-sync-alt"></i> Reboot this node</button></p>
                         <div class="modal" id="reboot-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -89,8 +88,6 @@
                                 </div>
                             </div>
                         </p>
-
-                        {{end}}
                     </div>
                 </div>
             </div>
@@ -99,4 +96,3 @@
     </div>
     {{end}}
 </body>
-</html>

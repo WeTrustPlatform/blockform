@@ -217,7 +217,11 @@ func main() {
 
 		cloud := providers[node.CloudProvider]
 		log.Println("Deleting node", node.Name)
-		go cloud.DeleteNode(context.Background(), node,
+		if node.Status == model.Error {
+			db.Where("id=?", ID).Delete(&model.Node{})
+			log.Println("Done deleting node " + node.Name)
+		} else {
+			go cloud.DeleteNode(context.Background(), node,
 			// On Success
 			func() {
 				db.Where("id=?", ID).Delete(&model.Node{})
@@ -229,7 +233,7 @@ func main() {
 				log.Println("Error while deleting node", node.Name, err)
 			},
 		)
-
+		}
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
