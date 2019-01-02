@@ -189,21 +189,22 @@ func main() {
 		db.Create(&node)
 
 		cloud := providers[node.CloudProvider]
-		go cloud.CreateNode(context.Background(), node, func(VMID, DomainName string) {
-			db.Model(&node).Update("Status", model.Deployed)
-			db.Model(&node).Update("VMID", VMID)
-			db.Model(&node).Update("DomainName", DomainName)
-			log.Println("Done creating node " + node.Name)
-		},
-		// On Error
-		func(err error) {
-			node.Status = model.Error
-			db.Save(&node)
-			log.Println("Error while create notde ",node.Name, err)
+		go cloud.CreateNode(context.Background(), node,
+			// On Success
+			func(VMID, DomainName string) {
+				db.Model(&node).Update("Status", model.Deployed)
+				db.Model(&node).Update("VMID", VMID)
+				db.Model(&node).Update("DomainName", DomainName)
+				log.Println("Done creating node " + node.Name)
+			},
+			// On Error
+			func(err error) {
+				node.Status = model.Error
+				db.Save(&node)
+				log.Println("Error while create notde ", node.Name, err)
 
-		},
-		
-	)
+			},
+		)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
@@ -222,17 +223,17 @@ func main() {
 			log.Println("Done deleting node " + node.Name)
 		} else {
 			go cloud.DeleteNode(context.Background(), node,
-			// On Success
-			func() {
-				db.Where("id=?", ID).Delete(&model.Node{})
-				log.Println("Done deleting node " + node.Name)
-			},
-			// On Error
-			func(err error) {
-				db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deployed)
-				log.Println("Error while deleting node", node.Name, err)
-			},
-		)
+				// On Success
+				func() {
+					db.Where("id=?", ID).Delete(&model.Node{})
+					log.Println("Done deleting node " + node.Name)
+				},
+				// On Error
+				func(err error) {
+					db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deployed)
+					log.Println("Error while deleting node", node.Name, err)
+				},
+			)
 		}
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})

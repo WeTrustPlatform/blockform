@@ -421,7 +421,7 @@
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-      "name": "[concat('NSG', '/', 'AllowDiscoveryTPC')]",
+      "name": "[concat('NSG', '/', 'AllowDiscoveryTCP')]",
       "apiVersion": "2017-06-01",
       "scale": null,
       "location": "westus2",
