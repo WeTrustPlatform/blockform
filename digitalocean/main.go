@@ -113,7 +113,12 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 		return
 	}
 
-	ipv4, _ := droplet.PublicIPv4()
+	ipv4, err := droplet.PublicIPv4()
+	if err != nil {
+		onError(err)
+		log.Println(err)
+		return
+	}
 	callback(fmt.Sprintf("%d", droplet.ID), ipv4)
 }
 

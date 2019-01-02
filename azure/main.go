@@ -93,12 +93,16 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		},
 	)
 	if err != nil {
-		log.Println(err)
+		onError(err)
+		log.Printf("cannot create group: %v\n", err)
+		return
 	}
 
 	err = deploymentFuture.Future.WaitForCompletionRef(ctx, az.deploymentsClient.BaseClient.Client)
 	if err != nil {
-		log.Println(err)
+		onError(err)
+		log.Printf("cannot create group: %v\n", err)
+		return
 	}
 
 	domainName := node.Name + ".westus2.cloudapp.azure.com"
