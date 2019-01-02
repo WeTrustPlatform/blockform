@@ -51,7 +51,7 @@ func NewAWS() (*AWS, error) {
 }
 
 // CreateNode created an EC2 instance and setups geth
-func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
+func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 
 	sgName := node.Name // name the security group after the node name
 	aw.createSecurityGroup(sgName)
@@ -77,7 +77,9 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		UserData: aws.String(customData),
 	})
 	if err != nil {
+		onError(err)
 		log.Println("Could not create instance", err)
+		return
 	}
 
 	VMID := *run.Instances[0].InstanceId
@@ -92,7 +94,9 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		},
 	})
 	if err != nil {
+		onError(err)
 		log.Println("Could not create tags for instance", VMID, err)
+		return
 	}
 
 	// Wait until the instance is fully deployed
@@ -116,7 +120,9 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 		InstanceIds: []*string{aws.String(VMID)},
 	})
 	if err != nil {
+		onError(err)
 		log.Println("Could not describe instance", VMID, err)
+		return
 	}
 
 	publicDNSName := *instances.Reservations[0].Instances[0].PublicDnsName

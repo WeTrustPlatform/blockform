@@ -29,7 +29,7 @@ import (
 // Google Cloud. It exposes functions to create a virtual machine, install
 // an ethereum node on it, and delete a virtual machine.
 type CloudProvider interface {
-	CreateNode(context.Context, model.Node, func(string, string))
+	CreateNode(context.Context, model.Node, func(string, string), func(error))
 	DeleteNode(context.Context, model.Node, func(), func(error))
 }
 
@@ -194,7 +194,16 @@ func main() {
 			db.Model(&node).Update("VMID", VMID)
 			db.Model(&node).Update("DomainName", DomainName)
 			log.Println("Done creating node " + node.Name)
-		})
+		},
+		// On Error
+		func(err error) {
+			node.Status = model.Error
+			db.Save(&node)
+			log.Println("Error while create notde ",node.Name, err)
+
+		},
+		
+	)
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
@@ -208,7 +217,11 @@ func main() {
 
 		cloud := providers[node.CloudProvider]
 		log.Println("Deleting node", node.Name)
-		go cloud.DeleteNode(context.Background(), node,
+		if node.Status == model.Error {
+			db.Where("id=?", ID).Delete(&model.Node{})
+			log.Println("Done deleting node " + node.Name)
+		} else {
+			go cloud.DeleteNode(context.Background(), node,
 			// On Success
 			func() {
 				db.Where("id=?", ID).Delete(&model.Node{})
@@ -220,7 +233,7 @@ func main() {
 				log.Println("Error while deleting node", node.Name, err)
 			},
 		)
-
+		}
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 

@@ -51,7 +51,7 @@ var (
 )
 
 // CreateNode creates a google compute engine instance
-func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
+func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 	log.Println("Creating a node on GCP")
 
 	customData := cloudinit.CustomData(node, "/dev/sdb")
@@ -102,8 +102,11 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 		},
 		Tags: &compute.Tags{Items: []string{project, node.Name}},
 	}).Do()
+
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	for {
@@ -120,7 +123,9 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 	vm, err := gc.service.Instances.Get(project, zone, node.Name).Do()
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	net := vm.NetworkInterfaces[0].Network
@@ -142,7 +147,9 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 		},
 	}).Do()
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	callback(node.Name, vm.NetworkInterfaces[0].AccessConfigs[0].NatIP)

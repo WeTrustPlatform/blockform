@@ -56,15 +56,19 @@ func NewAzure() (*Azure, error) {
 
 // CreateNode will create an azure VM and install a geth node using cloud-init
 // and execute the callback when done.
-func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(string, string)) {
+func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 	group, err := az.createGroup(ctx, node.Name)
 	if err != nil {
+		onError(err)
 		log.Printf("cannot create group: %v\n", err)
+		return
 	}
 
 	template, err := readJSON("azure/small.json")
 	if err != nil {
+		onError(err)
 		log.Println(err)
+		return
 	}
 
 	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
@@ -89,12 +93,16 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		},
 	)
 	if err != nil {
-		log.Println(err)
+		onError(err)
+		log.Printf("cannot create group: %v\n", err)
+		return
 	}
 
 	err = deploymentFuture.Future.WaitForCompletionRef(ctx, az.deploymentsClient.BaseClient.Client)
 	if err != nil {
-		log.Println(err)
+		onError(err)
+		log.Printf("cannot create group: %v\n", err)
+		return
 	}
 
 	domainName := node.Name + ".westus2.cloudapp.azure.com"
