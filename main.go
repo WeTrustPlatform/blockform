@@ -246,18 +246,22 @@ func main() {
 			db.Where("id=?", ID).Delete(&model.Node{})
 			log.Println("Done deleting node " + node.Name)
 		} else {
-			go cloud.DeleteNode(context.Background(), node,
-				// On Success
-				func() {
-					db.Where("id=?", ID).Delete(&model.Node{})
-					log.Println("Done deleting node " + node.Name)
-				},
-				// On Error
-				func(err error) {
-					db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deployed)
-					log.Println("Error while deleting node", node.Name, err)
-				},
-			)
+			go func() {
+				wg.Add(1)
+				defer wg.Done()
+				cloud.DeleteNode(context.Background(), node,
+					// On Success
+					func() {
+						db.Where("id=?", ID).Delete(&model.Node{})
+						log.Println("Done deleting node " + node.Name)
+					},
+					// On Error
+					func(err error) {
+						db.Model(&model.Node{}).Where("id=?", ID).Update("Status", model.Deployed)
+						log.Println("Error while deleting node", node.Name, err)
+					},
+				)
+			}()
 		}
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
