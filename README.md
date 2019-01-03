@@ -77,7 +77,7 @@ Get, build and run:
 
 
 ### Development
-- (Optional) Auto rebuild and restart server when you make changes in `*.go` files using [bra](https://github.com/Unknwon/bra)
+- (Optional) Use [bra](https://github.com/Unknwon/bra) to auto rebuild and restart server when you make changes in `*.go` and `*.html` files:
  * `go get github.com/Unknwon/bra`
  * `bra run`
  * Happy coding

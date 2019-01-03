@@ -4,7 +4,7 @@ watch_all = true
 watch_dirs = [
 	"$WORKDIR/"
 ]
-watch_exts = [".go"]
+watch_exts = [".go", ".html"]
 ignore = [".git"]
 
 # Minimal interval to Trigger build event
