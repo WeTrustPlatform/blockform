@@ -6,8 +6,11 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"os/signal"
 	"sort"
 	"strconv"
+	"sync"
+	"syscall"
 	"text/template"
 	"time"
 
@@ -122,6 +125,7 @@ func makeProviders() map[string]CloudProvider {
 }
 
 func main() {
+	var wg sync.WaitGroup
 	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
@@ -129,6 +133,23 @@ func main() {
 
 	//db.DropTableIfExists(&model.Node{})
 	db.AutoMigrate(&model.Node{})
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+
+	go func() {
+		exitFlag := false
+		for exitFlag != true {
+			sig := <-sigs
+			if sig == syscall.SIGINT || sig == syscall.SIGHUP {
+				exitFlag = true
+				log.Println("Waiting for all goroutines to be completed...")
+				wg.Wait()
+				log.Println("Exiting process ...")
+				os.Exit(1)
+			}
+		}
+	}()
 
 	tmpl := template.Must(template.ParseGlob("templates/*"))
 
@@ -189,22 +210,25 @@ func main() {
 		db.Create(&node)
 
 		cloud := providers[node.CloudProvider]
-		go cloud.CreateNode(context.Background(), node,
-			// On Success
-			func(VMID, DomainName string) {
-				db.Model(&node).Update("Status", model.Deployed)
-				db.Model(&node).Update("VMID", VMID)
-				db.Model(&node).Update("DomainName", DomainName)
-				log.Println("Done creating node " + node.Name)
-			},
-			// On Error
-			func(err error) {
-				node.Status = model.Error
-				db.Save(&node)
-				log.Println("Error while create notde ", node.Name, err)
-
-			},
-		)
+		go func() {
+			wg.Add(1)
+			defer wg.Done()
+			cloud.CreateNode(context.Background(), node,
+				// On Success
+				func(VMID, DomainName string) {
+					db.Model(&node).Update("Status", model.Deployed)
+					db.Model(&node).Update("VMID", VMID)
+					db.Model(&node).Update("DomainName", DomainName)
+					log.Println("Done creating node " + node.Name)
+				},
+				// On Error
+				func(err error) {
+					node.Status = model.Error
+					db.Save(&node)
+					log.Println("Error while create notde ", node.Name, err)
+				},
+			)
+		}()
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
