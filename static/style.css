@@ -62,6 +62,10 @@ a:hover .circle {
   border: 1px solid hsl(172, 45%, 59%);
 }
 
+.btn:focus, .btn.focus {
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
+}
+
 .btn-outline-primary:focus,
 .btn-outline-primary.focus,
 .btn-outline-primary:active,
@@ -269,7 +273,7 @@ table#nodes tr:hover td {
   background-color: hsla(172, 45%, 59%, 0.1);
 }
 
-.toclipboard input {
+input.toclipboard {
   background-color: hsla(212, 0%, 68%, 0.15) !important;
   border-color: hsla(212, 0%, 68%, 0.15);
 }
