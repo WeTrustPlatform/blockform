@@ -73,10 +73,17 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 
 	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
 
+	sizeForMode := map[string]int{
+		model.Full:  2000,
+		model.Fast:  200,
+		model.Light: 20,
+	}
+
 	params := map[string]interface{}{
 		"vm_user":     map[string]interface{}{"value": "blockform"},
 		"pub_key":     map[string]interface{}{"value": os.Getenv("PUB_KEY")},
 		"dns_prefix":  map[string]interface{}{"value": *group.Name},
+		"disk_size":   map[string]interface{}{"value": sizeForMode[node.SyncMode]},
 		"custom_data": map[string]interface{}{"value": customData},
 	}
 

@@ -58,6 +58,12 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 	customData := cloudinit.EncodedCustomData(node, "/dev/xvdc")
 
+	sizeForMode := map[string]int64{
+		model.Full:  2000,
+		model.Fast:  200,
+		model.Light: 20,
+	}
+
 	run, err := aw.svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:        aws.String("ami-0d2505740b82f7948"), // Ubuntu 18.04
 		InstanceType:   aws.String("t2.medium"),
@@ -68,7 +74,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 			{
 				DeviceName: aws.String("/dev/sdc"),
 				Ebs: &ec2.EbsBlockDevice{
-					VolumeSize:          aws.Int64(200),
+					VolumeSize:          aws.Int64(sizeForMode[node.SyncMode]),
 					VolumeType:          aws.String("gp2"),
 					DeleteOnTermination: aws.Bool(true),
 				},

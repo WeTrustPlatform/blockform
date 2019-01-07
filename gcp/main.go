@@ -56,6 +56,12 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 
 	customData := cloudinit.CustomData(node, "/dev/sdb")
 
+	sizeForMode := map[string]int64{
+		model.Full:  2000,
+		model.Fast:  200,
+		model.Light: 20,
+	}
+
 	insertOP, err := gc.service.Instances.Insert(project, zone, &compute.Instance{
 		Name:        node.Name,
 		MachineType: prefix + "/zones/" + zone + "/machineTypes/" + size,
@@ -77,7 +83,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:   node.Name + "-data",
 					DiskType:   prefix + "/zones/" + zone + "/diskTypes/pd-ssd",
-					DiskSizeGb: 200,
+					DiskSizeGb: sizeForMode[node.SyncMode],
 				},
 			},
 		},

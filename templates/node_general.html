@@ -29,6 +29,12 @@
                             </div>
                         </section>
                         <section class="row">
+                            <label class="col-3">Sync Mode:</label>
+                            <div class="col-9">
+                            <span class="text-capitalize">{{.SyncMode}}</span>
+                            </div>
+                        </section>
+                        <section class="row">
                             <label class="col-3">Created at:</label>
                             <div class="col-9">
                             {{.CreatedAt.Format "Mon Jan 2 15:04"}}
