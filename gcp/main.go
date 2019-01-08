@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
+	"github.com/WeTrustPlatform/blockform/config"
 
 	"golang.org/x/oauth2/google"
 
@@ -77,7 +78,7 @@ func (gc GCP) CreateNode(ctx context.Context, node model.Node, callback func(str
 				InitializeParams: &compute.AttachedDiskInitializeParams{
 					DiskName:   node.Name + "-data",
 					DiskType:   prefix + "/zones/" + zone + "/diskTypes/pd-ssd",
-					DiskSizeGb: 200,
+					DiskSizeGb: config.SizeForMode[node.SyncMode],
 				},
 			},
 		},

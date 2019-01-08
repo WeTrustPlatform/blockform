@@ -7,7 +7,7 @@
     {{with .Node}}
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
-        <h2>{{ .Name }}</h2>
+        <h2>{{ .Name }} <span class="text-secondary text-capitalize"> – {{template "net_name" .}} {{.SyncMode}}</span></h2>
         {{template "alert_status" . }}
         <div class="lefttabs">
             <div class="row">
@@ -18,14 +18,12 @@
                     <div class="details">
                         <section class="row">
                             <label class="col-3">Network:</label>
+                            <div class="col-9">{{template "net_name" .}}</div>
+                        </section>
+                        <section class="row">
+                            <label class="col-3">Sync Mode:</label>
                             <div class="col-9">
-                            {{if eq .NetworkType "public" }}
-                            {{if eq .NetworkID 1}}Mainnet <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                            {{if eq .NetworkID 3}}Rospten <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                            {{if eq .NetworkID 4}}Rinkeby <span class="text-monospace text-secondary">({{.NetworkID}})</span>{{end}}
-                            {{else}}
-                            Private <span class="text-monospace text-secondary">({{.NetworkID}})</span>
-                            {{end}}
+                            <span class="text-capitalize">{{.SyncMode}}</span>
                             </div>
                         </section>
                         <section class="row">
