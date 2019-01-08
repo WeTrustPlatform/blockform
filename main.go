@@ -139,7 +139,7 @@ func main() {
 
 	go func() {
 		exitFlag := false
-		for exitFlag != true {
+		for !exitFlag {
 			sig := <-sigs
 			if sig == syscall.SIGINT || sig == syscall.SIGHUP {
 				exitFlag = true
