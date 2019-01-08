@@ -13,6 +13,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
+	"github.com/WeTrustPlatform/blockform/config"
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
@@ -57,16 +58,10 @@ func (do DigitalOcean) CreateNode(ctx context.Context, node model.Node, callback
 
 	customData := cloudinit.CustomData(node, "/dev/sda")
 
-	sizeForMode := map[string]int64{
-		model.Full:  2000,
-		model.Fast:  200,
-		model.Light: 20,
-	}
-
 	vol, _, err := do.client.Storage.CreateVolume(ctx, &godo.VolumeCreateRequest{
 		Name:          node.Name,
 		Region:        "sfo2",
-		SizeGigaBytes: sizeForMode[node.SyncMode],
+		SizeGigaBytes: config.SizeForMode[node.SyncMode],
 	})
 	if err != nil {
 		onError(err)
