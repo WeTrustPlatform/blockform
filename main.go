@@ -210,8 +210,8 @@ func main() {
 		db.Create(&node)
 
 		cloud := providers[node.CloudProvider]
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 			cloud.CreateNode(context.Background(), node,
 				// On Success
@@ -246,8 +246,8 @@ func main() {
 			db.Where("id=?", ID).Delete(&model.Node{})
 			log.Println("Done deleting node " + node.Name)
 		} else {
+			wg.Add(1)
 			go func() {
-				wg.Add(1)
 				defer wg.Done()
 				cloud.DeleteNode(context.Background(), node,
 					// On Success
