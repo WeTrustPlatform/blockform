@@ -42,7 +42,7 @@ func serviceLogs(ctx context.Context, node model.Node, unit string, callback fun
 func handleNodeLogs(w http.ResponseWriter, r *http.Request) {
 	ID := pat.Param(r, "id")
 	unit := pat.Param(r, "unit")
-	if unit != "geth" && unit != "nginx" && unit != "faucet" {
+	if unit != "geth" && unit != "nginx" && unit != "faucet" && unit != "certbot.timer" {
 		w.WriteHeader(401)
 		return
 	}
@@ -56,7 +56,7 @@ func handleNodeLogs(w http.ResponseWriter, r *http.Request) {
 func handleNodeStatus(w http.ResponseWriter, r *http.Request) {
 	ID := pat.Param(r, "id")
 	unit := pat.Param(r, "unit")
-	if unit != "geth" && unit != "nginx" && unit != "faucet" {
+	if unit != "geth" && unit != "nginx" && unit != "faucet" && unit != "certbot.timer" {
 		w.WriteHeader(401)
 		return
 	}

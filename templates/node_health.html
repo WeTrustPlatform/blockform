@@ -43,6 +43,14 @@
                             </div>
                         </section>
                         {{end}}
+                        {{if .HasSSL}}
+                        <section class="row">
+                            <label class="col-3">Certbot Renewal Timer:</label>
+                            <div class="col-9">
+                            <span id="certbottimerstatus"><i class="fas fa-spin fa-spinner"></i></span>
+                            </div>
+                        </section>
+                        {{end}}
                         <section class="row">
                             <label class="col-3">Geth Syncing:</label>
                             <div class="col-9">
@@ -123,6 +131,11 @@
                                     {{if eq .NetworkType "private"}}
                                     fetch("/node/{{.ID}}/status/faucet").then(res => res.text()).then((data) => {
                                         $('#faucetstatus').html(`<span class="status-${data}">${data}</span>`);
+                                    });
+                                    {{end}}
+                                    {{if .HasSSL}}
+                                    fetch("/node/{{.ID}}/status/certbot.timer").then(res => res.text()).then((data) => {
+                                        $('#certbottimerstatus').html(`<span class="status-${data}">${data}</span>`);
                                     });
                                     {{end}}
                                     fetch("/node/{{.ID}}/logs/geth").then(res => res.text()).then((data) => {
