@@ -22,7 +22,7 @@ instance. So the installation process has been made as simple as possible.
  - Support multiple cloud providers: Azure, AWS, GCP and DigitalOcean
  - Support multiple synchronization modes: Full, Fast and Light
  - Setup a firewall for you
- - SSL certificates though certbot
+ - SSL certificates through certbot
  - HTTP and WebSocket RPC endpoints protected by an API key
  - Basic faucet web service for your private network
  - Node data is saved to an SSD for faster sync
