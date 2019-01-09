@@ -1,4 +1,10 @@
-{{define "alert_status"}}
+{{define "node_titlebar"}}
+    <h2>
+        {{ .Name }}
+        <span class="text-secondary text-capitalize">
+        – {{template "net_name" .}} {{.SyncMode}}</span>
+    </h2>
+
     {{ if eq .Status "deployed"}}
         {{if not .HasSSL}}
         <div class="alert alert-warning mb-5 clearfix" role="alert">

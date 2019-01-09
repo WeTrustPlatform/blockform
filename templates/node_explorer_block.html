@@ -7,8 +7,7 @@
     {{with .Node}}
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
-        <h2>{{ .Name }} <span class="text-secondary text-capitalize"> – {{template "net_name" .}} {{.SyncMode}}</span></h2>
-        {{template "alert_status" . }}
+        {{template "node_titlebar" . }}
         <div class="lefttabs">
             <div class="row">
                 <div class="col col-3">
