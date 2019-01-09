@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/WeTrustPlatform/blockform/cloudinit"
+	"github.com/WeTrustPlatform/blockform/config"
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/endpoints"
@@ -68,7 +69,7 @@ func (aw AWS) CreateNode(ctx context.Context, node model.Node, callback func(str
 			{
 				DeviceName: aws.String("/dev/sdc"),
 				Ebs: &ec2.EbsBlockDevice{
-					VolumeSize:          aws.Int64(200),
+					VolumeSize:          aws.Int64(config.SizeForMode[node.SyncMode]),
 					VolumeType:          aws.String("gp2"),
 					DeleteOnTermination: aws.Bool(true),
 				},

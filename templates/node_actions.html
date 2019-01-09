@@ -7,7 +7,8 @@
     {{with .Node}}
     <div class="container">
         <h1><a href="/">BlockForm</a></h1>
-        <h2>{{ .Name }}</h2>
+        <h2>{{ .Name }} <span class="text-secondary text-capitalize"> – {{template "net_name" .}} {{.SyncMode}}</span></h2>
+        {{template "alert_status" . }}
         <div class="lefttabs">
             <div class="row">
                 <div class="col col-3">
@@ -30,38 +31,6 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                         <a href="/node/{{.ID}}/reboot" class="btn btn-primary">Reboot</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p><button class="btn btn-primary" data-toggle="modal" data-target="#https-{{.ID}}"><i class="fas fa-lock"></i> Setup HTTPS</button></p>
-                        <div class="modal" id="https-{{.ID}}" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Setting up HTTPS on {{.Name}}</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Setting up HTTPS for your node requires that you own a domain name and point it to the node <b>before</b> performing this step.</p>
-                                        <p>An email address is required by certbot to receive notification about expiring certificates.</p>
-                                        <form id="https-form" method="POST" action="/node/{{.ID}}/certbot">
-                                        <div class="form-group">
-                                            <label for="domain" class="col-form-label">Domain Name:</label>
-                                            <input type="text" class="form-control" id="domain" name="domain">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email" class="col-form-label">Email Address:</label>
-                                            <input type="text" class="form-control" id="email" name="email">
-                                        </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <button onclick="document.getElementById('https-form').submit();" class="btn btn-primary">Setup</a>
                                     </div>
                                 </div>
                             </div>

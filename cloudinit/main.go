@@ -31,6 +31,7 @@ func CustomData(node model.Node, dev string) string {
 	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)
 	str = strings.Replace(str, "@@PUB_KEY@@", os.Getenv("PUB_KEY"), -1)
 	str = strings.Replace(str, "@@NET_ID@@", fmt.Sprintf("%d", node.NetworkID), -1)
+	str = strings.Replace(str, "@@SYNC_MODE@@", node.SyncMode, -1)
 	str = strings.Replace(str, "@@DEVICE@@", dev, -1)
 
 	return str

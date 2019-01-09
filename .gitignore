@@ -2,3 +2,4 @@ blockform
 .vscode
 terraform*
 .terraform*
+.env

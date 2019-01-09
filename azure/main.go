@@ -13,6 +13,7 @@ import (
 	"github.com/Azure/go-autorest/autorest/azure/auth"
 	"github.com/Azure/go-autorest/autorest/to"
 	"github.com/WeTrustPlatform/blockform/cloudinit"
+	"github.com/WeTrustPlatform/blockform/config"
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
@@ -77,6 +78,7 @@ func (az Azure) CreateNode(ctx context.Context, node model.Node, callback func(s
 		"vm_user":     map[string]interface{}{"value": "blockform"},
 		"pub_key":     map[string]interface{}{"value": os.Getenv("PUB_KEY")},
 		"dns_prefix":  map[string]interface{}{"value": *group.Name},
+		"disk_size":   map[string]interface{}{"value": int(config.SizeForMode[node.SyncMode])},
 		"custom_data": map[string]interface{}{"value": customData},
 	}
 

@@ -196,6 +196,10 @@ func main() {
 			rand.Seed(time.Now().UnixNano())
 			networkID = int64(rand.Intn(65536))
 		}
+		syncMode := r.FormValue("sync_mode")
+		if syncMode == "" {
+			syncMode = model.Fast
+		}
 		APIKey := password.MustGenerate(8, 4, 0, false, false)
 
 		node := model.Node{
@@ -203,6 +207,7 @@ func main() {
 			CloudProvider: provider,
 			NetworkType:   r.FormValue("network_type"),
 			NetworkID:     uint64(networkID),
+			SyncMode:      syncMode,
 			APIKey:        APIKey,
 			Status:        model.Creating,
 		}
@@ -225,7 +230,7 @@ func main() {
 				func(err error) {
 					node.Status = model.Error
 					db.Save(&node)
-					log.Println("Error while create notde ", node.Name, err)
+					log.Println("Error while create node ", node.Name, err)
 				},
 			)
 		}()
