@@ -1,9 +1,20 @@
 {{define "node_titlebar"}}
-    <h2>
-        {{ .Name }}
+    <div class="titlebar dropdown clearfix">
+        <h2 class="display-inline">{{ .Name }}
         <span class="text-secondary text-capitalize">
-        – {{template "net_name" .}} {{.SyncMode}}</span>
-    </h2>
+        – {{template "net_name" .}} {{.SyncMode}}</span></h2>
+
+        <button class="btn btn-outline-secondary dropdown-toggle float-right" type="button" id="actionmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Actions
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="actionmenu">
+            <button class="dropdown-item" type="button" data-toggle="modal" data-target="#reboot-{{.ID}}">Reboot node</button>
+            <button class="dropdown-item disabled" type="button">Pause node</button>
+            <button class="dropdown-item text-danger" type="button" data-toggle="modal" data-target="#delete-{{.ID}}">Delete node</button>
+        </div>
+        {{template "modal_reboot" .}}
+        {{template "modal_delete" .}}
+    </div>
 
     {{ if eq .Status "deployed"}}
         {{if not .HasSSL}}
@@ -11,7 +22,7 @@
             Your endpoints are not yet protected by SSL, but Blockform can help you setting up SSL if you point a domain name to the node. <button class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#https-{{.ID}}"><i class="fas fa-lock"></i> Setup HTTPS</button>
         </div>
         {{template "modal_https" .}}
-    {{end}}
+        {{end}}
     {{else if eq .Status "creating"}}
         <div class="alert alert-warning mb-5 clearfix" role="alert">
             Your node is being deployed.
