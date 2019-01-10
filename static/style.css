@@ -330,6 +330,14 @@ input.toclipboard {
   color: hsl(212, 11%, 15%);
 }
 
+.titlebar {
+  margin: 30px 0;
+}
+
+.display-inline {
+  display: inline;
+}
+
 .lefttabs .details {
   padding: 20px 30px 15px 0;
 }

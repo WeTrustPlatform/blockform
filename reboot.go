@@ -34,5 +34,5 @@ func handleReboot(w http.ResponseWriter, r *http.Request) {
 	go rebootNode(context.Background(), node, func() {
 		log.Println("Done rebooting node " + node.Name)
 	})
-	http.Redirect(w, r, "/node/"+ID+"/actions", http.StatusSeeOther)
+	http.Redirect(w, r, "/node/"+ID, http.StatusSeeOther)
 }
