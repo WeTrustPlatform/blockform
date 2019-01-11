@@ -38,7 +38,9 @@ func main() {
 	}
 
 	//db.DropTableIfExists(&model.Node{})
+	//db.DropTableIfExists(&model.Event{})
 	db.AutoMigrate(&model.Node{})
+	db.AutoMigrate(&model.Event{})
 
 	// terminate goroutines on sigint/sighup
 	sigs := make(chan os.Signal, 1)

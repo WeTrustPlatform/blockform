@@ -38,6 +38,7 @@ type Node struct {
 	SyncMode      string
 	APIKey        string
 	Status        string `gorm:"not null"`
+	Events        []Event
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

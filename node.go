@@ -17,12 +17,16 @@ func handleNodeTab(w http.ResponseWriter, r *http.Request) {
 	tab := pat.Param(r, "tab")
 	node := model.Node{}
 	db.Find(&node, id)
+	events := []model.Event{}
+	db.Model(&node).Order("created_at DESC").Related(&events)
 	tmpl.ExecuteTemplate(w, "node_"+tab+".html", struct {
-		Tab  string
-		Node model.Node
+		Tab    string
+		Node   model.Node
+		Events []model.Event
 	}{
 		tab,
 		node,
+		events,
 	})
 }
 
