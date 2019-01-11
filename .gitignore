@@ -1,4 +1,5 @@
 blockform
+debug
 .vscode
 terraform*
 .terraform*
