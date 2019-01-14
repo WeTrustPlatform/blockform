@@ -65,6 +65,7 @@ func main() {
 	mux.HandleFunc(pat.Get("/node/:id/status/:unit"), handleNodeStatus)
 	mux.HandleFunc(pat.Get("/node/:id/logs/:unit"), handleNodeLogs)
 	mux.HandleFunc(pat.Post("/node/:id/certbot"), handleCertbot)
+	mux.HandleFunc(pat.Post("/node/:id/event/:apikey"), handleEvent)
 	mux.HandleFunc(pat.Get("/node/:id"), handleNode)
 	mux.HandleFunc(pat.Get("/node/:id/:tab"), handleNodeTab)
 	mux.HandleFunc(pat.Get("/node/:nodeid/explorer/:class/:id"), handleNodeExplorer)
