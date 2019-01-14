@@ -52,23 +52,26 @@ func main() {
 	providers = makeProviders()
 
 	mux := goji.NewMux()
-	mux.Use(basicAuth)
+	amux := goji.SubMux() // authenticated mux
+	amux.Use(basicAuth)
+
+	mux.HandleFunc(pat.Post("/node/:id/event/:apikey"), handleEvent)
+	mux.Handle(pat.New("/*"), amux)
 
 	fs := http.FileServer(http.Dir("static"))
-	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static/", fs))
+	amux.Handle(pat.Get("/static/*"), http.StripPrefix("/static/", fs))
 
-	mux.HandleFunc(pat.Get("/"), handleDashboard)
-	mux.HandleFunc(pat.Get("/create"), handleCreateForm)
-	mux.HandleFunc(pat.Post("/create"), handleCreate)
-	mux.HandleFunc(pat.Get("/node/:id/delete"), handleNodeDelete)
-	mux.HandleFunc(pat.Get("/node/:id/reboot"), handleReboot)
-	mux.HandleFunc(pat.Get("/node/:id/status/:unit"), handleNodeStatus)
-	mux.HandleFunc(pat.Get("/node/:id/logs/:unit"), handleNodeLogs)
-	mux.HandleFunc(pat.Post("/node/:id/certbot"), handleCertbot)
-	mux.HandleFunc(pat.Post("/node/:id/event/:apikey"), handleEvent)
-	mux.HandleFunc(pat.Get("/node/:id"), handleNode)
-	mux.HandleFunc(pat.Get("/node/:id/:tab"), handleNodeTab)
-	mux.HandleFunc(pat.Get("/node/:nodeid/explorer/:class/:id"), handleNodeExplorer)
+	amux.HandleFunc(pat.Get("/"), handleDashboard)
+	amux.HandleFunc(pat.Get("/create"), handleCreateForm)
+	amux.HandleFunc(pat.Post("/create"), handleCreate)
+	amux.HandleFunc(pat.Get("/node/:id/delete"), handleNodeDelete)
+	amux.HandleFunc(pat.Get("/node/:id/reboot"), handleReboot)
+	amux.HandleFunc(pat.Get("/node/:id/status/:unit"), handleNodeStatus)
+	amux.HandleFunc(pat.Get("/node/:id/logs/:unit"), handleNodeLogs)
+	amux.HandleFunc(pat.Post("/node/:id/certbot"), handleCertbot)
+	amux.HandleFunc(pat.Get("/node/:id"), handleNode)
+	amux.HandleFunc(pat.Get("/node/:id/:tab"), handleNodeTab)
+	amux.HandleFunc(pat.Get("/node/:nodeid/explorer/:class/:id"), handleNodeExplorer)
 
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), mux))
 }
