@@ -32,7 +32,12 @@ func handleReboot(w http.ResponseWriter, r *http.Request) {
 	db.Find(&node, ID)
 	log.Println("Rebooting node", node.Name)
 	go rebootNode(context.Background(), node, func() {
+		db.Create(&model.Event{
+			NodeID: node.ID,
+			Type:   model.Fine,
+			Title:  "The node has been manually rebooted",
+		})
 		log.Println("Done rebooting node " + node.Name)
 	})
-	http.Redirect(w, r, "/node/"+ID, http.StatusSeeOther)
+	http.Redirect(w, r, "/node/"+ID+"/activity", http.StatusSeeOther)
 }

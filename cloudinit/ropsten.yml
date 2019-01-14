@@ -72,6 +72,8 @@ write_files:
         echo "latest block number from localhost: $curBlock"
         if [[ ( $(( ${ethBlock} - ${curBlock} )) -ge 100 ) && ( curBlock -ne 0 ) ]]; then
           systemctl restart geth;
+          source /etc/blockform
+          curl -X POST -F 'title=Geth has been restarted' -F 'type=issue' -F 'description=The blocknumber was lagging behind etherscan for more than 100 blocks' ${SITE_URL}/node/${NODE_ID}/event/${API_KEY}
         fi
   - owner: root:root
     path: /etc/cron.d/sync-checker
@@ -106,6 +108,12 @@ write_files:
           "enode://18506dcb9ad5860bca084ee2f16c281d9d938f3a844acdf6eab0491c0c3b896c172f7051fdcad3468a7f5385a99eb6c424d98fafccf9c4950dca0b7b58161333@34.242.232.40:52382",
           "enode://29c7a3784fd50c0e3f77f00a45c13b24bc661095a3aba006c2787f2e6dafee6bd241a8ca7398a70079d95a56d356d68bd7d68fc3540a7e898eda485f60818380@77.91.195.197:53688"
         ]
+  - owner: root:root
+    path: /etc/blockform
+    content: |
+        SITE_URL="@@SITE_URL@@"
+        NODE_ID=@@NODE_ID@@
+        API_KEY="@@API_KEY@@"
 packages:
   - nginx
   - python-certbot-nginx

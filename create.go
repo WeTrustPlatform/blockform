@@ -66,15 +66,27 @@ func handleCreate(w http.ResponseWriter, r *http.Request) {
 		cloud.CreateNode(context.Background(), node,
 			// On Success
 			func(VMID, DomainName string) {
-				db.Model(&node).Update("Status", model.Deployed)
-				db.Model(&node).Update("VMID", VMID)
-				db.Model(&node).Update("DomainName", DomainName)
+				node.Status = model.Deployed
+				node.VMID = VMID
+				node.DomainName = DomainName
+				db.Save(&node)
+				db.Create(&model.Event{
+					NodeID: node.ID,
+					Title:  "Node successfully created",
+					Type:   model.Fine,
+				})
 				log.Println("Done creating node " + node.Name)
 			},
 			// On Error
 			func(err error) {
 				node.Status = model.Error
 				db.Save(&node)
+				db.Create(model.Event{
+					NodeID:      node.ID,
+					Title:       "Error when creating node",
+					Description: err.Error(),
+					Type:        model.Fine,
+				})
 				log.Println("Error while create node ", node.Name, err)
 			},
 		)

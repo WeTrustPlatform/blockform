@@ -50,9 +50,20 @@ func handleCertbot(w http.ResponseWriter, r *http.Request) {
 			node.DomainName = domain
 			node.HasSSL = true
 			db.Save(&node)
+			db.Create(&model.Event{
+				NodeID: node.ID,
+				Type:   model.Fine,
+				Title:  "SSL has been successfully setup",
+			})
 			http.Redirect(w, r, "/node/"+ID+"/endpoints", http.StatusSeeOther)
 		},
 		func(err error) {
-			w.Write([]byte(err.Error()))
+			db.Create(&model.Event{
+				NodeID:      node.ID,
+				Type:        model.Issue,
+				Title:       "SSL setup has failed",
+				Description: err.Error(),
+			})
+			http.Redirect(w, r, "/node/"+ID+"/activity", http.StatusSeeOther)
 		})
 }
