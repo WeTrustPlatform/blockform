@@ -143,6 +143,10 @@ input:focus, select:focus {
   border: none;
 }
 
+.dropdown-item:active {
+  background: hsl(172, 45%, 59%);
+}
+
 .status-active {
   color: hsl(134, 61%, 41%);
   text-transform: capitalize;
