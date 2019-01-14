@@ -19,7 +19,7 @@
                         <table class="table">
                             {{range $.Events}}
                                 <tr>
-                                    <td>{{.CreatedAt.Format "Mon Jan 2 15:04"}}</td>
+                                    <td style="width:20%">{{.CreatedAt.Format "Mon Jan 2 15:04"}}</td>
                                     <td>
                                         <b class="{{if eq .Type "issue"}}text-danger{{end}}">{{.Title}}</b><br>
                                         {{.Description}}
