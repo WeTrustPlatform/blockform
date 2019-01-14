@@ -120,6 +120,12 @@ write_files:
             proxy_set_header Connection "upgrade";
           }
         }
+  - owner: root:root
+    path: /etc/blockform
+    content: |
+        SITE_URL="@@SITE_URL@@"
+        NODE_ID=@@NODE_ID@@
+        API_KEY="@@API_KEY@@"
 packages:
   - nginx
   - python-certbot-nginx

@@ -67,6 +67,7 @@ Set environment variables:
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
     export BASIC_AUTH_USER=xxxxx
     export BASIC_AUTH_PASS=xxxxx
+    export SITE_URL="http://localhost:3000"
     export PUB_KEY="xxxxx" # an SSH public key to login the VMs
     export PRIV_KEY="xxxxx" # an SSH private key to let blockform login the VMs
 
