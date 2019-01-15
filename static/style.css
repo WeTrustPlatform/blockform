@@ -10,11 +10,16 @@ body,h1,h2,h3,h4,h5,p {
 
 a {
   color: hsl(172, 45%, 59%);
+  outline: 0;
 }
 
 a:hover {
   text-decoration: none;
   color: hsl(172, 45%, 39%);
+}
+
+a:focus {
+  background: hsla(172, 95%, 77%, 0.5);
 }
 
 h1 {
@@ -316,22 +321,29 @@ input.toclipboard {
 }
 
 .toptabs ul {
-  background: hsl(172, 45%, 59%);
+  background: hsla(212, 0%, 68%, 0.15);
 }
 
 .toptabs .nav-link {
   padding: 1rem 1.5rem;
   border-radius: 0;
-  color: white;
+  color: hsl(212, 11%, 15%);
+  border-top: 2px solid transparent;
 }
 
 .toptabs .nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 2px solid hsla(172, 45%, 59%, 0.5);
 }
 
 .toptabs .nav-link.active {
   background: white;
   color: hsl(212, 11%, 15%);
+  border-top: 2px solid hsl(172, 45%, 59%);
+}
+
+.toptabs .nav-link:focus, .toptabs .nav-link.focus {
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
 }
 
 .titlebar {
@@ -352,13 +364,15 @@ input.toclipboard {
 
 #sidemenu {
   height: 100%;
-  background: hsl(172, 45%, 59%);
+  background: hsla(212, 0%, 68%, 0.15);
 }
 
 #sidemenu .nav-link {
   padding: 1rem;
   border-radius: 0;
-  color: white;
+  color: hsl(210, 7%, 28%);
+  border-left: solid 2px transparent;
+  outline: 0;
 }
 
 #sidemenu .nav-link:last-child {
@@ -366,12 +380,18 @@ input.toclipboard {
 }
 
 #sidemenu .nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+  border-left: solid 2px hsla(172, 45%, 59%, 0.5);
 }
 
 #sidemenu .nav-link.active {
   background: white;
   color: hsl(210, 7%, 28%);
+  border-left: solid 2px hsl(172, 45%, 59%);
+}
+
+#sidemenu .nav-link:focus, #sidemenu .nav-link.focus {
+  box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
 }
 
 footer {
