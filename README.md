@@ -28,6 +28,7 @@ instance. So the installation process has been made as simple as possible.
  - Node data is saved to an SSD for faster sync
  - Basic heathchecks and logs display
  - Basic authentication for the UI
+ - Tiny chain explorer to browse your blocks, transactions and accounts
  - Compatible with MetaMask, geth attach, and web3.js
  - Easy deployments on Heroku
  - Optional Slack integration for alerts
