@@ -68,7 +68,7 @@ func notifySlack(node model.Node, event model.Event) {
 	]
 }`)
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
