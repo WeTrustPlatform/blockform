@@ -1,7 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/WeTrustPlatform/blockform/model"
 	"goji.io/pat"
@@ -30,10 +35,52 @@ func handleEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.Create(&model.Event{
+	event := model.Event{
 		NodeID:      node.ID,
 		Type:        type0,
 		Title:       title,
 		Description: description,
-	})
+	}
+	db.Create(&event)
+
+	go notifySlack(node, event)
+}
+
+func notifySlack(node model.Node, event model.Event) {
+	url := os.Getenv("SLACK_HOOK")
+
+	// only notify issues, and only of the SLACK_HOOK is set
+	if event.Type != model.Issue || url == "" {
+		return
+	}
+
+	nodeURL := fmt.Sprintf("%s/node/%d/activity", os.Getenv("SITE_URL"), node.ID)
+
+	json := []byte(`{
+	"attachments": [
+		{
+			"pretext": "On node ` + node.Name + `",
+			"title": "` + event.Title + `",
+			"title_link": "` + nodeURL + `",
+			"text": "` + event.Description + `",
+			"color": "#dc3545"
+		}
+	]
+}`)
+
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+
+	log.Println("response Status:", resp.Status)
+	log.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	log.Println("response Body:", string(body))
 }

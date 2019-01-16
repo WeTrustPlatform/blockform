@@ -30,6 +30,7 @@ instance. So the installation process has been made as simple as possible.
  - Basic authentication for the UI
  - Compatible with MetaMask, geth attach, and web3.js
  - Easy deployments on Heroku
+ - Optional Slack integration for alerts
 
 ### Usage
 
