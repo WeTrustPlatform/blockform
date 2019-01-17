@@ -148,6 +148,10 @@ input:focus, select:focus {
   border: none;
 }
 
+.dropdown-item {
+  cursor: pointer;
+}
+
 .dropdown-item:active {
   background: hsl(172, 45%, 59%);
 }
