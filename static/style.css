@@ -1,3 +1,5 @@
+/* General styles */
+
 body {
   font-size: 0.9rem;
   color: hsl(210, 7%, 28%);
@@ -34,6 +36,8 @@ h4 {
   margin-bottom: 20px;
 }
 
+/* Dashboard */
+
 .circle {
   background: linear-gradient(hsl(172, 45%, 59%), hsl(202, 92%, 54%));
   width: 40px;
@@ -55,6 +59,8 @@ td.status .progress {
 a:hover .circle {
   background: linear-gradient(hsl(172, 45%, 59%), hsl(202, 92%, 54%));
 }
+
+/* Bootstrap components overrides */
 
 .btn-outline-primary {
   color: hsl(172, 45%, 59%);
@@ -175,6 +181,8 @@ input:focus, select:focus {
   max-width: 618px;
 }
 
+/* Form */
+
 .form-control {
   border-color: hsla(212, 0%, 68%, 0.15);
   background-color: hsla(212, 0%, 68%, 0.15);
@@ -243,6 +251,8 @@ input:focus, select:focus {
 .providers input[type="radio"]:focus+label {
   box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5);
 }
+
+/* Node details */
 
 .details section {
   margin-bottom: 24px;
@@ -366,6 +376,8 @@ input.toclipboard {
   padding: 10px 10px 10px 0;
 }
 
+/* Details side menu */
+
 #sidemenu {
   height: 100%;
   background: hsla(212, 0%, 68%, 0.15);
@@ -397,6 +409,8 @@ input.toclipboard {
 #sidemenu .nav-link:focus, #sidemenu .nav-link.focus {
   box-shadow: 0 0 0 0.2rem hsla(172, 95%, 77%, 0.5)!important;
 }
+
+/* Footer */
 
 footer {
   padding: 20px 0 40px 0;
