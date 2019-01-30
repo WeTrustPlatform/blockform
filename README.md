@@ -75,6 +75,6 @@ Set environment variables:
 
 Get, build and run:
 
-    go get github.com/WeTrustPlatform/blockform
-    cd $GOPATH/src/github.com/WeTrustPlatform/blockform
+    git clone https://github.com/WeTrustPlatform/blockform.git
+    cd blockform
     go build && ./blockform
