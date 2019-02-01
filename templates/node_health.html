@@ -72,6 +72,12 @@
                             </div>
                         </section>
                         <section class="row">
+                            <label class="col-3">Geth Version:</label>
+                            <div class="col-9">
+                            <div id="gethversion"><i class="fas fa-spin fa-spinner"></i></div>
+                            </div>
+                        </section>
+                        <section class="row">
                             <label class="col-3">Geth Logs:</label>
                             <div class="col-9">
                             <div id="gethlogs"><i class="fas fa-spin fa-spinner"></i></div>
@@ -137,6 +143,9 @@
                                         $('#certbottimerstatus').html(`<span class="status-${data}">${data}</span>`);
                                     });
                                     {{end}}
+                                    fetch("/node/{{.ID}}/version").then(res => res.text()).then((data) => {
+                                        $('#gethversion').html(`<pre>${data}</pre>`);
+                                    });
                                     fetch("/node/{{.ID}}/logs/geth").then(res => res.text()).then((data) => {
                                         $('#gethlogs').html(`<pre>${data}</pre>`);
                                     });

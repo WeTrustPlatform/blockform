@@ -66,3 +66,20 @@ func handleNodeStatus(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(stdin))
 	})
 }
+
+func handleNodeVersion(w http.ResponseWriter, r *http.Request) {
+	ID := pat.Param(r, "id")
+	node := model.Node{}
+	db.Find(&node, ID)
+	stdin, _, err := sshcmd.Exec(
+		os.Getenv("PRIV_KEY"),
+		os.Getenv("PASSPHRASE"),
+		"blockform",
+		node.DomainName,
+		"geth version | grep ^Version",
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	w.Write([]byte(stdin))
+}
