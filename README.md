@@ -78,3 +78,10 @@ Get, build and run:
     git clone https://github.com/WeTrustPlatform/blockform.git
     cd blockform
     go build && ./blockform
+
+
+### Development
+- (Optional) Use [bra](https://github.com/Unknwon/bra) to auto rebuild and restart server when you make changes in `*.go` and `*.html` files:
+ * `go get github.com/Unknwon/bra`
+ * `bra run`
+ * Happy coding
