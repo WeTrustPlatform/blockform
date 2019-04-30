@@ -77,4 +77,5 @@ Get, build and run:
 
     git clone https://github.com/WeTrustPlatform/blockform.git
     cd blockform
-    go build && ./blockform
+    <store the environment variables in the .env file>
+    go build && source .env && ./blockform
