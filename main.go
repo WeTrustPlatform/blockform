@@ -66,6 +66,7 @@ func main() {
 	amux.HandleFunc(pat.Post("/create"), handleCreate)
 	amux.HandleFunc(pat.Get("/node/:id/delete"), handleNodeDelete)
 	amux.HandleFunc(pat.Get("/node/:id/reboot"), handleReboot)
+	amux.HandleFunc(pat.Get("/node/:id/upgrade"), handleUpgrade)
 	amux.HandleFunc(pat.Get("/node/:id/status/:unit"), handleNodeStatus)
 	amux.HandleFunc(pat.Get("/node/:id/logs/:unit"), handleNodeLogs)
 	amux.HandleFunc(pat.Get("/node/:id/version"), handleNodeVersion)
