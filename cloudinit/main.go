@@ -32,7 +32,7 @@ func CustomData(node model.Node, dev string) string {
 		filename = "dedicated_" + filename
 	}
 
-	data, _ = ioutil.ReadFile("cloudinit/" + filename + ".yml")
+	data, _ = ioutil.ReadFile("cloudinit/" + filename)
 
 	str := string(data)
 	str = strings.Replace(str, "@@NODE_ID@@", fmt.Sprintf("%d", node.ID), -1)
