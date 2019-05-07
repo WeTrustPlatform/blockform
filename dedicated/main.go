@@ -10,14 +10,17 @@ import (
 	"github.com/WeTrustPlatform/blockform/sshcmd"
 )
 
+// Dedicated implements the CloudProvider interface for dedicated servers
 type Dedicated struct {
 }
 
+// NewDedicated instanciates the package
 func NewDedicated() (*Dedicated, error) {
 	var dd Dedicated
 	return &dd, nil
 }
 
+// CreateNode will ssh to the server and run the custom cloud init script
 func (dd Dedicated) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 
 	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
