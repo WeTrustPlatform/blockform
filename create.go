@@ -57,6 +57,10 @@ func handleCreate(w http.ResponseWriter, r *http.Request) {
 		Status:        model.Creating,
 	}
 
+	if provider == "dedicated" {
+		node.DomainName = r.FormValue("domain_name")
+	}
+
 	db.Create(&node)
 
 	cloud := providers[node.CloudProvider]

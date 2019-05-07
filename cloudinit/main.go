@@ -14,18 +14,25 @@ import (
 // The dev argument is the unix device to be used for geth data.
 func CustomData(node model.Node, dev string) string {
 	var data []byte
+	var filename string
 	switch node.NetworkID {
 	case 1:
-		data, _ = ioutil.ReadFile("cloudinit/mainnet.yml")
+		filename = "mainnet.yml"
 	case 3:
-		data, _ = ioutil.ReadFile("cloudinit/ropsten.yml")
+		filename = "ropsten.yml"
 	case 4:
-		data, _ = ioutil.ReadFile("cloudinit/rinkeby.yml")
+		filename = "rinkeby.yml"
 	}
 
 	if node.NetworkType == model.Private {
-		data, _ = ioutil.ReadFile("cloudinit/private.yml")
+		filename = "private.yml"
 	}
+
+	if node.CloudProvider == "dedicated" {
+		filename = "dedicated_" + filename
+	}
+
+	data, _ = ioutil.ReadFile("cloudinit/" + filename)
 
 	str := string(data)
 	str = strings.Replace(str, "@@NODE_ID@@", fmt.Sprintf("%d", node.ID), -1)

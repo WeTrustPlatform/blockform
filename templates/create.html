@@ -70,6 +70,11 @@
                                 {{end}}
                             </div>
                         </div>
+                        <div class="form-group dedicated_fields d-none">
+                            <label for="domain_name">Dedicated server IP</label>
+                            <input type="text" class="form-control" id="domain_name" name="domain_name" aria-describedby="domain_nameHelp">
+                            <small id="domain_nameHelp" class="form-text text-muted">The domain name or the IP address of the dedicated server</small>
+                        </div>
                         <input name="network_type" type="hidden" value="public">
                         <button type="submit" class="btn btn-outline-primary float-right">Create</button>
                     </form>
@@ -119,6 +124,11 @@
                                 {{end}}
                             </div>
                         </div>
+                        <div class="form-group dedicated_fields d-none">
+                            <label for="domain_name">Dedicated server IP</label>
+                            <input type="text" class="form-control" id="domain_name" name="domain_name" aria-describedby="domain_nameHelp">
+                            <small id="domain_nameHelp" class="form-text text-muted">The domain name or the IP address of the dedicated server</small>
+                        </div>
                         <input name="network_type" type="hidden" value="private">
                         <button type="submit" class="btn btn-outline-primary float-right">Create</button>
                     </form>
@@ -128,5 +138,16 @@
         </div>
         {{template "footer"}}
     </div>
+    <script>
+        $( document ).ready(function() {
+            $('.providers').click(async function() {
+                if ($("input[name='provider']:checked", $(this)).val() == 'dedicated') {
+                    $('.dedicated_fields').removeClass('d-none');
+                } else {
+                    $('.dedicated_fields').addClass('d-none');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
