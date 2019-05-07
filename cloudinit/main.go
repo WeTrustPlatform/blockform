@@ -27,6 +27,10 @@ func CustomData(node model.Node, dev string) string {
 		data, _ = ioutil.ReadFile("cloudinit/private.yml")
 	}
 
+	if node.CloudProvider == "dedicated" {
+		data, _ = ioutil.ReadFile("cloudinit/dedicated.yml")
+	}
+
 	str := string(data)
 	str = strings.Replace(str, "@@NODE_ID@@", fmt.Sprintf("%d", node.ID), -1)
 	str = strings.Replace(str, "@@API_KEY@@", node.APIKey, -1)

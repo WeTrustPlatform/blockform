@@ -22,7 +22,7 @@ func (dd Dedicated) CreateNode(ctx context.Context, node model.Node, callback fu
 
 	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
 
-	cmd := `sudo apt update && sudo apt install cloud-init && echo '` + customData + `' | base64 -d > config-data`
+	cmd := `sudo apt update && sudo apt install cloud-init && echo '` + customData + `' | base64 -d > config-data && sudo rm -rf /var/lib/cloud/* && sudo cloud-init -f config-data init && sudo cloud-init -f config-data modules -m final`
 
 	_, _, err := sshcmd.Exec(
 		os.Getenv("PRIV_KEY"),
