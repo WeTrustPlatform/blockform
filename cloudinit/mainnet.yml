@@ -90,7 +90,7 @@ packages:
   - python-certbot-nginx
 runcmd:
   - chown -R blockform:blockform /datadrive
-  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.22-7fa3509e.tar.gz
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
   - tar xf geth-linux-*.tar.gz
   - cp geth-linux-*/geth /usr/bin/geth
   - chown -R blockform:blockform /datadrive
