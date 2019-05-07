@@ -50,6 +50,7 @@ func handleCreate(w http.ResponseWriter, r *http.Request) {
 	node := model.Node{
 		Name:          name,
 		CloudProvider: provider,
+		DomainName:    r.FormValue("domain_name"),
 		NetworkType:   r.FormValue("network_type"),
 		NetworkID:     uint64(networkID),
 		SyncMode:      syncMode,
