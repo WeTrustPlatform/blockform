@@ -238,6 +238,14 @@ input:focus, select:focus {
   font-size: 3rem;
 }
 
+.providers label.dedicated::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f233";
+  display: block;
+  font-size: 3rem;
+  font-weight: 900;
+}
+
 .providers input[type="radio"]:checked+label {
   border: solid 1px hsl(172, 45%, 59%);
   background: white;

@@ -22,8 +22,7 @@ func NewDedicated() (*Dedicated, error) {
 
 // CreateNode will ssh to the server and run the custom cloud init script
 func (dd Dedicated) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
-
-	customData := cloudinit.EncodedCustomData(node, "/dev/sdc")
+	customData := cloudinit.EncodedCustomData(node, "")
 
 	cmd := `sudo apt update && sudo apt install cloud-init && echo '` + customData + `' | base64 -d > config-data && sudo rm -rf /var/lib/cloud/* && sudo cloud-init -f config-data init && sudo cloud-init -f config-data modules && sudo cloud-init -f config-data modules -m final`
 
