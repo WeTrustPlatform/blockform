@@ -1,0 +1,84 @@
+#cloud-config
+users:
+  - default
+  - name: blockform
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - @@PUB_KEY@@
+write_files:
+  - owner: root:root
+  - path: /lib/systemd/system/geth.service
+    content: |
+        [Unit]
+        Description=Geth
+        After=network.target
+        [Service]
+        Type=simple
+        Restart=always
+        RestartSec=10
+        User=blockform
+        WorkingDirectory=/home/blockform
+        StandardOutput=journal
+        ExecStart=/usr/bin/geth --datadir /home/blockform/.ethereum --syncmode @@SYNC_MODE@@ --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins *
+        [Install]
+        WantedBy=multi-user.target
+  - owner: root:root
+    path: /etc/nginx/sites-available/default
+    content: |
+        server {
+          listen 8545;
+          error_log syslog:server=unix:/dev/log;
+          access_log syslog:server=unix:/dev/log;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8445;
+          }
+        }
+        server {
+          listen 8546;
+          error_log syslog:server=unix:/dev/log;
+          access_log syslog:server=unix:/dev/log;
+          location /@@API_KEY@@ {
+            proxy_pass http://127.0.0.1:8446;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+          }
+        }
+  - owner: root:root
+    path: /usr/bin/sync-checker
+    permissions: '0755'
+    content: |
+        #!/bin/bash
+        curBlock=$(geth --exec "eth.blockNumber" attach http://localhost:8445)
+        if [ $? -ne 0 ]; then
+          curBlock=0
+        fi
+        ethBlock=$(( $(curl -s -X GET "https://api.etherscan.io/api?module=proxy&action=eth_blockNumber" | grep -Eo '"result":.*?[^\\]"' | cut -d \: -f 2 | cut -d \" -f 2) ));
+        echo "latest block number from etherscan: $ethBlock"
+        echo "latest block number from localhost: $curBlock"
+        if [[ ( $(( ${ethBlock} - ${curBlock} )) -ge 100 ) && ( curBlock -ne 0 ) ]]; then
+          systemctl restart geth;
+          source /etc/blockform
+          curl -X POST -F 'title=Geth has been restarted' -F 'type=issue' -F 'description=The blocknumber was lagging behind etherscan for more than 100 blocks' ${SITE_URL}/node/${NODE_ID}/event/${API_KEY}
+        fi
+  - owner: root:root
+    path: /etc/cron.d/sync-checker
+    content: |
+        */10 * * * * blockform /usr/bin/sync-checker >> /home/blockform/sync-checker.log 2>&1 
+  - owner: root:root
+    path: /etc/blockform
+    content: |
+        SITE_URL="@@SITE_URL@@"
+        NODE_ID=@@NODE_ID@@
+        API_KEY="@@API_KEY@@"
+packages:
+  - nginx
+  - python-certbot-nginx
+runcmd:
+  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
+  - tar xf geth-linux-*.tar.gz
+  - cp geth-linux-*/geth /usr/bin/geth
+  - systemctl enable geth
+  - systemctl start geth
+  - systemctl restart nginx
