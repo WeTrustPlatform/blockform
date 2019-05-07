@@ -75,6 +75,7 @@ write_files:
 packages:
   - nginx
   - python-certbot-nginx
+  - ufw
 runcmd:
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
   - tar xf geth-linux-*.tar.gz
@@ -82,3 +83,13 @@ runcmd:
   - systemctl enable geth
   - systemctl start geth
   - systemctl restart nginx
+  - ufw default allow outgoing
+  - ufw default deny incoming
+  - ufw allow 22
+  - ufw allow 80
+  - ufw allow 8080
+  - ufw allow 8545
+  - ufw allow 8546
+  - ufw allow 30303
+  - systemctl enable ufw
+  - systemctl start ufw
