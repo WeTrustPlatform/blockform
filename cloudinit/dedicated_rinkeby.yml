@@ -106,6 +106,7 @@ write_files:
 packages:
   - nginx
   - python-certbot-nginx
+  - ufw
 runcmd:
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
   - tar xf geth-linux-*.tar.gz
