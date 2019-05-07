@@ -107,6 +107,7 @@ packages:
   - nginx
   - python-certbot-nginx
   - ufw
+  - fail2ban
 runcmd:
   - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
   - tar xf geth-linux-*.tar.gz
@@ -124,3 +125,5 @@ runcmd:
   - ufw allow 30303
   - systemctl enable ufw
   - systemctl start ufw
+  - systemctl enable fail2ban
+  - systemctl start fail2ban
