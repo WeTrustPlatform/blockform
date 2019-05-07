@@ -72,6 +72,7 @@ Set environment variables:
     export SITE_URL="http://localhost:3000"
     export PUB_KEY="xxxxx" # an SSH public key to login the VMs
     export PRIV_KEY="xxxxx" # an SSH private key to let blockform login the VMs
+    export PASSPHRASE="xxxxx" # the passphrase of the private key
 
 Get, build and run:
 
