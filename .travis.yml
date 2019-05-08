@@ -5,10 +5,13 @@ branches:
 language: go
 
 go:
-  - "1.12"
+  - "1.11"
+
+-env:
+  - GO111MODULE=on
 
 before_script:
-  - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
+  - GO_FILES=$(find . -iname '*.go' -type f)
   - go get golang.org/x/lint/golint
   - go get honnef.co/go/tools/cmd/staticcheck
   - go get github.com/fzipp/gocyclo
