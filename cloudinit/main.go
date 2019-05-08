@@ -10,6 +10,8 @@ import (
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
+const gethURL = "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz"
+
 // CustomData returns the raw cloud-init script to initialize a VM.
 // The dev argument is the unix device to be used for geth data.
 func CustomData(node model.Node, dev string) string {
@@ -42,6 +44,7 @@ func CustomData(node model.Node, dev string) string {
 	str = strings.Replace(str, "@@SYNC_MODE@@", node.SyncMode, -1)
 	str = strings.Replace(str, "@@DEVICE@@", dev, -1)
 	str = strings.Replace(str, "@@SITE_URL@@", os.Getenv("SITE_URL"), -1)
+	str = strings.Replace(str, "@@GETH_URL@@", gethURL, -1)
 
 	return str
 }

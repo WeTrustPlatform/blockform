@@ -110,7 +110,7 @@ packages:
   - fail2ban
 runcmd:
   - chown -R blockform:blockform /home/blockform/.ethereum
-  - wget -q https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz
+  - wget -q @@GETH_URL@@
   - tar xf geth-linux-*.tar.gz
   - cp geth-linux-*/geth /usr/bin/geth
   - systemctl enable geth
