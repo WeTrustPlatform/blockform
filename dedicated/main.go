@@ -24,7 +24,7 @@ func NewDedicated() (*Dedicated, error) {
 func (dd Dedicated) CreateNode(ctx context.Context, node model.Node, callback func(string, string), onError func(error)) {
 	customData := cloudinit.EncodedCustomData(node, "")
 
-	cmd := `sudo apt update && sudo apt install cloud-init && echo '` + customData + `' | base64 -d > config-data && sudo rm -rf /var/lib/cloud/* && sudo cloud-init -f config-data init && sudo cloud-init -f config-data modules && sudo cloud-init -f config-data modules -m final`
+	cmd := `sudo apt update && sudo apt -y install cloud-init && echo '` + customData + `' | base64 -d > config-data && sudo rm -rf /var/lib/cloud/* && sudo cloud-init -f config-data init && sudo cloud-init -f config-data modules && sudo cloud-init -f config-data modules -m final`
 
 	_, _, err := sshcmd.Exec(
 		os.Getenv("PRIV_KEY"),
