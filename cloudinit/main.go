@@ -10,7 +10,7 @@ import (
 	"github.com/WeTrustPlatform/blockform/model"
 )
 
-const gethURL = "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.27-4bcc0a37.tar.gz"
+const gethURL = "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.9.3-cfbb969d.tar.gz"
 
 // CustomData returns the raw cloud-init script to initialize a VM.
 // The dev argument is the unix device to be used for geth data.
