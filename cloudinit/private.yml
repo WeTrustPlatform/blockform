@@ -33,7 +33,7 @@ write_files:
         User=blockform
         WorkingDirectory=/home/blockform
         StandardOutput=journal
-        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode full --networkid @@NET_ID@@ --rpc --rpcapi net,eth,web3,personal --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins * --nodiscover --password /password.txt --unlock @@SEALER@@ --mine --etherbase @@SEALER@@
+        ExecStart=/usr/bin/geth --datadir /datadrive --syncmode full --networkid @@NET_ID@@ --rpc --rpcapi net,eth,web3,personal --allow-insecure-unlock --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins * --nodiscover --password /password.txt --unlock @@SEALER@@ --mine --etherbase @@SEALER@@
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
@@ -128,6 +128,8 @@ write_files:
         API_KEY="@@API_KEY@@"
 packages:
   - nginx
+  - curl
+  - git
   - python-certbot-nginx
   - libdancer2-perl
 runcmd:
