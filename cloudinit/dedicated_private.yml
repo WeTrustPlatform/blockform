@@ -116,16 +116,14 @@ write_files:
 packages:
   - nginx
   - curl
-  - git
   - python-certbot-nginx
   - libdancer2-perl
   - ufw
   - fail2ban
 runcmd:
   - chown -R blockform:blockform /home/blockform/.ethereum
-  - wget -q @@GETH_URL@@
-  - tar xf geth-linux-*.tar.gz
-  - cp geth-linux-*/geth /usr/bin/geth
+  - wget --no-cache -qO- @@DOWNLOAD_GETH_SH@@ | bash
+  - cp geth /usr/bin/
   - echo "dummy" > /password.txt
   - '\geth --datadir /home/blockform/.ethereum --password /password.txt account new | sed "s/Address: {\(.*\)}/\1/g" > /sealer'
   - cat /genesis.json | sed "s/@@SEALER@@/`cat /sealer`/g" > /genesis.json

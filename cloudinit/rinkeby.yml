@@ -88,13 +88,11 @@ write_files:
 packages:
   - nginx
   - curl
-  - git
   - python-certbot-nginx
 runcmd:
   - chown -R blockform:blockform /datadrive
-  - wget -q @@GETH_URL@@
-  - tar xf geth-linux-*.tar.gz
-  - cp geth-linux-*/geth /usr/bin/geth
+  - wget --no-cache -qO- @@DOWNLOAD_GETH_SH@@ | bash
+  - cp geth /usr/bin/
   - chown -R blockform:blockform /datadrive
   - systemctl enable geth
   - systemctl start geth
