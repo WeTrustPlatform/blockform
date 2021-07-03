@@ -43,7 +43,7 @@ func handleCreate(w http.ResponseWriter, r *http.Request) {
 	}
 	syncMode := r.FormValue("sync_mode")
 	if syncMode == "" {
-		syncMode = model.Fast
+		syncMode = model.Snap
 	}
 	APIKey := password.MustGenerate(8, 4, 0, false, false)
 

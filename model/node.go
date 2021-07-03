@@ -23,6 +23,7 @@ const (
 	Full  string = "full"
 	Fast  string = "fast"
 	Light string = "light"
+	Snap  string = "snap"
 )
 
 // Node is a VM hosting a geth instance

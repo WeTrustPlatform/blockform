@@ -20,7 +20,7 @@ write_files:
         User=blockform
         WorkingDirectory=/home/blockform
         StandardOutput=journal
-        ExecStart=/usr/bin/geth --datadir /home/blockform/.ethereum --syncmode @@SYNC_MODE@@ --rpc --rpcapi net,eth,web3,personal --allow-insecure-unlock --rpcaddr 127.0.0.1 --rpcport 8445 --rpccorsdomain * --rpcvhosts * --ws --wsaddr 127.0.0.1 --wsport 8446 --wsorigins *
+        ExecStart=/usr/bin/geth --datadir /home/blockform/.ethereum --syncmode @@SYNC_MODE@@ --http --http.api net,eth,web3,personal --allow-insecure-unlock --http.addr 127.0.0.1 --http.port 8445 --http.corsdomain * --http.vhosts * --ws --ws.addr 127.0.0.1 --ws.port 8446 --ws.origins *
         [Install]
         WantedBy=multi-user.target
   - owner: root:root
