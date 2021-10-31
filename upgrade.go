@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/WeTrustPlatform/blockform/cloudinit"
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/WeTrustPlatform/blockform/sshcmd"
 	"goji.io/pat"
@@ -18,13 +20,13 @@ func upgradeNode(ctx context.Context, node model.Node, callback func(error)) {
 		os.Getenv("PASSPHRASE"),
 		"blockform",
 		node.DomainName,
-		`git clone https://github.com/WeTrustPlatform/manage-node-scripts.git \
-		&& cd manage-node-scripts \
-		&& ./download-geth.sh \
-		&& sudo systemctl stop geth \
-		&& sudo cp geth /usr/bin/ \
-		&& cd .. && rm -rf manage-node-scripts \
-		&& sudo systemctl start geth`,
+		fmt.Sprintf(`
+			wget --no-cache -qO- %s | bash \
+			&& sudo systemctl stop geth \
+			&& sudo cp geth /usr/bin/ \
+			&& sudo systemctl start geth \
+			`,
+			cloudinit.DownloadGethSh),
 	)
 
 	if err != nil {
