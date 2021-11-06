@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/WeTrustPlatform/blockform/aws"
-	"github.com/WeTrustPlatform/blockform/azure"
 	"github.com/WeTrustPlatform/blockform/dedicated"
 	"github.com/WeTrustPlatform/blockform/digitalocean"
 	"github.com/WeTrustPlatform/blockform/gcp"
@@ -12,10 +11,6 @@ import (
 
 func makeProviders() map[string]CloudProvider {
 	prov := make(map[string]CloudProvider)
-	azureProvider, err := azure.NewAzure()
-	if err == nil {
-		prov["azure"] = azureProvider
-	}
 	awsProvider, err := aws.NewAWS()
 	if err == nil {
 		prov["aws"] = awsProvider

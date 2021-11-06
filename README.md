@@ -19,7 +19,7 @@ instance. So the installation process has been made as simple as possible.
 
  - Support public networks: Mainnet, Rinkeby, Ropsten
  - Allows you to create your own private ethereum network with Proof of Authority
- - Support multiple cloud providers: Azure, AWS, GCP and DigitalOcean
+ - Support multiple cloud providers: AWS, GCP and DigitalOcean
  - Support multiple synchronization modes: Full, Fast and Light
  - Setup a firewall for you
  - SSL certificates through certbot
@@ -32,6 +32,9 @@ instance. So the installation process has been made as simple as possible.
  - Compatible with MetaMask, geth attach, and web3.js
  - Easy deployments on Heroku
  - Optional Slack integration for alerts
+
+Note: Azure is broken and removed after the update to go 1.17 commit - this also
+help resolve the security issue with azure's dep github.com/dgrijalva/jwt-go
 
 ### Usage
 

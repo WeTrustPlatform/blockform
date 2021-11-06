@@ -65,7 +65,6 @@
                                     <input class="form-check-input" type="radio" name="provider" id="provider_{{.}}" value="{{.}}" {{if eq . $first}}checked{{end}}>
                                     <label class="form-check-label {{.}}" for="provider_{{.}}">
                                         {{if eq . "aws" }}Amazon Web Services{{end}}
-                                        {{if eq . "azure" }}Microsoft Azure{{end}}
                                         {{if eq . "digitalocean" }}DigitalOcean{{end}}
                                         {{if eq . "gcp" }}Google Cloud Platform{{end}}
                                         {{if eq . "dedicated" }}Dedicated{{end}}
@@ -119,7 +118,6 @@
                                     <input class="form-check-input" type="radio" name="provider" id="provider2_{{.}}" value="{{.}}" {{if eq . $first}}checked{{end}}>
                                     <label class="form-check-label {{.}}" for="provider2_{{.}}">
                                         {{if eq . "aws" }}Amazon Web Services{{end}}
-                                        {{if eq . "azure" }}Microsoft Azure{{end}}
                                         {{if eq . "digitalocean" }}DigitalOcean{{end}}
                                         {{if eq . "gcp" }}Google Cloud Platform{{end}}
                                         {{if eq . "dedicated" }}Dedicated{{end}}
