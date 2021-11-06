@@ -1,5 +1,8 @@
 module github.com/WeTrustPlatform/blockform
 
+// +heroku goVersion go1.17
+go 1.17
+
 require (
 	github.com/aws/aws-sdk-go v1.16.26
 	github.com/digitalocean/godo v1.7.3
@@ -32,5 +35,3 @@ require (
 	google.golang.org/appengine v1.4.0 // indirect
 	launchpad.net/gocheck v0.0.0-20140225173054-000000000087 // indirect
 )
-
-go 1.17

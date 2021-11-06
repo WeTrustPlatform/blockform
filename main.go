@@ -33,9 +33,14 @@ var tmpl *template.Template
 
 func main() {
 	var err error
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+
+	// prevent sideload .env in production
+	// https://github.com/joho/godotenv/issues/40
+	if os.Getenv("APP_ENV") != "production" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))

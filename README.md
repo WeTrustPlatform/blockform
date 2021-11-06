@@ -69,6 +69,7 @@ Set environment variables in `.env`:
     export GCP_JSON="{xxxx}"
     export GCP_PROJECT="my-blockform"
     export PORT=3000
+    export APP_ENV=development | production
     export DATABASE_URL="postgres://user:pass@localhost:5432/blockform?sslmode=disable"
     export BASIC_AUTH_USER=xxxxx
     export BASIC_AUTH_PASS=xxxxx
