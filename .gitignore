@@ -4,3 +4,4 @@ debug
 terraform*
 .terraform*
 .env
+.idea/

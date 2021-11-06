@@ -54,7 +54,7 @@ For Google Cloud Platform:
  - In *API and Services*, go to the *Credentials* tab and generate an *Account
  Service Key* as a JSON file for the *Compute Engine default service account*.
 
-Set environment variables:
+Set environment variables in `.env`:
 
     export AZURE_TENANT_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
     export AZURE_CLIENT_ID="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -79,4 +79,4 @@ Get, build and run:
     git clone https://github.com/WeTrustPlatform/blockform.git
     cd blockform
     <store the environment variables in the .env file>
-    go build && source .env && ./blockform
+    go build && ./blockform

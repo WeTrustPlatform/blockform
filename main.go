@@ -13,6 +13,7 @@ import (
 	"github.com/WeTrustPlatform/blockform/model"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 	goji "goji.io"
 	"goji.io/pat"
 )
@@ -32,6 +33,11 @@ var tmpl *template.Template
 
 func main() {
 	var err error
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
