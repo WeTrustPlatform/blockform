@@ -88,11 +88,11 @@ write_files:
 packages:
   - nginx
   - curl
-  - python-certbot-nginx
+  - python3-certbot-nginx
 runcmd:
   - chown -R blockform:blockform /datadrive
   - wget --no-cache -qO- @@DOWNLOAD_GETH_SH@@ | bash
-  - cp geth /usr/bin/
+  - mv geth /usr/bin/
   - chown -R blockform:blockform /datadrive
   - systemctl enable geth
   - systemctl start geth
